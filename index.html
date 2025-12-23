@@ -770,169 +770,80 @@
 })();
 </script>
   <!-- ここにパート3を貼る -->
-  <script>
+<script>
 /* =========================
-   (偽)えむびーてぃーあいPlus - PART3（完成版）
-   ・結果が出ないバグ修正（toResultBtnのクリックが関数化されてない問題）
-   ・5界隈×6タイプ=30タイプ
-   ・E/C/A（外向・計画・共感）スコア + 界隈推定
+   (偽)えむびーてぃーあいPlus - PART3（完成・上書き版）
+   ・PART2の「暫定結果」を強制的に上書きして30タイプを確定
+   ・5界隈×6タイプ=30
+   ・E/C/A（外向・計画・共感）から界隈＋タイプ判定
 ========================= */
 (function(){
-  // ---- もしPART2がwindow.QUESTIONSを生やしてるなら優先 ----
-  const Q = (window.QUESTIONS && window.QUESTIONS.length) ? window.QUESTIONS : (typeof QUESTIONS !== "undefined" ? QUESTIONS : []);
-  if(!Q || !Q.length){
-    console.warn("QUESTIONSが見つからん。PART2が先に読み込まれてるか確認してな。");
-  }
-
-  // ---- 5界隈×6タイプ（30）----
-  // ※名前は「映え」優先やけど、いつでも差し替えOK
-  const CATS = [
-    { key:"SNS",  name:"SNS界隈" },
-    { key:"GLAM", name:"夜職・盛り界隈" },
-    { key:"GACHI",name:"堅実ガチ勢界隈" },
-    { key:"LOVE", name:"恋愛脳界隈" },
-    { key:"KAGE", name:"省エネ隠居界隈" },
-  ];
-
-  // 6タイプ/界隈（合計30）
-  const TYPES = [
-    // --- SNS界隈 6 ---
-    {cat:"SNS", name:"Twitter裏垢悪口マシーン", badges:["SNS界隈","言語化強め"], desc:"感情を心の中で腐らせず、言葉にして処理するタイプ。良くも悪くも“言語”が武器。面白いけど、疲れてる時は言葉が鋭くなる。",
-      love:"一言で傷つかず、ちゃんと会話で整えてくれる人。境界線（言っていいこと/ダメなこと）を一緒に作れる相手が相性◎。",
-      job:"編集/ライター/運用/リサーチ。『言葉で価値を作る』系の仕事に向く。",
-      media:"考察・解説・炎上分析・ディベート系。コメント欄も読む。" },
-    {cat:"SNS", name:"インプレ古事記（戦略型）", badges:["SNS界隈","最適化"], desc:"数字・反応・見せ方を“ゲーム”として捉えやすい。伸ばすために試行錯誤できるし、勝ち筋を見つけるのが早い。",
-      love:"応援しつつ、暴走しそうな時にブレーキを踏める人。『現実も大事』と言ってくれる相手。",
-      job:"マーケ/広告/企画/データ分析。ABテストが得意。",
-      media:"伸びる理由解説、マーケ系YouTube、ビジネスバラエティ。" },
-    {cat:"SNS", name:"自撮り研究所（研究員）", badges:["SNS界隈","改善癖"], desc:"“映え”をセンスじゃなく研究で作るタイプ。盛り方・光・角度・文章を改善して強くなる。",
-      love:"褒め上手で、努力をちゃんと見てくれる人。外見だけじゃなく中身の頑張りも拾ってくれる相手。",
-      job:"デザイン/撮影/編集/美容系。改善→反映が早い。",
-      media:"美容・垢抜け・検証系、ビフォアフ系、短尺も好き。" },
-    {cat:"SNS", name:"炎上回避の危機管理人", badges:["SNS界隈","慎重派"], desc:"やらかしを極端に嫌う。人の地雷も察しやすいから守りが固い。安全運転で信用を積むタイプ。",
-      love:"安心感のある人。情緒が安定してて、話し合いができる相手が向く。",
-      job:"総務/法務寄り、CS、リスク管理、運用保守。",
-      media:"ニュース、ガジェット、丁寧な解説系。" },
-    {cat:"SNS", name:"リプ欄の王（コミュ強）", badges:["SNS界隈","外向寄り"], desc:"“人の温度”で場を回せるタイプ。会話の回転が速く、反応も早い。空気を明るくできる。",
-      love:"一緒にノれる人。やきもち焼きすぎない相手が◎。",
-      job:"営業/広報/イベント/接客。人前で強い。",
-      media:"バラエティ、配信、街ブラ、即興トーク系。" },
-    {cat:"SNS", name:"ROM専の観測者", badges:["SNS界隈","内省"], desc:"情報は見るけど、出すのは慎重。言葉を出す前に頭の中で何回も検証するタイプ。深い洞察が出やすい。",
-      love:"静かな時間を尊重してくれる人。詰めすぎず待ってくれる相手。",
-      job:"分析/研究/企画/エンジニア寄り。深掘りが強い。",
-      media:"ドキュメンタリー、考察、長尺の解説。" },
-
-    // --- 夜職・盛り界隈 6 ---
-    {cat:"GLAM", name:"夜職女級プライドウーマン", badges:["夜職・盛り","自尊心MAX"], desc:"舐められたくない、雑に扱われたくないが強い。自分の価値を守るために言葉も行動も強くなれるタイプ。",
-      love:"誠実で筋が通ってる人。駆け引きより“ちゃんと向き合う”相手。",
-      job:"接客/販売/美容/ブランディング。自分を商品にするのが上手い。",
-      media:"恋愛リアリティ/美容/垢抜け/ホスト密着（観察含む）。" },
-    {cat:"GLAM", name:"カリスマホスト（営業脳）", badges:["夜職・盛り","外向寄り"], desc:"人の欲しい言葉・安心・テンションを読んで出せる。空気で勝てるタイプ。使い方次第で最強にも最悪にもなる。",
-      love:"依存させるより、対等に笑える相手。自分も相手も壊さない距離感が鍵。",
-      job:"営業/交渉/広報/司会。『相手に合わせて勝つ』のが得意。",
-      media:"トーク番組、接客術、心理テク系（好き）。" },
-    {cat:"GLAM", name:"整形マシーン（改善鬼）", badges:["夜職・盛り","改善癖"], desc:"コンプレックスを“行動”で潰すタイプ。努力の方向が明確で、変化が早い。",
-      love:"努力をバカにしない人。見た目だけじゃなく中身も見てくれる相手が◎。",
-      job:"美容/デザイン/編集/フィットネス。改善の積み上げが活きる。",
-      media:"美容医療、検証、ビフォアフ、整う系。" },
-    {cat:"GLAM", name:"ブランド脳（世界観）", badges:["夜職・盛り","こだわり"], desc:"“雰囲気・世界観”に価値を感じる。雑さが無理。美意識が強いぶん疲れやすい。",
-      love:"丁寧で、嘘が少ない人。適当な扱いをしない相手。",
-      job:"クリエイティブ/ディレクション/店舗作り。世界観づくりに向く。",
-      media:"Vlog、ルーティン、ルームツアー、映像美。" },
-    {cat:"GLAM", name:"盛り耐性ゼロ（正直者）", badges:["夜職・盛り","誠実"], desc:"盛る文化は好きだけど嘘は苦手。素直で不器用。『自分は自分』で勝ちたいタイプ。",
-      love:"安心して素直でいられる相手。比較や評価を持ち込まない人。",
-      job:"専門職/職人気質の仕事。正直さが信頼になる。",
-      media:"手元作業、職人、料理、ゆるい日常。" },
-    {cat:"GLAM", name:"ギャップ姫（内側堅実）", badges:["夜職・盛り","二面性"], desc:"外は派手でも中身は計画的。無駄に見える努力も裏で回してるタイプ。",
-      love:"表面だけで判断しない人。内側の堅実さを見抜いてくれる相手。",
-      job:"企画/運営/マネジメント。表と裏を両方回せる。",
-      media:"バラエティ+学び系のハイブリッド。" },
-
-    // --- 堅実ガチ勢界隈 6 ---
-    {cat:"GACHI", name:"ガチ予定表マン", badges:["堅実ガチ勢","計画性"], desc:"締切・段取り・リスク回避が得意。『先に詰めて勝つ』タイプ。周りから頼られやすい。",
-      love:"約束を守る人。誠実で生活が整ってる相手が相性◎。",
-      job:"事務/PM/経理/運用。仕組み化が強い。",
-      media:"勉強/解説/作業用BGM。効率厨。" },
-    {cat:"GACHI", name:"ミス0教（再発防止）", badges:["堅実ガチ勢","慎重"], desc:"やらかしを“事件”として処理できる。原因分析→再発防止が自然に出る。",
-      love:"安心感のある人。感情の波が少ない相手が向く。",
-      job:"品質管理/保守/監査/医療事務寄り。ミス潰しが武器。",
-      media:"検証、レビュー、比較動画。" },
-    {cat:"GACHI", name:"コスパ神（最適化）", badges:["堅実ガチ勢","合理性"], desc:"損得と効率で判断しがち。感情より仕組みで勝つタイプ。無駄が嫌い。",
-      love:"合理性を理解してくれる人。感情の説明を求めすぎない相手。",
-      job:"データ/金融/購買/分析。比較して決めるのが得意。",
-      media:"ビジネス、投資、節約、ガジェット。" },
-    {cat:"GACHI", name:"責任感モンスター", badges:["堅実ガチ勢","背負う"], desc:"人が逃げる場面で逃げない。抱え込みやすいけど、チームにいると最強。",
-      love:"『休んでいい』と言ってくれる人。背負いすぎを止めてくれる相手。",
-      job:"リーダー職/現場管理/教育係。信頼で回す。",
-      media:"スポーツ、挑戦ドキュメンタリー、努力系。" },
-    {cat:"GACHI", name:"静かな努力家", badges:["堅実ガチ勢","内向寄り"], desc:"派手に言わずに淡々と積むタイプ。結果で黙らせる。メンタルは静かに強い。",
-      love:"落ち着いてて、干渉しすぎない人。信頼で繋がれる相手。",
-      job:"研究/技術/制作。黙々と強い。",
-      media:"長尺、作業、解説、ドキュメンタリー。" },
-    {cat:"GACHI", name:"逆転狙いの追い込み職人", badges:["堅実ガチ勢","土壇場強い"], desc:"普段はゆるいのに、締切前に覚醒するタイプ。短期集中の火力が高い。",
-      love:"波を許してくれる人。責めずに見守ってくれる相手。",
-      job:"締切がある制作/編集/ライティング。追い込み適性◎。",
-      media:"短期集中系、受験/筋トレ企画、ストーリー性。" },
-
-    // --- 恋愛脳界隈 6 ---
-    {cat:"LOVE", name:"恋愛裁判官（白黒）", badges:["恋愛脳","筋通す"], desc:"曖昧が嫌い。言葉の責任・約束の重みが大きい。好きになると本気で向き合う。",
-      love:"誠実で、話し合いができる人。逃げ癖がある人は相性悪め。",
-      job:"交渉/法務寄り/相談業務。筋と整合性に強い。",
-      media:"恋愛リアリティ、討論、心理解説。" },
-    {cat:"LOVE", name:"重めの一途（積み上げ型）", badges:["恋愛脳","深い"], desc:"好きになると深い。雑に扱われると一気に冷める。信頼が恋愛の土台。",
-      love:"言葉と行動が一致する人。浮つかない相手が◎。",
-      job:"教育/ケア/対人支援。信頼の積み上げが得意。",
-      media:"ストーリー重視の作品、恋愛ドラマ、長編。" },
-    {cat:"LOVE", name:"好きバレ職人（匂わせ）", badges:["恋愛脳","表現"], desc:"直接言わずに空気で伝えがち。察して欲しい欲がある。上手くいくとロマン、ズレると事故。",
-      love:"察し力高い人 or ちゃんと確認してくれる人。",
-      job:"接客/広報/表現系。雰囲気づくりが上手い。",
-      media:"恋愛系ショート、Vlog、共感系。" },
-    {cat:"LOVE", name:"秒速切り替えマン", badges:["恋愛脳","回復早い"], desc:"失恋しても立ち直りが早い。反省はするけど引きずらない。恋愛を人生の一部として扱える。",
-      love:"重くなりすぎない相手。テンポが合う人が◎。",
-      job:"営業/企画/挑戦系。切替力が強い。",
-      media:"バラエティ、旅行、企画ドッキリ。" },
-    {cat:"LOVE", name:"安心供給装置", badges:["恋愛脳","共感"], desc:"相手の不安を減らすのが得意。優しいが、優しさが“義務”になると疲れる。",
-      love:"感謝を言える人。甘えすぎない相手が◎。",
-      job:"看護/福祉/カウンター業務/CS。安心を作る仕事。",
-      media:"癒し、日常、料理、動物。" },
-    {cat:"LOVE", name:"恋愛より自分軸", badges:["恋愛脳","自立"], desc:"恋愛は大事やけど、人生の主導権は自分に置く。依存が苦手。尊重がテーマ。",
-      love:"自立してる人。束縛しない相手。",
-      job:"個人で成果を出す仕事、クリエイティブ、専門職。",
-      media:"自己成長、学び、ルーティン、作業。" },
-
-    // --- 省エネ隠居界隈 6 ---
-    {cat:"KAGE", name:"省エネ仙人", badges:["省エネ隠居","体力温存"], desc:"無駄な争いを避け、平和に生きるのが上手い。刺激より安定。心は穏やか。",
-      love:"落ち着いてて、静かな時間を共有できる人。",
-      job:"集中作業、裏方、制作、事務。静かに強い。",
-      media:"ASMR、作業、散歩、落ち着くやつ。" },
-    {cat:"KAGE", name:"人見知りのプロ", badges:["省エネ隠居","慎重"], desc:"最初は固いけど、信頼するとめっちゃ深い。少数精鋭で生きるタイプ。",
-      love:"距離を詰めすぎない人。信頼構築ができる相手。",
-      job:"研究/制作/職人。少人数で強い。",
-      media:"考察、解説、淡々系。" },
-    {cat:"KAGE", name:"メンタル防壁（ガード硬）", badges:["省エネ隠居","防御"], desc:"傷つくのが嫌で先に守る。悪く言うと壁、良く言うと自己管理。安全圏で強い。",
-      love:"安心感くれる人。詰めずに理解してくれる相手。",
-      job:"リスク低めの安定職、運用、保守。",
-      media:"レビュー、比較、検証、静かなバラエティ。" },
-    {cat:"KAGE", name:"空気読む観察者", badges:["省エネ隠居","察し"], desc:"喋らないけど見てる。人の変化に気づきやすい。沈黙が苦じゃないタイプ。",
-      love:"沈黙を気まずくしない人。自然体の相手。",
-      job:"調整役、サポート、裏方、編集。",
-      media:"ドキュメンタリー、雰囲気Vlog、映画。" },
-    {cat:"KAGE", name:"静かな反骨", badges:["省エネ隠居","芯"], desc:"表では波風立てないのに、内側は芯が強い。理不尽はちゃんと覚えてるタイプ。",
-      love:"誠実で筋が通る人。尊重ができる相手。",
-      job:"専門職、品質、改善、監査。",
-      media:"社会系、考察、討論（見る専）。" },
-    {cat:"KAGE", name:"気分の波サーファー", badges:["省エネ隠居","波"], desc:"気分と体力で出力が変わる。無理すると壊れるから、波を前提に設計すると強い。",
-      love:"波を責めない人。休むのを許してくれる相手。",
-      job:"自由度ある仕事、制作、編集、在宅寄り。",
-      media:"短尺→長尺を気分で行き来。ゆるい企画。" },
-  ];
-
-  // ---- util ----
+  // ---- 安全にグローバルへアクセス ----
   const $ = (id)=>document.getElementById(id);
 
-  function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
+  // PART2が window.QUESTIONS を作ってる前提（無い場合は終了）
+  const Q = (window.QUESTIONS && window.QUESTIONS.length) ? window.QUESTIONS : null;
+  if(!Q){
+    console.warn("PART3: QUESTIONSが見つからん。PART2が先に読み込まれてるか確認してな。");
+    return;
+  }
 
-  // ---- 軸スコア（E/C/A） + 界隈推定 ----
+  // state / showScreen / saveState がPART1のグローバルにある前提
+  if(typeof window.state === "undefined"){
+    console.warn("PART3: stateが見つからん。PART1のstateがグローバルになってるか確認してな。");
+    return;
+  }
+
+  // ---- 5界隈 ----
+  const CATS = [
+    { key:"SNS",   name:"SNS界隈" },
+    { key:"GLAM",  name:"夜職・盛り界隈" },
+    { key:"GACHI", name:"堅実ガチ勢界隈" },
+    { key:"LOVE",  name:"恋愛脳界隈" },
+    { key:"KAGE",  name:"省エネ隠居界隈" },
+  ];
+
+  // ---- 30タイプ（5界隈×6）----
+  // ※ name/desc/love/job/media は好きに増やしてOK（長文化歓迎）
+  const TYPES = [
+    // SNS界隈 6
+    {cat:"SNS", name:"Twitter裏垢悪口マシーン", badges:["SNS界隈","言語化"], desc:"感情を溜めずに“文章”で処理するタイプ。頭の回転が速い反面、疲れてる時ほど言葉が鋭くなりやすい。", love:"『言葉の鋭さ＝敵意』と決めつけず、落ち着いて受け止めてくれる人。境界線を一緒に作れる相手◎。", job:"編集/ライター/運用/調査/台本。言語と分析が武器。", media:"炎上解説・考察・討論・Xスペ・コメント欄読み。"},
+    {cat:"SNS", name:"インプレ古事記（戦略型）", badges:["SNS界隈","最適化"], desc:"反応・数字・導線をゲームとして捉え、改善できるタイプ。勝ち筋を見つけるのが早い。", love:"応援しつつ暴走にブレーキをくれる人。現実の生活も大事にできる相手。", job:"マーケ/広告/企画/データ/ディレクション。ABテスト適性◎。", media:"マーケ解説、伸び方分析、ビジネスバラエティ。"},
+    {cat:"SNS", name:"自撮り研究所（研究員）", badges:["SNS界隈","改善鬼"], desc:"映えをセンスじゃなく検証で作るタイプ。光・角度・文章・タイミングまで詰める。", love:"努力をちゃんと見て褒めてくれる人。外見だけで判断しない相手◎。", job:"デザイン/撮影/編集/美容/EC。改善→反映が速い。", media:"美容検証、垢抜け、ビフォアフ、短尺。"},
+    {cat:"SNS", name:"炎上回避の危機管理人", badges:["SNS界隈","慎重派"], desc:"地雷回避とリスク管理が得意。信用を積みやすいが、守りが固くて疲れやすい。", love:"情緒が安定してて、話し合いができる人。", job:"CS/運用/総務/広報補佐/リスク管理。", media:"ニュース、丁寧な解説、検証。"},
+    {cat:"SNS", name:"リプ欄の王（コミュ強）", badges:["SNS界隈","外向寄り"], desc:"人の温度で場を回せる。レスも早い。ノリで強いが、燃えやすい場所には注意。", love:"一緒にノれるけど束縛しない人。", job:"営業/接客/広報/イベント。", media:"配信、街ブラ、即興トーク。"},
+    {cat:"SNS", name:"ROM専の観測者", badges:["SNS界隈","内省"], desc:"出すより見る派。言葉を出す前に脳内で何回も検証する。深い洞察が出る。", love:"詰めずに待てる人。静かな時間を尊重してくれる相手。", job:"分析/研究/企画/制作/エンジニア寄り。", media:"長尺考察、ドキュメンタリー。"},
+    // 夜職・盛り界隈 6
+    {cat:"GLAM", name:"夜職女級プライドウーマン", badges:["夜職・盛り","自尊心"], desc:"舐められたくない/雑に扱われたくないが強い。自分の価値を守る行動ができる。", love:"誠実で筋が通る人。駆け引きより“ちゃんと向き合う”相手。", job:"接客/販売/美容/ブランディング。", media:"恋リア、美容、ホスト密着（観察含む）。"},
+    {cat:"GLAM", name:"カリスマホスト（営業脳）", badges:["夜職・盛り","外向"], desc:"相手が欲しい言葉と温度を読んで出せる。使い方次第で最強にも事故にもなる。", love:"依存させ合わず、対等に笑える相手。", job:"営業/交渉/司会/広報。", media:"トーク番組、心理テク、接客術。"},
+    {cat:"GLAM", name:"整形マシーン（改善鬼）", badges:["夜職・盛り","改善"], desc:"コンプレックスを“行動”で潰す。変化が早いが、比較沼に注意。", love:"努力をバカにしない人。中身も見てくれる相手。", job:"美容/編集/デザイン/フィットネス。", media:"美容医療、検証、ビフォアフ。"},
+    {cat:"GLAM", name:"ブランド脳（世界観）", badges:["夜職・盛り","こだわり"], desc:"雰囲気・世界観の完成度に価値を感じる。雑さが無理。", love:"丁寧で嘘が少ない人。", job:"クリエイティブ/ディレクション/店舗づくり。", media:"Vlog、ルームツアー、映像美。"},
+    {cat:"GLAM", name:"盛り耐性ゼロ（正直者）", badges:["夜職・盛り","誠実"], desc:"盛りは好きでも嘘が苦手。素直で不器用だが信頼が強い。", love:"比較や評価を持ち込まない人。", job:"専門職/職人気質。", media:"手元作業、料理、日常。"},
+    {cat:"GLAM", name:"ギャップ姫（内側堅実）", badges:["夜職・盛り","二面性"], desc:"表は派手、裏は段取り。勝ち筋をちゃんと作ってから動く。", love:"表面だけで判断しない人。", job:"運営/企画/マネジメント。", media:"学び×バラエティのハイブリッド。"},
+    // 堅実ガチ勢界隈 6
+    {cat:"GACHI", name:"ガチ予定表マン", badges:["堅実ガチ勢","計画"], desc:"締切・段取り・リスク回避で勝つ。先に詰めて安心するタイプ。", love:"約束を守る人。生活が整ってる相手。", job:"事務/PM/経理/運用。仕組み化。", media:"勉強/解説/作業用。"},
+    {cat:"GACHI", name:"ミス0教（再発防止）", badges:["堅実ガチ勢","慎重"], desc:"ミスを“事件”として処理できる。原因→再発防止が自然に出る。", love:"情緒が安定してる人。", job:"品質/監査/保守/医療事務寄り。", media:"検証・比較・レビュー。"},
+    {cat:"GACHI", name:"コスパ神（最適化）", badges:["堅実ガチ勢","合理"], desc:"損得と効率で判断。感情より仕組みで勝つ。", love:"合理性を理解してくれる人。", job:"データ/金融/購買/分析。", media:"ビジネス、投資、ガジェット。"},
+    {cat:"GACHI", name:"責任感モンスター", badges:["堅実ガチ勢","背負う"], desc:"人が逃げる場面で逃げない。抱え込みすぎ注意。", love:"『休んでいい』と言ってくれる相手。", job:"リーダー/現場管理/教育。", media:"努力ドキュメンタリー。"},
+    {cat:"GACHI", name:"静かな努力家", badges:["堅実ガチ勢","黙々"], desc:"派手に言わず淡々と積む。結果で黙らせるタイプ。", love:"干渉しすぎない落ち着いた相手。", job:"研究/技術/制作。", media:"長尺解説、ドキュメンタリー。"},
+    {cat:"GACHI", name:"逆転狙いの追い込み職人", badges:["堅実ガチ勢","土壇場"], desc:"普段ゆるいのに締切前に覚醒。短期集中火力が高い。", love:"波を責めず見守れる相手。", job:"制作/編集/ライティング。", media:"受験/筋トレ企画、ストーリー系。"},
+    // 恋愛脳界隈 6
+    {cat:"LOVE", name:"恋愛裁判官（白黒）", badges:["恋愛脳","筋"], desc:"曖昧が嫌い。言葉の責任と約束の重みが大きい。", love:"誠実で話し合いできる人。", job:"交渉/相談/調整役。", media:"恋リア、心理解説。"},
+    {cat:"LOVE", name:"重めの一途（積み上げ型）", badges:["恋愛脳","深い"], desc:"信頼が土台。雑に扱われると一気に冷める。", love:"行動と言葉が一致する人。", job:"教育/ケア/支援系。", media:"ストーリー重視作品。"},
+    {cat:"LOVE", name:"好きバレ職人（匂わせ）", badges:["恋愛脳","雰囲気"], desc:"直接言わず空気で伝えがち。ズレると事故る。", love:"察しが良い or 確認してくれる人。", job:"広報/接客/表現系。", media:"恋愛ショート、Vlog。"},
+    {cat:"LOVE", name:"秒速切り替えマン", badges:["恋愛脳","回復早"], desc:"失恋しても立ち直りが早い。恋愛を人生の一部として扱える。", love:"テンポが合う人。", job:"営業/企画/挑戦系。", media:"旅行、企画バラエティ。"},
+    {cat:"LOVE", name:"安心供給装置", badges:["恋愛脳","共感"], desc:"相手の不安を減らすのが得意。優しさが義務化すると疲れる。", love:"感謝を言える、甘えすぎない人。", job:"CS/受付/対人支援。", media:"癒し、料理、動物。"},
+    {cat:"LOVE", name:"恋愛より自分軸", badges:["恋愛脳","自立"], desc:"恋愛も大事やけど主導権は自分。束縛が苦手。", love:"自立してる人。", job:"専門職/個人で成果出す系。", media:"学び、作業、自己成長。"},
+    // 省エネ隠居界隈 6
+    {cat:"KAGE", name:"省エネ仙人", badges:["省エネ隠居","温存"], desc:"無駄な争いを避けて穏やかに生きる。刺激より安定。", love:"静かな時間を共有できる人。", job:"裏方/制作/事務。", media:"散歩、作業、落ち着く系。"},
+    {cat:"KAGE", name:"人見知りのプロ", badges:["省エネ隠居","少数精鋭"], desc:"最初固いけど信頼すると深い。少数精鋭で強い。", love:"距離を詰めすぎない人。", job:"研究/制作/職人。", media:"淡々解説、考察。"},
+    {cat:"KAGE", name:"メンタル防壁（ガード硬）", badges:["省エネ隠居","防御"], desc:"傷つくのが嫌で先に守る。安全圏で強い。", love:"詰めずに理解してくれる相手。", job:"保守/運用/安定寄り。", media:"レビュー、比較、検証。"},
+    {cat:"KAGE", name:"空気読む観察者", badges:["省エネ隠居","察し"], desc:"喋らないけど見てる。人の変化に気づきやすい。", love:"沈黙を気まずくしない人。", job:"サポート/編集/調整役。", media:"ドキュメンタリー、映画。"},
+    {cat:"KAGE", name:"静かな反骨", badges:["省エネ隠居","芯"], desc:"表では波風立てないのに芯は強い。理不尽を覚えてる。", love:"誠実で筋が通る人。", job:"品質/改善/監査/専門職。", media:"社会系、討論（見る専）。"},
+    {cat:"KAGE", name:"気分の波サーファー", badges:["省エネ隠居","波"], desc:"体力と気分で出力が変わる。波を前提に設計すると最強。", love:"波を責めず休みを許せる人。", job:"自由度ある制作/在宅寄り。", media:"短尺→長尺を気分で。"},
+  ];
+
+  // ---- スコア計算（E/C/A）＋界隈推定 ----
   function calcScores(){
     const sum = {E:0, C:0, A:0};
     const catScore = {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0};
@@ -945,16 +856,15 @@
         });
       }
 
-      // 質問文キーワードで界隈推定（雑だけど“当たりやすい”）
-      const text = (Q[i] && Q[i].q) ? Q[i].q : "";
-      if(/SNS|インスタ|裏垢|炎上|顔出し|フォロ|リプ|X|ツイ/i.test(text)) catScore.SNS += Math.abs(v)+1;
-      if(/夜職|ホスト|整形|ブランド|盛り|美容|垢抜け/i.test(text)) catScore.GLAM += Math.abs(v)+1;
-      if(/提出|締切|計画|予算|予約|テスト|単位|運用|最適|検証|ルール/i.test(text)) catScore.GACHI += Math.abs(v)+1;
-      if(/恋人|好きな人|失恋|嫉妬|告白/i.test(text)) catScore.LOVE += Math.abs(v)+1;
-      if(/疲|眠|不安|気まず|距離|黙|放置/i.test(text)) catScore.KAGE += Math.abs(v)+1;
+      // 質問文の雰囲気で界隈に点（雑だけど当たりやすい）
+      const t = (Q[i] && Q[i].q) ? Q[i].q : "";
+      if(/SNS|インスタ|裏垢|炎上|顔出し|自撮り|DM|投稿|X|ツイ/i.test(t)) catScore.SNS += Math.abs(v)+1;
+      if(/夜職|ホスト|整形|ブランド|盛り|美容|垢抜け/i.test(t)) catScore.GLAM += Math.abs(v)+1;
+      if(/提出|締切|計画|予算|予約|テスト|単位|検証|ルール|管理/i.test(t)) catScore.GACHI += Math.abs(v)+1;
+      if(/恋人|好きな人|失恋|嫉妬|告白/i.test(t)) catScore.LOVE += Math.abs(v)+1;
+      if(/疲|眠|不安|気まず|距離|黙|放置/i.test(t)) catScore.KAGE += Math.abs(v)+1;
     });
 
-    // cat 決定
     let best = "SNS", bestV = -1;
     Object.keys(catScore).forEach(k=>{
       if(catScore[k] > bestV){ bestV = catScore[k]; best = k; }
@@ -963,16 +873,14 @@
     return {sum, bestCat: best};
   }
 
-  // ---- 6タイプの選び方：E/C/Aの符号と強さで決める ----
+  // ---- 6タイプ選択：E/C/Aの“強さ”×“符号（攻め/守り）”で 0..5 ----
   function pickType(bestCat, sum){
     const pack = TYPES.filter(t=>t.cat===bestCat);
-    // 0..5 に落とす：E/C/Aで“勢い・計画・共感”のどれが強いか
+
     const aE = Math.abs(sum.E), aC = Math.abs(sum.C), aA = Math.abs(sum.A);
     const maxAxis = (aE>=aC && aE>=aA) ? "E" : (aC>=aE && aC>=aA) ? "C" : "A";
 
-    // “方向”で2択、強い軸で3択 → 合計6
-    // dir: +なら攻め / -なら守り（ざっくり）
-    const dir = (sum[maxAxis] >= 0) ? 0 : 1; // 0 or 1
+    const dir = (sum[maxAxis] >= 0) ? 0 : 1;     // 0=攻め寄り / 1=守り寄り
     const which = (maxAxis==="E") ? 0 : (maxAxis==="C") ? 1 : 2; // 0..2
     const idx = dir*3 + which; // 0..5
 
@@ -983,49 +891,61 @@
     const wrap = $("badges");
     if(!wrap) return;
     wrap.innerHTML = "";
+
     const catName = (CATS.find(c=>c.key===bestCat)||{name:bestCat}).name;
+    const answered = (state.answers||[]).filter(v=>typeof v==="number").length;
 
-    const b1 = document.createElement("span"); b1.className="badge"; b1.textContent = "界隈: " + catName;
-    const b2 = document.createElement("span"); b2.className="badge"; b2.textContent = `E(外向) ${sum.E>=0?"+":""}${sum.E}`;
-    const b3 = document.createElement("span"); b3.className="badge"; b3.textContent = `C(計画) ${sum.C>=0?"+":""}${sum.C}`;
-    const b4 = document.createElement("span"); b4.className="badge"; b4.textContent = `A(共感) ${sum.A>=0?"+":""}${sum.A}`;
-
-    wrap.appendChild(b1); wrap.appendChild(b2); wrap.appendChild(b3); wrap.appendChild(b4);
+    [
+      `界隈: ${catName}`,
+      `回答数 ${answered} / ${Q.length}`,
+      `E(外向) ${sum.E>=0?"+":""}${sum.E}`,
+      `C(計画) ${sum.C>=0?"+":""}${sum.C}`,
+      `A(共感) ${sum.A>=0?"+":""}${sum.A}`,
+    ].forEach(txt=>{
+      const b=document.createElement("span");
+      b.className="badge";
+      b.textContent=txt;
+      wrap.appendChild(b);
+    });
   }
 
-  function calcResult(){
+  function applyResult(){
     const {sum, bestCat} = calcScores();
     const t = pickType(bestCat, sum);
 
-    $("resultTitle").textContent = t.name;
-    $("desc").textContent  = t.desc;
-    $("love").textContent  = t.love;
-    $("job").textContent   = t.job;
-    $("media").textContent = t.media;
+    if($("resultTitle")) $("resultTitle").textContent = t.name;
+    if($("desc"))  $("desc").textContent  = t.desc;
+    if($("love"))  $("love").textContent  = t.love;
+    if($("job"))   $("job").textContent   = t.job;
+    if($("media")) $("media").textContent = t.media;
 
     renderBadges(bestCat, sum);
   }
 
-  // ✅ ここが“結果出ない”原因の修正ポイント：クリックは関数で包む
-  const btn = $("toResultBtn");
-  if(btn){
-    btn.addEventListener("click", ()=>{
-      state.finished = true;
-      try{ saveState(state); }catch(e){}
-      calcResult();
-      showScreen("screenResult");
-    });
+  // ✅ 重要：PART2が暫定で結果を出しても、ここで必ず上書きする
+  function forceGoResult(){
+    state.finished = true;
+    try{ if(typeof saveState==="function") saveState(state); }catch(e){}
+    applyResult();
+    try{ if(typeof showScreen==="function") showScreen("screenResult"); }catch(e){}
   }
 
-  // 既にfinishedなら復元して結果出す
+  // ①「結果を見る」ボタンを“差し替え”したいので、onclickに上書きで確実化
+  const btn = $("toResultBtn");
+  if(btn){
+    btn.onclick = function(){
+      forceGoResult();
+    };
+  }
+
+  // ② すでに結果画面にいる/finishedなら即上書き
   setTimeout(()=>{
     if(state && state.finished){
-      calcResult();
-      showScreen("screenResult");
+      forceGoResult();
     }
   }, 0);
 
-  // windowに出しておく（デバッグ用）
+  // ③ デバッグ用に公開（任意）
   window.__EMBTI_PLUS_TYPES = TYPES;
 })();
 </script>
