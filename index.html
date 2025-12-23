@@ -1,216 +1,979 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>（偽）えむびーてぃーあいPlus</title>
-<style>
-:root{
-  --bg:#0f1220;--card:#171a2b;--accent:#ff6ad5;--accent2:#6ae3ff;
-  --text:#f4f6ff;--muted:#9aa0c6;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:linear-gradient(180deg,#0b0e1a,#14183a);
-  color:var(--text);
-}
-.container{max-width:820px;margin:auto;padding:16px}
-.card{
-  background:var(--card);border-radius:20px;padding:18px;
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-}
-h1{margin:0 0 6px;font-size:22px}
-.sub{color:var(--muted);font-size:13px;margin-bottom:12px}
-.progress{height:8px;background:#0b0e1a;border-radius:999px;overflow:hidden}
-.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.q{margin:18px 0;font-size:18px;line-height:1.5}
-.choices{display:grid;gap:10px}
-button{
-  padding:14px;border-radius:14px;border:0;
-  background:#23285a;color:var(--text);font-size:16px;
-}
-button:hover{background:#2e3490}
-.fade{animation:fade .25s ease}
-@keyframes fade{from{opacity:.2;transform:translateY(6px)}to{opacity:1}}
-.result{
-  text-align:center;animation:pop .4s ease;
-}
-@keyframes pop{from{transform:scale(.96);opacity:.4}to{transform:scale(1);opacity:1}}
-.badge{
-  display:inline-block;padding:6px 14px;border-radius:999px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  color:#000;font-weight:700;margin:10px 0;
-}
-.section{margin-top:14px;text-align:left}
-.section h3{margin:8px 0 4px}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>(偽)えむびーてぃーあいPlus</title>
+  <meta name="description" content="3択×100問の超具体派 性格診断。(偽)えむびーてぃーあいPlus" />
+  <style>
+    :root{
+      --bg:#0b0f19;
+      --card: rgba(255,255,255,.07);
+      --card2: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.68);
+      --line: rgba(255,255,255,.14);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --r: 18px;
+      --max: 980px;
+
+      --accent:#B99CFF;
+      --accent2:#6EF2FF;
+      --accent3:#FF7C9E;
+
+      --btn: rgba(255,255,255,.10);
+      --btn2: rgba(255,255,255,.18);
+      --good:#7CFFB2;
+      --warn:#FFD37C;
+      --bad:#FF7C9E;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Helvetica Neue", Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(185,156,255,.22), transparent 60%),
+        radial-gradient(900px 500px at 85% 20%, rgba(110,242,255,.18), transparent 60%),
+        radial-gradient(900px 600px at 50% 100%, rgba(255,124,158,.10), transparent 60%),
+        linear-gradient(180deg, #070a12 0%, #0b0f19 45%, #070a12 100%);
+      min-height:100vh;
+      padding: 16px;
+      padding-bottom: 40px;
+    }
+    .wrap{max-width:var(--max); margin:0 auto;}
+    .top{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap: 12px; margin-top: 6px; margin-bottom: 12px;
+    }
+    .brand{display:flex; flex-direction:column; gap:6px;}
+    .title{
+      font-weight: 1000;
+      letter-spacing: .02em;
+      line-height: 1.08;
+      font-size: clamp(20px, 3.5vw, 34px);
+      margin:0;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color: transparent;
+    }
+    .subtitle{
+      margin:0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      user-select:none;
+      backdrop-filter: blur(8px);
+      white-space:nowrap;
+    }
+    .card{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+    .cardHead{
+      padding: 14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .progressWrap{display:flex; flex-direction:column; gap:6px; width:100%;}
+    .metaRow{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .bar{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .bar > div{
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(185,156,255,.95), rgba(110,242,255,.95));
+      transition: width .22s ease;
+    }
+    .content{padding: 14px;}
+    .q{
+      font-size: clamp(16px, 2.7vw, 20px);
+      line-height: 1.45;
+      font-weight: 900;
+      margin:0 0 12px 0;
+    }
+    .choices{display:grid; grid-template-columns:1fr; gap:10px;}
+    .btn{
+      width:100%;
+      padding: 14px 14px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: var(--btn);
+      color: var(--text);
+      text-align:left;
+      font-size: 16px;
+      line-height: 1.25;
+      cursor:pointer;
+      transition: transform .06s ease, background .16s ease, border-color .16s ease;
+      display:flex; align-items:flex-start; gap:10px;
+    }
+    .btn:hover{background: var(--btn2); border-color: rgba(255,255,255,.24);}
+    .btn:active{transform: scale(.995);}
+    .tag{
+      font-size: 12px;
+      color: rgba(255,255,255,.78);
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      padding: 3px 8px;
+      border-radius: 999px;
+      margin-top: 2px;
+      flex: 0 0 auto;
+    }
+    .btnText{flex:1}
+    .help{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .controls{
+      margin-top: 14px;
+      display:flex; flex-wrap:wrap; gap:10px;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .smallBtns{display:flex; gap:10px; flex-wrap:wrap;}
+    .ghost{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      cursor:pointer;
+      font-size: 13px;
+    }
+    .ghost:hover{background: rgba(255,255,255,.10); color: rgba(255,255,255,.78);}
+    .primary{
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(90deg, rgba(185,156,255,.95), rgba(110,242,255,.95));
+      color: #0b0f19;
+      font-weight: 1000;
+      cursor:pointer;
+      font-size: 13px;
+    }
+    .primary:hover{filter: brightness(1.03);}
+    .hide{display:none !important;}
+
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    @media (max-width: 760px){ .grid2{grid-template-columns:1fr;} }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .panel h3{
+      margin:0 0 8px 0;
+      font-size: 14px;
+      letter-spacing:.02em;
+      color: rgba(255,255,255,.88);
+    }
+    .panel p, .panel li{
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .resultTitle{
+      font-size: clamp(20px, 4vw, 34px);
+      font-weight: 1000;
+      margin: 4px 0 10px;
+      line-height: 1.12;
+      background: linear-gradient(90deg, var(--accent3), var(--accent), var(--accent2));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color: transparent;
+    }
+    .badgeRow{display:flex; flex-wrap:wrap; gap:8px; margin: 6px 0 12px;}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: rgba(255,255,255,.80);
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.75);
+      color: rgba(255,255,255,.9);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      backdrop-filter: blur(8px);
+      z-index: 50;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
-  <div class="card" id="app">
-    <h1>（偽）えむびーてぃーあいPlus</h1>
-    <div class="sub">100問・3択・具体シチュエーション診断</div>
-    <div class="progress"><div class="bar" id="bar"></div></div>
-    <div id="view"></div>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <h1 class="title">(偽)えむびーてぃーあいPlus</h1>
+        <p class="subtitle">3択×100問／全部「具体的な場面」。<b>否定・中立・肯定</b>でサクサク答えるやつ。</p>
+      </div>
+      <div class="pill">📱スマホ最適化 / 途中保存あり</div>
+    </div>
+
+    <div class="card" id="app">
+      <div class="cardHead">
+        <div class="progressWrap">
+          <div class="metaRow">
+            <div id="stepText">準備中…</div>
+            <div id="saveText">保存: ON</div>
+          </div>
+          <div class="bar"><div id="barFill"></div></div>
+        </div>
+      </div>
+
+      <!-- Intro -->
+      <div class="content" id="screenIntro">
+        <p class="q">ルールは簡単。ぜんぶ “自分が主人公” で想像して選ぶだけ。</p>
+
+        <div class="grid2">
+          <div class="panel">
+            <h3>✅ 回答形式（3択）</h3>
+            <ul>
+              <li><b>否定</b>：やらん／避ける／黙る 等</li>
+              <li><b>中立</b>：様子見る／相談する／状況次第 等</li>
+              <li><b>肯定</b>：やる／向き合う／言う 等</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>📌 この診断の狙い</h3>
+            <p>
+              「性格＝気分」じゃなく、<b>やらかし・緊急・人間関係</b>みたいな場面で出る
+              “反応パターン”を拾う。だから質問は多め（100問）。
+            </p>
+            <p style="margin-top:8px; font-size:11px; color:rgba(255,255,255,.52);">
+              ※これは娯楽コンテンツ。医療・心理の専門判断の代わりにはならんよ。
+            </p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="smallBtns">
+            <button class="ghost" id="resetAll">最初から（データ削除）</button>
+          </div>
+          <button class="primary" id="startBtn">開始する（100問）</button>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="content hide" id="screenQuiz">
+        <p class="q" id="qText">質問</p>
+
+        <div class="choices" id="choices"></div>
+
+        <div class="help" id="helpText">
+          迷ったら「中立」でOK。盛らなくていい。普段の自分で選んでな。
+        </div>
+
+        <div class="controls">
+          <div class="smallBtns">
+            <button class="ghost" id="backBtn">ひとつ戻る</button>
+            <button class="ghost" id="skipBtn">保留（中立で進む）</button>
+          </div>
+          <button class="primary" id="toResultBtn">結果を見る</button>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="content hide" id="screenResult">
+        <div class="badgeRow" id="badges"></div>
+        <div class="resultTitle" id="resultTitle">結果</div>
+
+        <div class="grid2">
+          <div class="panel">
+            <h3>あなたはこういう人物</h3>
+            <p id="desc"></p>
+          </div>
+          <div class="panel">
+            <h3>恋愛で向いてる相手</h3>
+            <p id="love"></p>
+          </div>
+          <div class="panel">
+            <h3>向いてる職業</h3>
+            <p id="job"></p>
+          </div>
+          <div class="panel">
+            <h3>好きそうなYouTube/娯楽</h3>
+            <p id="media"></p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="smallBtns">
+            <button class="ghost" id="shareBtn">結果テキストをコピー</button>
+            <button class="ghost" id="restartBtn">もう一回やる</button>
+          </div>
+          <button class="primary" id="homeBtn">トップへ</button>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
 
-<script>
-// ===== タイプ定義（5界隈×6） =====
-const TYPES = {
-  夜職:["夜職女級プライドウーマン","整形マシーン","カリスマホスト","港区モンスター","自己肯定感バグ","承認欲求タンク"],
-  SNS:["Twitter裏垢悪口マシーン","炎上体質","エゴサ廃人","思想強め語録製造機","引用RT戦士","タイムライン支配者"],
-  陰:["ガチチー牛","無気力限界人","被害妄想プロ","現実逃避オタク","自己否定ループ","静観勢"],
-  陽:["生粋のインスタグラマー","タレント気質","陽キャ覇王","盛り上げ隊長","場の空気メーカー","無敵ポジティブ"],
-  現実:["社畜エリート","効率厨","堅実リアリスト","裏方神","安全運転マン","責任感モンスター"]
-};
+  <div class="toast" id="toast">コピーしたで</div>
 
-// ===== 質問100問（具体）=====
-const QUESTIONS = [
-"寝坊して1限に間に合わないと確定した。",
-"好きな人の前でおならが出た。",
-"バイト中に客にコーヒーをこぼした。",
-"LINEの誤爆を送信取消できなかった。",
-"飲み会で全員静かになった瞬間が来た。",
-"友達の黒歴史写真を見つけた。",
-"インスタのストーリーが0閲覧だった。",
-"ツイートが一瞬で炎上した。",
-"上司に理不尽に怒られた。",
-"知らない人に道を聞かれた。",
-"推しが熱愛を出した。",
-"クラスの陽キャに絡まれた。",
-"会計で財布を忘れたことに気づいた。",
-"グループLINEで自分だけ既読無視された。",
-"デート前日にニキビができた。",
-"エレベーターで二人きりになった。",
-"自分の悪口を聞いてしまった。",
-"カラオケで自分の番が来た。",
-"電車で席を譲るか迷った。",
-"友達が急に病んだ投稿をした。",
-"職場でミスをなすりつけられそう。",
-"知らない番号から着信が来た。",
-"友達が成功してバズってる。",
-"親に将来を詰められた。",
-"初対面でMBTI聞かれた。",
-"財布に1万円しかない月末。",
-"飲み会で一気コールが始まった。",
-"先生に名前を間違えられた。",
-"フォロワーが急に減った。",
-"褒められたけど本心かわからない。",
-"失恋直後に雨が降ってきた。",
-"知らない界隈のノリに放り込まれた。",
-"予定が全部キャンセルされた休日。",
-"告白されて即答を求められた。",
-"人前で転んだ。",
-"自分の噂話が回っている。",
-"グループで自分だけ浮いている。",
-"お金の貸し借りを頼まれた。",
-"上司が無能だと確信した。",
-"推し活に金を使いすぎた。",
-"初対面で距離が近い人。",
-"陰口を言ってる現場に遭遇。",
-"友達が整形した。",
-"飲み会の写真が勝手に投稿された。",
-"責任者に任命された。",
-"ミスを正直に言うか迷った。",
-"初デートが沈黙だらけ。",
-"急に褒められ役を振られた。",
-"知らない人にDMが来た。",
-"努力が誰にも評価されてない。",
-"友達が急に成功者ムーブ。",
-"クラス替え初日。",
-"会話のオチを求められた。",
-"面白いこと言ってと言われた。",
-"仲良い人が別界隈に行った。",
-"初対面で距離を詰められた。",
-"自分の価値観を否定された。",
-"飲み会後の反省会タイム。",
-"遅刻理由を聞かれた。",
-"チームで一人だけミス。",
-"人の成功が眩しすぎる。",
-"SNSで病み投稿を見る。",
-"親しい人に裏切られた。",
-"自分だけ誘われてない。",
-"初バイト初日。",
-"怒られてる人を見る。",
-"推しの供給が多すぎる。",
-"目立つ役を任された。",
-"無茶ぶりを振られた。",
-"全員の前で意見を言う流れ。",
-"誰もやりたがらない役目。",
-"一人で過ごす休日。",
-"褒められると居心地悪い。",
-"突然の飲み誘い。",
-"将来の夢を聞かれた。",
-"好きな人が他の人と仲良さげ。",
-"金銭感覚の違いに気づく。",
-"注目される舞台に立たされた。",
-"グループの空気が悪い。",
-"誰かが泣き出した。",
-"責任を取る場面。",
-"努力が数字で出た。",
-"自分の発言で空気が変わった。",
-"急に暇になった。",
-"みんなが自分を見る瞬間。",
-"失敗談を話す流れ。",
-"自己紹介を求められた。",
-"他人の人生が羨ましい。",
-"自分を変えたいと思った瞬間",
-"評価が真っ二つに割れた",
-"本音を言うか迷った",
-"誰も助けてくれない状況"
+  <script>
+    // ========== 設定 ==========
+    const STORAGE_KEY = "fake_mbtiai_plus_v1";
+
+    const $ = (id) => document.getElementById(id);
+
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1200);
+    }
+
+    function saveState(state){
+      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+    }
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      }catch(e){ return null; }
+    }
+    function clearState(){
+      try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    }
+
+    function showScreen(which){
+      $("screenIntro").classList.add("hide");
+      $("screenQuiz").classList.add("hide");
+      $("screenResult").classList.add("hide");
+      $(which).classList.remove("hide");
+    }
+
+    function setProgress(i, total){
+      const pct = total ? Math.round((i/total)*100) : 0;
+      $("barFill").style.width = pct + "%";
+      $("stepText").textContent = total ? `Q${Math.min(i+1,total)} / ${total}` : "準備中…";
+    }
+
+    // ここから下は「質問100問」「タイプ30個」「採点ロジック」を入れる
+    // → パート2で追加する！
+
+    // ========== 仮のデータ（パート2で上書き） ==========
+    const QUESTIONS = []; // パート2で100問入れる
+    const TYPES = [];     // パート2で30タイプ入れる
+
+    let state = {
+      idx: 0,
+      answers: [], // -1:否定 / 0:中立 / +1:肯定
+      scores: {},  // 各軸の点数（パート2で使う）
+      finished: false
+    };
+
+    function boot(){
+      const saved = loadState();
+      if(saved && saved.answers && typeof saved.idx === "number"){
+        state = saved;
+        $("saveText").textContent = "保存: ON（復元）";
+        if(state.finished){
+          showScreen("screenResult");
+          setProgress(QUESTIONS.length ? QUESTIONS.length-1 : 0, QUESTIONS.length || 100);
+        }else if(state.idx > 0 || (state.answers && state.answers.length)){
+          showScreen("screenQuiz");
+        }else{
+          showScreen("screenIntro");
+        }
+      }else{
+        showScreen("screenIntro");
+      }
+      setProgress(state.idx, QUESTIONS.length || 100);
+    }
+
+    // ボタン
+    $("resetAll").addEventListener("click", ()=>{
+      clearState();
+      state = {idx:0, answers:[], scores:{}, finished:false};
+      toast("データ消したで");
+      showScreen("screenIntro");
+      setProgress(0, QUESTIONS.length || 100);
+    });
+
+    $("startBtn").addEventListener("click", ()=>{
+      showScreen("screenQuiz");
+      // 実描画はパート2で実装
+      toast("スタート！");
+    });
+
+    $("homeBtn").addEventListener("click", ()=>{
+      showScreen("screenIntro");
+      toast("トップへ");
+    });
+
+    $("restartBtn").addEventListener("click", ()=>{
+      clearState();
+      state = {idx:0, answers:[], scores:{}, finished:false};
+      showScreen("screenQuiz");
+      toast("リスタート！");
+      // 実描画はパート2で
+    });
+
+    $("shareBtn").addEventListener("click", async ()=>{
+      const text =
+`(偽)えむびーてぃーあいPlus 結果
+・${$("resultTitle").textContent}
+・${$("desc").textContent}`;
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("結果コピーしたで");
+      }catch(e){
+        toast("コピー失敗…");
+      }
+    });
+
+    // 戻る/保留/結果 はパート2で動作追加
+    $("backBtn").addEventListener("click", ()=> toast("（パート2で実装）"));
+    $("skipBtn").addEventListener("click", ()=> toast("（パート2で実装）"));
+    $("toResultBtn").addEventListener("click", ()=> toast("（パート2で実装）"));
+
+    boot();
+  </script>
+
+  <!-- ここにパート2を貼る -->
+  <script>
+/* =========================
+   (偽)えむびーてぃーあいPlus - PART2
+   100問 / 3択 / 保存 / 戻る / 保留 / 結果表示まで
+   ※タイプ30種の最終判定＆超長文結果はPART3で
+========================= */
+
+(function(){
+  // ---------- 100問：全部「具体的な場面」＋3択（否定/中立/肯定）
+  // 形式：{ q: "質問文", a: "否定の選択肢", b: "中立の選択肢", c: "肯定の選択肢", axes: {A:1, B:1 ...} }
+  // axes は後でスコア計算に使う（PART3で本格利用）。ここでは入れつつ、動作はシンプルにする。
+
+  const QUESTIONS = [
+    // 1-10：ミス/やらかし
+    { q:"好きな人の前で、盛大におならした。", a:"無言でなかったことにする", b:"笑ってごまかして話題変える", c:"素直に謝って自虐で回収する", axes:{C:1,E:1} },
+    { q:"バイト中、お客さんにコーヒーをこぼした。", a:"固まって店長に丸投げ", b:"まず謝って指示を仰ぐ", c:"即謝罪→応急処置→代替案まで提案", axes:{C:1} },
+    { q:"LINEを誤爆して、変なスタンプを先生に送った。", a:"既読つく前に消して祈る", b:"軽く謝ってスルーする", c:"ちゃんと謝って用件も一緒に送る", axes:{C:1} },
+    { q:"友達の前で滑って転んだ。", a:"痛くないフリして無言", b:"笑って『今の無し』で流す", c:"『今の撮れた？』ってネタにする", axes:{E:1} },
+    { q:"大事な提出物、締切1時間前に気づいた。", a:"諦める（言い訳を考える）", b:"とりあえず出来るだけ出す", c:"最速で仕上げて追記説明も添える", axes:{C:1} },
+    { q:"遅刻確定。電車が止まった。", a:"今日はもう行かない", b:"親/友達/AIに相談して決める", c:"遅れてでも行く（連絡して向かう）", axes:{C:1} },
+    { q:"飲食で、注文を間違えて出した。", a:"バレないなら放置", b:"様子見て、言われたら対応", c:"自分から言って作り直す", axes:{C:1} },
+    { q:"友達に『さっきの言い方キツい』と言われた。", a:"『は？』って反発する", b:"一旦黙って落ち着く", c:"謝って、どう言えばよかったか聞く", axes:{A:1} },
+    { q:"会話中、相手が明らかにテンション下がった。", a:"気づかないフリで進める", b:"距離感を調整する", c:"『今の嫌やった？』って確認する", axes:{A:1} },
+    { q:"大勢の前で名前を呼び間違えた。", a:"スルーする", b:"軽く『ごめん』で済ます", c:"ちゃんと謝って言い直す", axes:{C:1} },
+
+    // 11-20：対人/空気/人間関係
+    { q:"グループLINEで自分だけ返事が遅れてる。", a:"放置する", b:"スタンプだけ送る", c:"用件＋一言添えて返す", axes:{A:1} },
+    { q:"友達が明らかに病んでそう。", a:"触れない（面倒は避ける）", b:"軽く様子を聞く", c:"時間作ってちゃんと話聞く", axes:{A:1} },
+    { q:"悪口大会が始まった。", a:"ノリで参加する", b:"聞くだけで流す", c:"話題変える/離脱する", axes:{A:1} },
+    { q:"友達が嘘ついてるっぽい。", a:"証拠集めて詰める", b:"一旦様子見る", c:"優しく確認する", axes:{A:1} },
+    { q:"誘いを断りたいけど角が立ちそう。", a:"既読無視で逃げる", b:"やんわり理由つける", c:"正直に理由言って代案出す", axes:{A:1,C:1} },
+    { q:"飲み会で輪に入れない人がいる。", a:"気づいてないフリ", b:"様子見ながらちょい話す", c:"こっちから話題振って巻き込む", axes:{A:1,E:1} },
+    { q:"自分の話を遮られがち。", a:"黙る（諦める）", b:"隙を見て言い直す", c:"『今の続きいい？』って取り戻す", axes:{E:1} },
+    { q:"相手が約束を守らないタイプ。", a:"即切る", b:"距離置く", c:"ルール作って改善試す", axes:{C:1} },
+    { q:"恋人が『話聞いてない』って怒ってる。", a:"逆ギレする", b:"謝るけど深掘りしない", c:"何が嫌だったか具体的に聞く", axes:{A:1} },
+    { q:"友達に借りた物を壊した。", a:"黙って返す", b:"正直に言って謝る", c:"謝罪＋弁償/代替案を先に出す", axes:{C:1} },
+
+    // 21-30：判断/行動の速さ
+    { q:"初めての場所で迷った。", a:"勘で突っ走る", b:"地図見てから動く", c:"人に聞く/確実ルート取る", axes:{C:1} },
+    { q:"予定が急に空いた。", a:"家でダラダラする", b:"気分で決める", c:"やることリストを進める", axes:{C:1} },
+    { q:"明日テスト、今夜ゲーム誘い。", a:"行く（テストは運）", b:"少しだけ参加", c:"断って勉強する", axes:{C:1} },
+    { q:"買うか迷う高い服。", a:"勢いで買う", b:"一晩寝かせる", c:"レビュー/予算/用途で検証して買う", axes:{C:1} },
+    { q:"知らん番号から電話。", a:"即出る", b:"一旦出ずに検索する", c:"出ずに留守電/公式へ確認", axes:{C:1} },
+    { q:"上司（先生）に質問したいが怖い。", a:"諦める", b:"友達/AIに聞いてから行く", c:"要点まとめて質問しに行く", axes:{E:1,C:1} },
+    { q:"人前で発表、直前に緊張MAX。", a:"逃げたい", b:"深呼吸して淡々とやる", c:"むしろテンション上げていく", axes:{E:1} },
+    { q:"旅行の計画。", a:"ノープランで行く", b:"ざっくりだけ決める", c:"時刻/予算/予約まで詰める", axes:{C:1} },
+    { q:"レストラン、行列が長い。", a:"諦める", b:"周辺候補を探す", c:"並びながら最適化（予約/代替）", axes:{C:1} },
+    { q:"新しい趣味始めたい。", a:"まず道具から揃える", b:"体験だけして判断", c:"目的→必要最低限で始める", axes:{C:1} },
+
+    // 31-40：価値観/正義感/こだわり
+    { q:"ルール違反して得してる人を見る。", a:"自分もやる", b:"気にしない", c:"納得いかず注意/通報する", axes:{A:1} },
+    { q:"友達がズルした。", a:"笑って見逃す", b:"やめときって言う", c:"ちゃんと怒る/距離置く", axes:{A:1} },
+    { q:"自分だけ損な役回り。", a:"我慢する", b:"次からは避ける", c:"最初から分担を提案する", axes:{E:1} },
+    { q:"人に『それ非常識』と言われた。", a:"ムカつく", b:"一応考える", c:"理由を聞いて調整する", axes:{A:1} },
+    { q:"服や髪型、流行より自分。", a:"流行に寄せる", b:"半々にする", c:"自分の軸で決める", axes:{E:1} },
+    { q:"SNSで叩かれてる人を見る。", a:"一緒に叩く", b:"スルーする", c:"事実確認して擁護/冷静化する", axes:{A:1} },
+    { q:"誰も見てない場所のゴミ。", a:"放置", b:"気分次第", c:"拾って捨てる", axes:{A:1} },
+    { q:"友達が陰で悪口言ってたと知る。", a:"晒す/やり返す", b:"距離置く", c:"本人と話して整理する", axes:{A:1} },
+    { q:"損得よりも『筋』を通したい。", a:"そんなの要らん", b:"場合による", c:"筋優先で動く", axes:{A:1} },
+    { q:"自分のミスを他人に押し付けられた。", a:"我慢する", b:"その場は飲むが後で言う", c:"その場で冷静に訂正する", axes:{E:1} },
+
+    // 41-50：感情の扱い
+    { q:"怒りが湧いた時の処理。", a:"即ぶつける", b:"一旦距離置く", c:"言語化して落ち着かせる", axes:{A:1} },
+    { q:"落ち込んだ時。", a:"誰にも言わない", b:"仲良い人にだけ言う", c:"積極的に相談する", axes:{E:1} },
+    { q:"泣きそうになる場面。", a:"隠す", b:"耐える", c:"出る時は出る（無理しない）", axes:{A:1} },
+    { q:"失恋した。", a:"引きずる", b:"時間で回復", c:"切り替えて次行く", axes:{C:1} },
+    { q:"褒められた。", a:"照れて否定", b:"ありがとうだけ言う", c:"素直に受け取って喜ぶ", axes:{E:1} },
+    { q:"否定された。", a:"すぐ凹む/攻撃する", b:"一旦考える", c:"根拠を聞いて改善する", axes:{C:1} },
+    { q:"不安で眠れない夜。", a:"スマホで逃げる", b:"音楽/風呂で落ち着く", c:"原因整理→明日の手順を作る", axes:{C:1} },
+    { q:"気まずい空気。", a:"放置", b:"軽い話題で流す", c:"自分から整える", axes:{E:1} },
+    { q:"自分の欠点を指摘された。", a:"反発する", b:"半分受け取る", c:"改善策まで聞く", axes:{C:1} },
+    { q:"誰かに嫉妬した。", a:"攻撃/悪口", b:"距離置く", c:"自分の課題として分析する", axes:{C:1} },
+
+    // 51-60：リスク/挑戦
+    { q:"新しいバイト、時給高いが未知。", a:"怖いから行かない", b:"情報集めて検討", c:"まず応募してみる", axes:{E:1} },
+    { q:"投資で含み損。", a:"怖くて全部売る", b:"様子見", c:"理由確認してルール通り動く", axes:{C:1} },
+    { q:"友達に起業の誘い。", a:"即断る", b:"条件を聞く", c:"小さく試す", axes:{C:1} },
+    { q:"初対面の集まり。", a:"行かない", b:"顔だけ出す", c:"普通に参加して広げる", axes:{E:1} },
+    { q:"運転/スポーツで危ない挑戦。", a:"やる", b:"やらない寄り", c:"安全確認してからやる", axes:{C:1} },
+    { q:"秘密の告白を聞いた。", a:"誰かに言う", b:"迷う", c:"守る", axes:{A:1} },
+    { q:"バイトで責任ある役を任された。", a:"避ける", b:"相談して受ける", c:"受けてやり切る", axes:{C:1} },
+    { q:"苦手な人と同じ班。", a:"避ける", b:"必要最低限", c:"役割決めて上手く回す", axes:{C:1,A:1} },
+    { q:"苦手科目、単位が危ない。", a:"祈る", b:"最低限やる", c:"計画立てて追い込む", axes:{C:1} },
+    { q:"SNSで顔出しするか。", a:"しない", b:"限定で", c:"戦略的にやる", axes:{E:1} },
+
+    // 61-70：コミュ力/表現
+    { q:"初対面で何話す？", a:"相手に任せる", b:"共通点探す", c:"自分から話題出す", axes:{E:1} },
+    { q:"会議/ゼミで黙ってしまう。", a:"ずっと黙る", b:"終盤だけ言う", c:"早めに一回は発言する", axes:{E:1} },
+    { q:"話が長いと言われた。", a:"ムカつく", b:"意識する", c:"結論から言う練習する", axes:{C:1} },
+    { q:"謝罪する時。", a:"軽く済ます", b:"必要最小限", c:"原因/再発防止まで言う", axes:{C:1} },
+    { q:"誘い文句を考える時。", a:"雑に送る", b:"様子見の文面", c:"相手がYES出しやすい提案", axes:{C:1} },
+    { q:"場を盛り上げたい。", a:"無理", b:"相手次第", c:"テンション上げて回す", axes:{E:1} },
+    { q:"相手が落ち込んでる。", a:"放置", b:"一言だけ", c:"時間作って寄り添う", axes:{A:1} },
+    { q:"ツッコミ/ボケ。", a:"どっちも苦手", b:"たまに", c:"やれる方で回す", axes:{E:1} },
+    { q:"知らない話題が出た。", a:"黙る", b:"聞き役", c:"質問して吸収する", axes:{C:1} },
+    { q:"褒め方。", a:"あんまり褒めない", b:"たまに", c:"具体的に褒める", axes:{A:1} },
+
+    // 71-80：生活/セルフ管理
+    { q:"財布落としたかも。", a:"諦める", b:"探すけど焦らない", c:"即カード停止→警察→ルート確認", axes:{C:1} },
+    { q:"部屋が散らかる。", a:"放置", b:"気が向いたら片付ける", c:"ルール作って維持", axes:{C:1} },
+    { q:"課題は締切いつ？", a:"当日", b:"前日", c:"余裕持って終わらす", axes:{C:1} },
+    { q:"朝型にしたい。", a:"無理", b:"気分で", c:"仕組みで変える", axes:{C:1} },
+    { q:"ダイエット/筋トレ。", a:"続かない", b:"ゆるくやる", c:"数値管理でやる", axes:{C:1} },
+    { q:"急な体調不良。", a:"気合で行く", b:"様子見", c:"休む/受診/対策する", axes:{C:1} },
+    { q:"寝る前スマホ。", a:"2時間", b:"少し", c:"なるべく避ける", axes:{C:1} },
+    { q:"支出管理。", a:"してない", b:"ざっくり", c:"記録/予算組む", axes:{C:1} },
+    { q:"嫌なタスク。", a:"先延ばし", b:"ギリで", c:"先に片付ける", axes:{C:1} },
+    { q:"予定が崩れた。", a:"イラつく", b:"切り替える", c:"代替案を即作る", axes:{C:1} },
+
+    // 81-90：SNS/承認欲求/界隈
+    { q:"投稿の反応が少ない。", a:"消す", b:"気にしない", c:"改善して再挑戦", axes:{E:1} },
+    { q:"炎上してる話題。", a:"乗る", b:"眺める", c:"距離取る", axes:{A:1} },
+    { q:"裏垢で愚痴りたい。", a:"やる", b:"たまに", c:"やらない（別の方法）", axes:{A:1} },
+    { q:"キラキラ投稿を見る。", a:"病む", b:"無", c:"参考にする/モチベにする", axes:{C:1} },
+    { q:"整形・美容にお金かける？", a:"否定", b:"必要なら", c:"投資としてガッツリ", axes:{E:1} },
+    { q:"他人の成功がムカつく。", a:"叩きたくなる", b:"スルー", c:"分析して自分に活かす", axes:{C:1} },
+    { q:"バズる企画思いついた。", a:"言うだけで終わる", b:"様子見", c:"すぐ試作して出す", axes:{C:1} },
+    { q:"自撮りを上げる頻度。", a:"ほぼ無い", b:"たまに", c:"割と上げる", axes:{E:1} },
+    { q:"DMで知らん人から褒め。", a:"無視", b:"短く返す", c:"丁寧に返す", axes:{A:1} },
+    { q:"悪口系の流れが来た。", a:"参戦", b:"傍観", c:"止める/離脱", axes:{A:1} },
+
+    // 91-100：恋愛/将来/決断
+    { q:"告白するなら。", a:"しない", b:"タイミング待つ", c:"行く", axes:{E:1} },
+    { q:"相手が返信遅い。", a:"詰める", b:"様子見", c:"自分のペース保つ", axes:{A:1} },
+    { q:"恋人が嫉妬してきた。", a:"面倒で冷める", b:"一旦落ち着かせる", c:"ルール作って安心させる", axes:{C:1,A:1} },
+    { q:"将来やりたいことが曖昧。", a:"考えない", b:"そのうち", c:"仮でも目標置く", axes:{C:1} },
+    { q:"大事な決断、怖い。", a:"避ける", b:"相談して決める", c:"情報集めて腹括る", axes:{C:1} },
+    { q:"ミスを繰り返す自分。", a:"自己嫌悪で止まる", b:"気をつけるで終わる", c:"仕組みを変える", axes:{C:1} },
+    { q:"周りに流されがち。", a:"流される", b:"半々", c:"自分の軸で選ぶ", axes:{E:1} },
+    { q:"成功者の話を聞いた。", a:"嫉妬", b:"ふーん", c:"取り入れる", axes:{C:1} },
+    { q:"『お前って結局どんな人？』と言われた。", a:"答えられん", b:"ざっくり言う", c:"言語化して言う", axes:{C:1} },
+    { q:"100問終えた自分に一言。", a:"疲れた、もう無理", b:"まあ頑張った", c:"自分の傾向わかった", axes:{C:1} },
+  ];
+
+  // パート1の仮配列を上書き
+  window.QUESTIONS = QUESTIONS;
+
+  // ---------- UI描画 ----------
+  function renderQuestion(){
+    const total = QUESTIONS.length;
+    if(state.idx >= total){
+      state.idx = total-1;
+    }
+    setProgress(state.idx, total);
+
+    const qObj = QUESTIONS[state.idx];
+    $("qText").textContent = qObj.q;
+
+    const wrap = $("choices");
+    wrap.innerHTML = "";
+
+    const opts = [
+      { tag:"否定", text:qObj.a, val:-1 },
+      { tag:"中立", text:qObj.b, val: 0 },
+      { tag:"肯定", text:qObj.c, val:+1 },
+    ];
+
+    opts.forEach((o)=>{
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      btn.innerHTML = `<span class="tag">${o.tag}</span><div class="btnText">${escapeHtml(o.text)}</div>`;
+      btn.addEventListener("click", ()=> choose(o.val));
+      wrap.appendChild(btn);
+    });
+
+    // 進捗文言
+    $("toResultBtn").textContent = state.idx >= total-1 ? "結果を見る（確定）" : "結果を見る（途中でも可）";
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  // ---------- 採点（PART3で本格化するけど、今は軸を軽く積む） ----------
+  function addScore(qObj, val){
+    const axes = qObj.axes || {};
+    for(const k in axes){
+      state.scores[k] = (state.scores[k] || 0) + axes[k]*val;
+    }
+  }
+
+  // ---------- 回答 ----------
+  function choose(val){
+    const qObj = QUESTIONS[state.idx];
+    const prev = state.answers[state.idx];
+
+    // もし戻って選び直しなら、前の分を差し引き
+    if(typeof prev === "number"){
+      addScore(qObj, -prev);
+    }
+    state.answers[state.idx] = val;
+    addScore(qObj, val);
+
+    // 次へ
+    if(state.idx < QUESTIONS.length-1){
+      state.idx++;
+      saveState(state);
+      renderQuestion();
+    }else{
+      // 最後までいったら結果へ（結果はPART3で豪華になる）
+      saveState(state);
+      goResult();
+    }
+  }
+
+  // ---------- 戻る / 保留 ----------
+  function back(){
+    if(state.idx <= 0) return toast("これ以上戻れん");
+    state.idx--;
+    saveState(state);
+    renderQuestion();
+  }
+
+  function skipNeutral(){
+    // 今の問題を「中立」で確定して進む
+    choose(0);
+  }
+
+  // ---------- 結果（暫定） ----------
+  function goResult(){
+    state.finished = true;
+    saveState(state);
+
+    showScreen("screenResult");
+
+    // PART3で30タイプ＆長文出力に差し替える
+    const answered = state.answers.filter(v=>typeof v==="number").length;
+    $("badges").innerHTML =
+      `<div class="badge">回答数 ${answered} / ${QUESTIONS.length}</div>` +
+      `<div class="badge">保存ON</div>` +
+      `<div class="badge">結果はPART3で超強化</div>`;
+
+    $("resultTitle").textContent = "暫定：診断準備OK（PART3で完成）";
+    $("desc").textContent =
+      "ここまでで100問の回答・保存・戻る・保留が動く状態になった。次のPART3で、30タイプ（アホい名前）と、恋愛/職業/YouTube嗜好までの超長文結果を確定させる。";
+    $("love").textContent = "（PART3で出す）";
+    $("job").textContent  = "（PART3で出す）";
+    $("media").textContent= "（PART3で出す）";
+  }
+
+  // ---------- ボタン配線（PART1の仮を上書き） ----------
+  $("startBtn").addEventListener("click", ()=>{
+    // 途中復帰したい場合
+    if(state.answers && state.answers.length){
+      showScreen("screenQuiz");
+      renderQuestion();
+      toast("続きから再開");
+      return;
+    }
+    state.idx = 0;
+    state.answers = [];
+    state.scores = {};
+    state.finished = false;
+    saveState(state);
+    showScreen("screenQuiz");
+    renderQuestion();
+    toast("スタート！");
+  });
+
+  $("restartBtn").addEventListener("click", ()=>{
+    clearState();
+    state = {idx:0, answers:[], scores:{}, finished:false};
+    saveState(state);
+    showScreen("screenQuiz");
+    renderQuestion();
+    toast("最初から！");
+  });
+
+  $("backBtn").addEventListener("click", back);
+  $("skipBtn").addEventListener("click", skipNeutral);
+
+  $("toResultBtn").addEventListener("click", ()=>{
+    goResult();
+  });
+
+  // ---------- boot後に復元描画 ----------
+  // PART1のbootで画面だけ切り替わってるから、クイズ画面なら描画する
+  setTimeout(()=>{
+    if(!$("screenQuiz").classList.contains("hide")){
+      renderQuestion();
+    }
+    if(state.finished){
+      goResult();
+    }
+  }, 0);
+
+})();
+</script>
+  <!-- ここにパート3を貼る -->
+  <script>
+/* =========================
+   (偽)えむびーてぃーあいPlus - PART3
+   採点 / 30タイプ分類 / 結果表示
+========================= */
+
+// ====== 性格軸 ======
+// E: 外向 / C: 計画性 / A: 共感性
+const AXES = ["E","C","A"];
+
+// ====== 30タイプ（5カテゴリ × 6） ======
+const TYPES = [
+  // SNS界隈
+  {key:"SNS1", name:"Twitter裏垢悪口マシーン", cat:"SNS界隈",
+    desc:"感情を内に溜め込まず、文字にして吐き出すタイプ。正義感は強いが言葉が鋭くなりがち。",
+    love:"感情を受け止めてくれる穏やかな人。",
+    job:"編集・ライター・運用担当。",
+    media:"炎上解説・考察系・Xスペース"},
+  {key:"SNS2", name:"インスタ映え至上主義神", cat:"SNS界隈",
+    desc:"見せ方・空気感・第一印象を無意識に計算できる。",
+    love:"自分を褒めてくれる人。",
+    job:"広報・PR・美容・販売。",
+    media:"Vlog・美容・ルーティン動画"},
+  {key:"SNS3", name:"承認欲求エンジン搭載人間", cat:"SNS界隈",
+    desc:"評価されると爆伸びするが、無反応だと落ちる。",
+    love:"反応がマメな人。",
+    job:"営業・配信・イベント。",
+    media:"ショート動画・ライブ配信"},
+  {key:"SNS4", name:"ROM専なのに全部見てる奴", cat:"SNS界隈",
+    desc:"発信しないが観察力が高く、空気を読む。",
+    love:"干渉しすぎない人。",
+    job:"分析・裏方・補佐。",
+    media:"切り抜き・まとめ"},
+  {key:"SNS5", name:"炎上ウォッチャー評論家", cat:"SNS界隈",
+    desc:"物事を俯瞰で見るのが得意。感情より構造。",
+    love:"論理的な人。",
+    job:"企画・研究・戦略。",
+    media:"考察・解説"},
+  {key:"SNS6", name:"バズ狙い職人", cat:"SNS界隈",
+    desc:"一瞬の流れを掴む直感型。",
+    love:"自由を尊重する人。",
+    job:"広告・SNS運用。",
+    media:"トレンド系"},
+
+  // 夜職・対人強者
+  {key:"N1", name:"カリスマホスト型人間", cat:"対人強者",
+    desc:"空気を支配できるカリスマ。",
+    love:"尽くしてくれる人。",
+    job:"営業・接客。",
+    media:"成功談・密着"},
+  {key:"N2", name:"夜職女級プライドウーマン", cat:"対人強者",
+    desc:"自己価値を自分で定義できる。",
+    love:"対等な人。",
+    job:"自営業・美容。",
+    media:"自己啓発"},
+  {key:"N3", name:"人たらし天然ボス", cat:"対人強者",
+    desc:"無自覚に好かれる。",
+    love:"安心感ある人。",
+    job:"教育・福祉。",
+    media:"日常系"},
+  {key:"N4", name:"計算された愛嬌モンスター", cat:"対人強者",
+    desc:"好かれ方を知っている。",
+    love:"ノリが合う人。",
+    job:"接客。",
+    media:"バラエティ"},
+  {key:"N5", name:"距離感職人", cat:"対人強者",
+    desc:"踏み込みすぎない大人。",
+    love:"干渉しない人。",
+    job:"調整役。",
+    media:"対談"},
+  {key:"N6", name:"無敵の陽キャ", cat:"対人強者",
+    desc:"エネルギーの塊。",
+    love:"一緒に楽しめる人。",
+    job:"イベント。",
+    media:"企画系"},
+
+  // 陰キャ極振り
+  {key:"I1", name:"ガチチー牛", cat:"陰キャ",
+    desc:"静かで真面目、実力派。",
+    love:"理解者。",
+    job:"技術職。",
+    media:"解説動画"},
+  {key:"I2", name:"思考沼住民", cat:"陰キャ",
+    desc:"考えすぎるが深い。",
+    love:"聞き役。",
+    job:"研究。",
+    media:"哲学"},
+  {key:"I3", name:"ROM専哲学者", cat:"陰キャ",
+    desc:"発言少なめ知性高め。",
+    love:"静かな人。",
+    job:"分析。",
+    media:"考察"},
+  {key:"I4", name:"メンタル防御型", cat:"陰キャ",
+    desc:"傷つかない設計。",
+    love:"優しい人。",
+    job:"事務。",
+    media:"癒し"},
+  {key:"I5", name:"省エネ人間", cat:"陰キャ",
+    desc:"無駄を嫌う。",
+    love:"放置OKな人。",
+    job:"効率系。",
+    media:"まとめ"},
+  {key:"I6", name:"裏で努力してる奴", cat:"陰キャ",
+    desc:"見えない努力家。",
+    love:"応援してくれる人。",
+    job:"職人。",
+    media:"成長系"},
+
+  // 理性
+  {key:"L1", name:"合理主義AI", cat:"理性",
+    desc:"感情より最適解。",
+    love:"理論派。",
+    job:"IT。",
+    media:"解説"},
+  {key:"L2", name:"戦略家", cat:"理性",
+    desc:"数手先を見る。",
+    love:"知的な人。",
+    job:"企画。",
+    media:"考察"},
+  {key:"L3", name:"完璧主義", cat:"理性",
+    desc:"精度重視。",
+    love:"理解者。",
+    job:"品質管理。",
+    media:"専門系"},
+  {key:"L4", name:"計画オタク", cat:"理性",
+    desc:"段取り命。",
+    love:"協調型。",
+    job:"管理。",
+    media:"HowTo"},
+  {key:"L5", name:"冷静沈着マン", cat:"理性",
+    desc:"感情に流されない。",
+    love:"安心感ある人。",
+    job:"調整役。",
+    media:"ニュース"},
+  {key:"L6", name:"理屈番長", cat:"理性",
+    desc:"説明力高い。",
+    love:"聞いてくれる人。",
+    job:"講師。",
+    media:"解説"},
+
+  // バランス
+  {key:"B1", name:"人間力SS", cat:"バランス",
+    desc:"どこでも適応。",
+    love:"誰でも。",
+    job:"万能。",
+    media:"全部"},
+  {key:"B2", name:"常識人代表", cat:"バランス",
+    desc:"安定感。",
+    love:"穏やか。",
+    job:"事務。",
+    media:"日常"},
+  {key:"B3", name:"空気読み神", cat:"バランス",
+    desc:"場を壊さない。",
+    love:"優しい人。",
+    job:"調整。",
+    media:"トーク"},
+  {key:"B4", name:"無難マスター", cat:"バランス",
+    desc:"失敗しない。",
+    love:"安定型。",
+    job:"サポート。",
+    media:"まとめ"},
+  {key:"B5", name:"社会適応バケモン", cat:"バランス",
+    desc:"社会向き。",
+    love:"協力的。",
+    job:"会社員。",
+    media:"ビジネス"},
+  {key:"B6", name:"何でもそこそこ", cat:"バランス",
+    desc:"平均以上。",
+    love:"楽な人。",
+    job:"色々。",
+    media:"雑多"}
 ];
 
-// ===== 状態 =====
-let i=0;
-let score={夜職:0,SNS:0,陰:0,陽:0,現実:0};
+// ====== 結果算出 ======
+function calcResult(){
+  const sum = {E:0,C:0,A:0};
+  state.answers.forEach((v,i)=>{
+    const ax = QUESTIONS[i]?.axes;
+    if(!ax) return;
+    Object.keys(ax).forEach(k=>{
+      sum[k]+=v;
+    });
+  });
 
-// ===== 描画 =====
-const view=document.getElementById("view");
-const bar=document.getElementById("bar");
+  // 一番近いタイプを雑に決める（遊び）
+  const idx = Math.abs(sum.E)+Math.abs(sum.C)+Math.abs(sum.A);
+  const t = TYPES[idx % TYPES.length];
 
-function renderQ(){
-  bar.style.width = `${(i/QUESTIONS.length)*100}%`;
-  view.innerHTML=`
-    <div class="q fade">Q${i+1}. ${QUESTIONS[i]}</div>
-    <div class="choices fade">
-      <button onclick="ans(-1)">否定</button>
-      <button onclick="ans(0)">どっちでもない</button>
-      <button onclick="ans(1)">肯定</button>
-    </div>`;
+  $("resultTitle").textContent = t.name;
+  $("desc").textContent = t.desc;
+  $("love").textContent = t.love;
+  $("job").textContent = t.job;
+  $("media").textContent = t.media;
 }
-function ans(v){
-  const keys=Object.keys(score);
-  score[keys[i%5]]+=v;
-  i++;
-  if(i<QUESTIONS.length) renderQ();
-  else result();
-}
-function result(){
-  bar.style.width="100%";
-  const main = Object.entries(score).sort((a,b)=>b[1]-a[1])[0][0];
-  const type = TYPES[main][Math.abs(score[main])%6];
-  view.innerHTML=`
-    <div class="result">
-      <div class="badge">${type}</div>
-      <p>あなたは<strong>${type}</strong>タイプです。</p>
 
-      <div class="section">
-        <h3>恋愛傾向</h3>
-        <p>刺激か安心、どちらか極端を好みやすい。中途半端は苦手。</p>
-      </div>
-      <div class="section">
-        <h3>向いてる職業</h3>
-        <p>対人・発信・裏方のいずれかで才能を発揮。</p>
-      </div>
-      <div class="section">
-        <h3>好きなYouTube</h3>
-        <p>考察・バラエティ・密着系のどれかに強くハマる。</p>
-      </div>
-    </div>`;
-}
-renderQ();
+// ====== 結果表示ボタン ======
+$("toResultBtn").addEventListener("click", ()=>{
+  state.finished = true;
+  saveState(state);
+  calcResult();
+  showScreen("screenResult");
+});
+
+})();
 </script>
 </body>
 </html>
