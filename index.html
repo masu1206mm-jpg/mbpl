@@ -479,19 +479,18 @@
   </script>
 
   <!-- ここにパート2を貼る -->
-  <script>
+<script>
 /* =========================
-   (偽)えむびーてぃーあいPlus - PART2
-   100問 / 3択 / 保存 / 戻る / 保留 / 結果表示まで
-   ※タイプ30種の最終判定＆超長文結果はPART3で
+   (偽)えむびーてぃーあいPlus - PART2（作り直し）
+   ✅ 100問 / 3択 / 保存
+   ✅ 質問シャッフル（開始時に1回だけ。順番は保存される）
+   ✅ ひとつ戻る → その場で選び直しOK（スコアも差し引き）
+   ✅ 回答は「元質問ID」に紐付け（PART3の採点が崩れにくい）
 ========================= */
 
 (function(){
-  // ---------- 100問：全部「具体的な場面」＋3択（否定/中立/肯定）
-  // 形式：{ q: "質問文", a: "否定の選択肢", b: "中立の選択肢", c: "肯定の選択肢", axes: {A:1, B:1 ...} }
-  // axes は後でスコア計算に使う（PART3で本格利用）。ここでは入れつつ、動作はシンプルにする。
-
-  const QUESTIONS = [
+  // ---------- 100問データ（質問文 q にGLAMワードを少し増やしている） ----------
+  const QUESTIONS_BASE = [
     // 1-10：ミス/やらかし
     { q:"好きな人の前で、盛大におならした。", a:"無言でなかったことにする", b:"笑ってごまかして話題変える", c:"素直に謝って自虐で回収する", axes:{C:1,E:1} },
     { q:"バイト中、お客さんにコーヒーをこぼした。", a:"固まって店長に丸投げ", b:"まず謝って指示を仰ぐ", c:"即謝罪→応急処置→代替案まで提案", axes:{C:1} },
@@ -520,7 +519,7 @@
     { q:"初めての場所で迷った。", a:"勘で突っ走る", b:"地図見てから動く", c:"人に聞く/確実ルート取る", axes:{C:1} },
     { q:"予定が急に空いた。", a:"家でダラダラする", b:"気分で決める", c:"やることリストを進める", axes:{C:1} },
     { q:"明日テスト、今夜ゲーム誘い。", a:"行く（テストは運）", b:"少しだけ参加", c:"断って勉強する", axes:{C:1} },
-    { q:"買うか迷う高い服。", a:"勢いで買う", b:"一晩寝かせる", c:"レビュー/予算/用途で検証して買う", axes:{C:1} },
+    { q:"買うか迷う高い服（ブランド）を見つけた。", a:"勢いで買う", b:"一晩寝かせる", c:"レビュー/予算/用途で検証して買う", axes:{C:1} },
     { q:"知らん番号から電話。", a:"即出る", b:"一旦出ずに検索する", c:"出ずに留守電/公式へ確認", axes:{C:1} },
     { q:"上司（先生）に質問したいが怖い。", a:"諦める", b:"友達/AIに聞いてから行く", c:"要点まとめて質問しに行く", axes:{E:1,C:1} },
     { q:"人前で発表、直前に緊張MAX。", a:"逃げたい", b:"深呼吸して淡々とやる", c:"むしろテンション上げていく", axes:{E:1} },
@@ -533,7 +532,7 @@
     { q:"友達がズルした。", a:"笑って見逃す", b:"やめときって言う", c:"ちゃんと怒る/距離置く", axes:{A:1} },
     { q:"自分だけ損な役回り。", a:"我慢する", b:"次からは避ける", c:"最初から分担を提案する", axes:{E:1} },
     { q:"人に『それ非常識』と言われた。", a:"ムカつく", b:"一応考える", c:"理由を聞いて調整する", axes:{A:1} },
-    { q:"服や髪型、流行より自分。", a:"流行に寄せる", b:"半々にする", c:"自分の軸で決める", axes:{E:1} },
+    { q:"服や髪型、流行より自分（盛り方も含む）。", a:"流行に寄せる", b:"半々にする", c:"自分の軸で決める", axes:{E:1} },
     { q:"SNSで叩かれてる人を見る。", a:"一緒に叩く", b:"スルーする", c:"事実確認して擁護/冷静化する", axes:{A:1} },
     { q:"誰も見てない場所のゴミ。", a:"放置", b:"気分次第", c:"拾って捨てる", axes:{A:1} },
     { q:"友達が陰で悪口言ってたと知る。", a:"晒す/やり返す", b:"距離置く", c:"本人と話して整理する", axes:{A:1} },
@@ -553,7 +552,7 @@
     { q:"誰かに嫉妬した。", a:"攻撃/悪口", b:"距離置く", c:"自分の課題として分析する", axes:{C:1} },
 
     // 51-60：リスク/挑戦
-    { q:"新しいバイト、時給高いが未知。", a:"怖いから行かない", b:"情報集めて検討", c:"まず応募してみる", axes:{E:1} },
+    { q:"新しいバイト、時給高いが未知（夜職っぽい噂もある）。", a:"怖いから行かない", b:"情報集めて検討", c:"まず応募してみる", axes:{E:1} },
     { q:"投資で含み損。", a:"怖くて全部売る", b:"様子見", c:"理由確認してルール通り動く", axes:{C:1} },
     { q:"友達に起業の誘い。", a:"即断る", b:"条件を聞く", c:"小さく試す", axes:{C:1} },
     { q:"初対面の集まり。", a:"行かない", b:"顔だけ出す", c:"普通に参加して広げる", axes:{E:1} },
@@ -588,17 +587,17 @@
     { q:"嫌なタスク。", a:"先延ばし", b:"ギリで", c:"先に片付ける", axes:{C:1} },
     { q:"予定が崩れた。", a:"イラつく", b:"切り替える", c:"代替案を即作る", axes:{C:1} },
 
-    // 81-90：SNS/承認欲求/界隈
+    // 81-90：SNS/承認欲求/界隈（GLAMワード濃いゾーン）
     { q:"投稿の反応が少ない。", a:"消す", b:"気にしない", c:"改善して再挑戦", axes:{E:1} },
     { q:"炎上してる話題。", a:"乗る", b:"眺める", c:"距離取る", axes:{A:1} },
     { q:"裏垢で愚痴りたい。", a:"やる", b:"たまに", c:"やらない（別の方法）", axes:{A:1} },
     { q:"キラキラ投稿を見る。", a:"病む", b:"無", c:"参考にする/モチベにする", axes:{C:1} },
-    { q:"整形・美容にお金かける？", a:"否定", b:"必要なら", c:"投資としてガッツリ", axes:{E:1} },
+    { q:"整形・美容にお金かける？（美容クリニック含む）", a:"否定", b:"必要なら", c:"投資としてガッツリ", axes:{E:1} },
     { q:"他人の成功がムカつく。", a:"叩きたくなる", b:"スルー", c:"分析して自分に活かす", axes:{C:1} },
     { q:"バズる企画思いついた。", a:"言うだけで終わる", b:"様子見", c:"すぐ試作して出す", axes:{C:1} },
-    { q:"自撮りを上げる頻度。", a:"ほぼ無い", b:"たまに", c:"割と上げる", axes:{E:1} },
+    { q:"自撮りを上げる頻度（盛り写真）。", a:"ほぼ無い", b:"たまに", c:"割と上げる", axes:{E:1} },
     { q:"DMで知らん人から褒め。", a:"無視", b:"短く返す", c:"丁寧に返す", axes:{A:1} },
-    { q:"悪口系の流れが来た。", a:"参戦", b:"傍観", c:"止める/離脱", axes:{A:1} },
+    { q:"夜職・ホスト・ブランドの話題が身近にある。", a:"無理、距離置く", b:"聞くぶんには聞く", c:"普通に興味ある/詳しく知りたい", axes:{E:1} },
 
     // 91-100：恋愛/将来/決断
     { q:"告白するなら。", a:"しない", b:"タイミング待つ", c:"行く", axes:{E:1} },
@@ -613,22 +612,65 @@
     { q:"100問終えた自分に一言。", a:"疲れた、もう無理", b:"まあ頑張った", c:"自分の傾向わかった", axes:{C:1} },
   ];
 
-  // パート1の仮配列を上書き
-  window.QUESTIONS = QUESTIONS;
+  // PART3が参照する「元の質問」は固定で持たせる（重要）
+  window.QUESTIONS = QUESTIONS_BASE;
+
+  // ---------- シャッフル ----------
+  function makeOrder(n){
+    const arr = Array.from({length:n}, (_,i)=>i);
+    for(let i=n-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // ---------- state拡張：order を保存する ----------
+  // 既存stateがPART1で作られてる前提。なければ作る（保険）
+  if(typeof window.state !== "object" || !window.state){
+    window.state = { idx:0, answers:[], scores:{}, finished:false };
+  }
+  const state = window.state;
+
+  // order がなければ作る（復元なら保持）
+  const total = QUESTIONS_BASE.length;
+
+  function ensureOrder(){
+    if(!Array.isArray(state.order) || state.order.length !== total){
+      state.order = makeOrder(total);
+    }
+  }
 
   // ---------- UI描画 ----------
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  function getQidByPos(pos){
+    ensureOrder();
+    return state.order[pos];
+  }
+
   function renderQuestion(){
-    const total = QUESTIONS.length;
-    if(state.idx >= total){
-      state.idx = total-1;
-    }
+    ensureOrder();
+
+    // idx を範囲に収める
+    state.idx = Math.max(0, Math.min(state.idx, total-1));
+
+    // progress は「シャッフル順の進捗」
     setProgress(state.idx, total);
 
-    const qObj = QUESTIONS[state.idx];
+    const qid = getQidByPos(state.idx);
+    const qObj = QUESTIONS_BASE[qid];
+
     $("qText").textContent = qObj.q;
 
     const wrap = $("choices");
     wrap.innerHTML = "";
+
+    const current = state.answers[qid]; // ← 元IDで保存
 
     const opts = [
       { tag:"否定", text:qObj.a, val:-1 },
@@ -639,22 +681,20 @@
     opts.forEach((o)=>{
       const btn = document.createElement("button");
       btn.className = "btn";
+      // すでに選んでるやつは軽く目立たせる（CSS追加なしでinline）
+      const isSel = (typeof current==="number" && current===o.val);
+      btn.style.borderColor = isSel ? "rgba(110,242,255,.55)" : "";
+      btn.style.background  = isSel ? "rgba(110,242,255,.12)" : "";
+
       btn.innerHTML = `<span class="tag">${o.tag}</span><div class="btnText">${escapeHtml(o.text)}</div>`;
       btn.addEventListener("click", ()=> choose(o.val));
       wrap.appendChild(btn);
     });
 
-    // 進捗文言
-    $("toResultBtn").textContent = state.idx >= total-1 ? "結果を見る（確定）" : "結果を見る（途中でも可）";
+    $("toResultBtn").textContent = (state.idx >= total-1) ? "結果を見る（確定）" : "結果を見る（途中でも可）";
   }
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[m]));
-  }
-
-  // ---------- 採点（PART3で本格化するけど、今は軸を軽く積む） ----------
+  // ---------- 採点（PART2内はscoresに積む。PART3は自前計算でもOK） ----------
   function addScore(qObj, val){
     const axes = qObj.axes || {};
     for(const k in axes){
@@ -664,25 +704,27 @@
 
   // ---------- 回答 ----------
   function choose(val){
-    const qObj = QUESTIONS[state.idx];
-    const prev = state.answers[state.idx];
+    ensureOrder();
 
-    // もし戻って選び直しなら、前の分を差し引き
+    const qid = getQidByPos(state.idx);
+    const qObj = QUESTIONS_BASE[qid];
+    const prev = state.answers[qid];
+
+    // 選び直しなら差し引き
     if(typeof prev === "number"){
       addScore(qObj, -prev);
     }
-    state.answers[state.idx] = val;
+    state.answers[qid] = val;
     addScore(qObj, val);
 
     // 次へ
-    if(state.idx < QUESTIONS.length-1){
+    if(state.idx < total-1){
       state.idx++;
       saveState(state);
       renderQuestion();
     }else{
-      // 最後までいったら結果へ（結果はPART3で豪華になる）
       saveState(state);
-      goResult();
+      goResult(); // PART2暫定 → PART3が上書きしてくれる想定
     }
   }
 
@@ -695,7 +737,7 @@
   }
 
   function skipNeutral(){
-    // 今の問題を「中立」で確定して進む
+    // 今の問題を中立で確定（選び直しにも対応）
     choose(0);
   }
 
@@ -706,47 +748,51 @@
 
     showScreen("screenResult");
 
-    // PART3で30タイプ＆長文出力に差し替える
-    const answered = state.answers.filter(v=>typeof v==="number").length;
+    const answered = (state.answers||[]).filter(v=>typeof v==="number").length;
     $("badges").innerHTML =
-      `<div class="badge">回答数 ${answered} / ${QUESTIONS.length}</div>` +
+      `<div class="badge">回答数 ${answered} / ${total}</div>` +
       `<div class="badge">保存ON</div>` +
-      `<div class="badge">結果はPART3で超強化</div>`;
+      `<div class="badge">（結果はPART3が最終出力）</div>`;
 
-    $("resultTitle").textContent = "暫定：診断準備OK（PART3で完成）";
-    $("desc").textContent =
-      "ここまでで100問の回答・保存・戻る・保留が動く状態になった。次のPART3で、30タイプ（アホい名前）と、恋愛/職業/YouTube嗜好までの超長文結果を確定させる。";
-    $("love").textContent = "（PART3で出す）";
-    $("job").textContent  = "（PART3で出す）";
-    $("media").textContent= "（PART3で出す）";
+    $("resultTitle").textContent = "結果生成中（PART3が担当）";
+    $("desc").textContent  = "PART3が読み込まれていれば、この直後に最終結果へ上書きされるはず。";
+    $("love").textContent  = "（PART3で出す）";
+    $("job").textContent   = "（PART3で出す）";
+    $("media").textContent = "（PART3で出す）";
   }
 
   // ---------- ボタン配線（PART1の仮を上書き） ----------
+  // 既にPART1側で addEventListener 済みでも、ここで上から積む（動作OK）
   $("startBtn").addEventListener("click", ()=>{
-    // 途中復帰したい場合
-    if(state.answers && state.answers.length){
+    // 途中復帰
+    if(state.answers && state.answers.some(v=>typeof v==="number")){
+      state.finished = false;
+      saveState(state);
       showScreen("screenQuiz");
       renderQuestion();
-      toast("続きから再開");
+      toast("続きから再開（順番は保存されてる）");
       return;
     }
+    // 新規開始：シャッフル作り直す
     state.idx = 0;
-    state.answers = [];
+    state.answers = Array(total).fill(undefined);
     state.scores = {};
     state.finished = false;
+    state.order = makeOrder(total);
     saveState(state);
+
     showScreen("screenQuiz");
     renderQuestion();
-    toast("スタート！");
+    toast("スタート！（質問シャッフル済み）");
   });
 
   $("restartBtn").addEventListener("click", ()=>{
     clearState();
-    state = {idx:0, answers:[], scores:{}, finished:false};
-    saveState(state);
+    window.state = { idx:0, answers:Array(total).fill(undefined), scores:{}, finished:false, order:makeOrder(total) };
+    saveState(window.state);
     showScreen("screenQuiz");
     renderQuestion();
-    toast("最初から！");
+    toast("最初から！（シャッフルし直し）");
   });
 
   $("backBtn").addEventListener("click", back);
@@ -757,8 +803,9 @@
   });
 
   // ---------- boot後に復元描画 ----------
-  // PART1のbootで画面だけ切り替わってるから、クイズ画面なら描画する
+  // PART1のbootが画面切替だけしてる想定なので、クイズ画面なら描画
   setTimeout(()=>{
+    ensureOrder();
     if(!$("screenQuiz").classList.contains("hide")){
       renderQuestion();
     }
