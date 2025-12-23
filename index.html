@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>（偽）えむびーてぃーあいPlus</title>
+<style>
+:root{
+  --bg:#0f1220;--card:#171a2b;--accent:#ff6ad5;--accent2:#6ae3ff;
+  --text:#f4f6ff;--muted:#9aa0c6;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:linear-gradient(180deg,#0b0e1a,#14183a);
+  color:var(--text);
+}
+.container{max-width:820px;margin:auto;padding:16px}
+.card{
+  background:var(--card);border-radius:20px;padding:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+}
+h1{margin:0 0 6px;font-size:22px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+.progress{height:8px;background:#0b0e1a;border-radius:999px;overflow:hidden}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.q{margin:18px 0;font-size:18px;line-height:1.5}
+.choices{display:grid;gap:10px}
+button{
+  padding:14px;border-radius:14px;border:0;
+  background:#23285a;color:var(--text);font-size:16px;
+}
+button:hover{background:#2e3490}
+.fade{animation:fade .25s ease}
+@keyframes fade{from{opacity:.2;transform:translateY(6px)}to{opacity:1}}
+.result{
+  text-align:center;animation:pop .4s ease;
+}
+@keyframes pop{from{transform:scale(.96);opacity:.4}to{transform:scale(1);opacity:1}}
+.badge{
+  display:inline-block;padding:6px 14px;border-radius:999px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#000;font-weight:700;margin:10px 0;
+}
+.section{margin-top:14px;text-align:left}
+.section h3{margin:8px 0 4px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card" id="app">
+    <h1>（偽）えむびーてぃーあいPlus</h1>
+    <div class="sub">100問・3択・具体シチュエーション診断</div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div id="view"></div>
+  </div>
+</div>
+
+<script>
+// ===== タイプ定義（5界隈×6） =====
+const TYPES = {
+  夜職:["夜職女級プライドウーマン","整形マシーン","カリスマホスト","港区モンスター","自己肯定感バグ","承認欲求タンク"],
+  SNS:["Twitter裏垢悪口マシーン","炎上体質","エゴサ廃人","思想強め語録製造機","引用RT戦士","タイムライン支配者"],
+  陰:["ガチチー牛","無気力限界人","被害妄想プロ","現実逃避オタク","自己否定ループ","静観勢"],
+  陽:["生粋のインスタグラマー","タレント気質","陽キャ覇王","盛り上げ隊長","場の空気メーカー","無敵ポジティブ"],
+  現実:["社畜エリート","効率厨","堅実リアリスト","裏方神","安全運転マン","責任感モンスター"]
+};
+
+// ===== 質問100問（具体）=====
+const QUESTIONS = [
+"寝坊して1限に間に合わないと確定した。",
+"好きな人の前でおならが出た。",
+"バイト中に客にコーヒーをこぼした。",
+"LINEの誤爆を送信取消できなかった。",
+"飲み会で全員静かになった瞬間が来た。",
+"友達の黒歴史写真を見つけた。",
+"インスタのストーリーが0閲覧だった。",
+"ツイートが一瞬で炎上した。",
+"上司に理不尽に怒られた。",
+"知らない人に道を聞かれた。",
+"推しが熱愛を出した。",
+"クラスの陽キャに絡まれた。",
+"会計で財布を忘れたことに気づいた。",
+"グループLINEで自分だけ既読無視された。",
+"デート前日にニキビができた。",
+"エレベーターで二人きりになった。",
+"自分の悪口を聞いてしまった。",
+"カラオケで自分の番が来た。",
+"電車で席を譲るか迷った。",
+"友達が急に病んだ投稿をした。",
+"職場でミスをなすりつけられそう。",
+"知らない番号から着信が来た。",
+"友達が成功してバズってる。",
+"親に将来を詰められた。",
+"初対面でMBTI聞かれた。",
+"財布に1万円しかない月末。",
+"飲み会で一気コールが始まった。",
+"先生に名前を間違えられた。",
+"フォロワーが急に減った。",
+"褒められたけど本心かわからない。",
+"失恋直後に雨が降ってきた。",
+"知らない界隈のノリに放り込まれた。",
+"予定が全部キャンセルされた休日。",
+"告白されて即答を求められた。",
+"人前で転んだ。",
+"自分の噂話が回っている。",
+"グループで自分だけ浮いている。",
+"お金の貸し借りを頼まれた。",
+"上司が無能だと確信した。",
+"推し活に金を使いすぎた。",
+"初対面で距離が近い人。",
+"陰口を言ってる現場に遭遇。",
+"友達が整形した。",
+"飲み会の写真が勝手に投稿された。",
+"責任者に任命された。",
+"ミスを正直に言うか迷った。",
+"初デートが沈黙だらけ。",
+"急に褒められ役を振られた。",
+"知らない人にDMが来た。",
+"努力が誰にも評価されてない。",
+"友達が急に成功者ムーブ。",
+"クラス替え初日。",
+"会話のオチを求められた。",
+"面白いこと言ってと言われた。",
+"仲良い人が別界隈に行った。",
+"初対面で距離を詰められた。",
+"自分の価値観を否定された。",
+"飲み会後の反省会タイム。",
+"遅刻理由を聞かれた。",
+"チームで一人だけミス。",
+"人の成功が眩しすぎる。",
+"SNSで病み投稿を見る。",
+"親しい人に裏切られた。",
+"自分だけ誘われてない。",
+"初バイト初日。",
+"怒られてる人を見る。",
+"推しの供給が多すぎる。",
+"目立つ役を任された。",
+"無茶ぶりを振られた。",
+"全員の前で意見を言う流れ。",
+"誰もやりたがらない役目。",
+"一人で過ごす休日。",
+"褒められると居心地悪い。",
+"突然の飲み誘い。",
+"将来の夢を聞かれた。",
+"好きな人が他の人と仲良さげ。",
+"金銭感覚の違いに気づく。",
+"注目される舞台に立たされた。",
+"グループの空気が悪い。",
+"誰かが泣き出した。",
+"責任を取る場面。",
+"努力が数字で出た。",
+"自分の発言で空気が変わった。",
+"急に暇になった。",
+"みんなが自分を見る瞬間。",
+"失敗談を話す流れ。",
+"自己紹介を求められた。",
+"他人の人生が羨ましい。",
+"自分を変えたいと思った瞬間",
+"評価が真っ二つに割れた",
+"本音を言うか迷った",
+"誰も助けてくれない状況"
+];
+
+// ===== 状態 =====
+let i=0;
+let score={夜職:0,SNS:0,陰:0,陽:0,現実:0};
+
+// ===== 描画 =====
+const view=document.getElementById("view");
+const bar=document.getElementById("bar");
+
+function renderQ(){
+  bar.style.width = `${(i/QUESTIONS.length)*100}%`;
+  view.innerHTML=`
+    <div class="q fade">Q${i+1}. ${QUESTIONS[i]}</div>
+    <div class="choices fade">
+      <button onclick="ans(-1)">否定</button>
+      <button onclick="ans(0)">どっちでもない</button>
+      <button onclick="ans(1)">肯定</button>
+    </div>`;
+}
+function ans(v){
+  const keys=Object.keys(score);
+  score[keys[i%5]]+=v;
+  i++;
+  if(i<QUESTIONS.length) renderQ();
+  else result();
+}
+function result(){
+  bar.style.width="100%";
+  const main = Object.entries(score).sort((a,b)=>b[1]-a[1])[0][0];
+  const type = TYPES[main][Math.abs(score[main])%6];
+  view.innerHTML=`
+    <div class="result">
+      <div class="badge">${type}</div>
+      <p>あなたは<strong>${type}</strong>タイプです。</p>
+
+      <div class="section">
+        <h3>恋愛傾向</h3>
+        <p>刺激か安心、どちらか極端を好みやすい。中途半端は苦手。</p>
+      </div>
+      <div class="section">
+        <h3>向いてる職業</h3>
+        <p>対人・発信・裏方のいずれかで才能を発揮。</p>
+      </div>
+      <div class="section">
+        <h3>好きなYouTube</h3>
+        <p>考察・バラエティ・密着系のどれかに強くハマる。</p>
+      </div>
+    </div>`;
+}
+renderQ();
+</script>
+</body>
+</html>
