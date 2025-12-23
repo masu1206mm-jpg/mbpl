@@ -773,271 +773,653 @@
   <!-- ここにパート3を貼る -->
 <script>
 /* =========================
-   (偽)えむびーてぃーあいPlus - PART3（強化版）
-   ✅ 5界隈をちゃんと出す（番号ブロック加点 + キーワード補助）
-   ✅ 界隈ヘッダーをデカ表示
-   ✅ 結果を長文化（人物像/やらかし時/恋愛/仕事/YouTube/改善）
+   (偽)えむびーてぃーあいPlus - PART3（作り直し完全版）
+   ✅ 界隈をデカ表示（結果画面で一番目立つ）
+   ✅ 結果を長文化（強み/弱点/恋愛/職業/YouTube/伸ばし方/地雷）
+   ✅ 「界隈が2つしか出ない」問題を改善（判定ロジック強化）
+   ✅ 既存の暫定result処理より優先して動く（captureで止める）
 ========================= */
-(function(){
-  // 依存：PART1/2の関数・stateがグローバルに存在している前提
-  // （あなたの構成だと boot/saveState/showScreen/toast 等はPART1側にある）
 
+(function(){
+  // ---------- 安全に参照 ----------
   const $ = (id)=>document.getElementById(id);
   const Q = (window.QUESTIONS && window.QUESTIONS.length) ? window.QUESTIONS : [];
 
+  // PART1/2側の state / showScreen / saveState を使う前提
+  if(typeof state === "undefined"){
+    console.warn("state が見つからん。PART1/2の順番を確認してな。");
+    return;
+  }
   if(!Q.length){
-    console.warn("QUESTIONSが見つからん。PART2が先に読み込まれてるか確認してな。");
+    console.warn("QUESTIONS が空。PART2を先に貼れてるか確認してな。");
   }
 
-  // ---- 5界隈（カテゴリ） ----
+  // ---------- 追加CSS（界隈をデカ表示） ----------
+  (function injectStyle(){
+    const css = `
+      .bigCat{
+        border:1px solid rgba(255,255,255,.18);
+        background: rgba(255,255,255,.10);
+        padding: 14px 14px;
+        border-radius: 18px;
+        margin: 4px 0 12px;
+        backdrop-filter: blur(8px);
+      }
+      .bigCat .k{
+        font-size: 12px;
+        color: rgba(255,255,255,.70);
+        letter-spacing: .08em;
+        text-transform: uppercase;
+      }
+      .bigCat .v{
+        margin-top: 4px;
+        font-weight: 1000;
+        line-height: 1.12;
+        font-size: clamp(22px, 4.8vw, 42px);
+        background: linear-gradient(90deg, rgba(110,242,255,.95), rgba(185,156,255,.95), rgba(255,124,158,.95));
+        -webkit-background-clip:text;
+        background-clip:text;
+        color: transparent;
+      }
+      .bigCat .sub{
+        margin-top: 8px;
+        font-size: 12px;
+        color: rgba(255,255,255,.62);
+        line-height: 1.45;
+      }
+      .longBox{
+        margin-top: 10px;
+        padding: 12px;
+        border-radius: 16px;
+        border:1px solid rgba(255,255,255,.14);
+        background: rgba(255,255,255,.06);
+      }
+      .longBox h4{
+        margin:0 0 8px 0;
+        font-size: 13px;
+        color: rgba(255,255,255,.86);
+        letter-spacing:.02em;
+      }
+      .longBox p, .longBox li{
+        margin:0;
+        font-size: 13px;
+        color: rgba(255,255,255,.68);
+        line-height: 1.6;
+      }
+      .longBox ul{ margin: 0; padding-left: 18px; }
+    `;
+    const tag = document.createElement("style");
+    tag.textContent = css;
+    document.head.appendChild(tag);
+  })();
+
+  // ---------- 5界隈 ----------
   const CATS = [
-    { key:"SNS",  name:"SNS界隈",        vibe:"映え・言語化・反応の世界" },
-    { key:"GLAM", name:"夜職・盛り界隈", vibe:"自己価値・魅せ方・勝ち方" },
-    { key:"GACHI",name:"堅実ガチ勢界隈", vibe:"段取り・再発防止・最適化" },
-    { key:"LOVE", name:"恋愛脳界隈",     vibe:"安心・嫉妬・距離感の設計" },
-    { key:"KAGE", name:"省エネ隠居界隈", vibe:"体力温存・静かに強い" },
+    { key:"SNS",  name:"SNS界隈" },
+    { key:"GLAM", name:"夜職・盛り界隈" },
+    { key:"GACHI",name:"堅実ガチ勢界隈" },
+    { key:"LOVE", name:"恋愛脳界隈" },
+    { key:"KAGE", name:"省エネ隠居界隈" },
   ];
 
-  // ---- 30タイプ（5×6） ----
-  // 短文をベースにして、最後はテンプレで“長文化”する
+  // ---------- 30タイプ（5界隈×6） ----------
+  // 6タイプの内訳：E主導 / C主導 / A主導 ×（攻めor守り）＝6
   const TYPES = [
-    // SNS 6
-    {cat:"SNS", name:"Twitter裏垢悪口マシーン", core:"言語化が鋭い。ストレスを言葉で処理しがち。", style:"刺し込み系"},
-    {cat:"SNS", name:"インプレ古事記（戦略型）", core:"反応と数字をゲームとして最適化できる。", style:"最適化系"},
-    {cat:"SNS", name:"自撮り研究所（研究員）", core:"映えをセンスじゃなく研究で作る改善型。", style:"改善系"},
-    {cat:"SNS", name:"炎上回避の危機管理人", core:"地雷察知が早い。守りの設計が得意。", style:"危機管理系"},
-    {cat:"SNS", name:"リプ欄の王（コミュ強）", core:"場の温度を上げるのが上手い外向型。", style:"コミュ強系"},
-    {cat:"SNS", name:"ROM専の観測者", core:"出す前に検証する。深掘りが強い分析型。", style:"観測系"},
+    // ========== SNS界隈 ==========
+    {cat:"SNS", idx:0, name:"リプ欄の王（コミュ強）",
+      vibe:"ノリと反応速度で勝つSNS型。場の温度を上げる天才。",
+      core:["反応が早い","言葉が軽快","空気を明るくできる"],
+      trap:["テンションで押し切って疲れがち","雑な一言が刺さる時がある"],
+      love:"一緒にふざけられる＋最後はちゃんと話し合える人。束縛強い相手はキツい。",
+      job:"営業/広報/接客/配信/イベント。『人前で回す』仕事で強い。",
+      media:"バラエティ、配信、街ブラ、即興トーク、企画ドッキリ。"
+    },
+    {cat:"SNS", idx:1, name:"インプレ古事記（戦略型）",
+      vibe:"数字・伸び・導線をゲームとして最適化するSNS型。ABテスト脳。",
+      core:["改善が早い","伸びる理由を分解できる","検証→再投稿ができる"],
+      trap:["反応＝自分の価値になりやすい","数字が落ちるとメンタル削れる"],
+      love:"『現実の生活も大事』を言ってくれる安定系。応援しつつ止められる相手◎。",
+      job:"マーケ/広告/企画/分析/運用。数字で戦う仕事。",
+      media:"マーケ解説、伸び方分析、ビジネスバラエティ、検証系。"
+    },
+    {cat:"SNS", idx:2, name:"Twitter裏垢悪口マシーン",
+      vibe:"言語化で感情処理するSNS型。面白いが、疲れると刃が出る。",
+      core:["言葉で整理できる","面白い切り返し","洞察が鋭い"],
+      trap:["言葉が鋭すぎる事故","悪口で気持ち良くなりやすい（沼）"],
+      love:"一言で傷つかず、境界線を一緒に作れる人。ちゃんと止めてくれる相手。",
+      job:"編集/ライター/運用/リサーチ/企画。言葉で価値を作る仕事。",
+      media:"考察/炎上分析/ディベート/ニュース解説。コメント欄も読む。"
+    },
+    {cat:"SNS", idx:3, name:"炎上回避の危機管理人",
+      vibe:"地雷察知で守り切るSNS型。やらかしを未然に潰す。",
+      core:["慎重","事実確認できる","守りが固い"],
+      trap:["安全に寄りすぎて動けない時がある","疑い深くなる"],
+      love:"情緒が安定してて話し合いできる人。安心供給できる相手が向く。",
+      job:"CS/運用保守/総務寄り/品質管理。事故らない運用。",
+      media:"ニュース、ガジェット、丁寧な解説、検証レビュー。"
+    },
+    {cat:"SNS", idx:4, name:"自撮り研究所（研究員）",
+      vibe:"映えをセンスじゃなく研究で作るSNS型。改善速度が武器。",
+      core:["改善癖","撮影/文章の検証","努力が可視化できる"],
+      trap:["比較で病みやすい","完璧主義になりがち"],
+      love:"努力をちゃんと褒める人。外見だけじゃなく過程も見てくれる相手。",
+      job:"デザイン/撮影/編集/美容。改善→反映が早い職。",
+      media:"美容・垢抜け・検証、ビフォアフ、短尺も好き。"
+    },
+    {cat:"SNS", idx:5, name:"ROM専の観測者",
+      vibe:"出さずに深掘りで勝つSNS型。静かに鋭い。",
+      core:["観察眼","長期で積める","深い洞察"],
+      trap:["発信が遅れて機会損失","考えすぎて動けない"],
+      love:"急かさず待てる人。静かな時間を共有できる相手。",
+      job:"分析/研究/企画/制作/開発寄り。",
+      media:"長尺解説、ドキュメンタリー、考察。"
+    },
 
-    // GLAM 6
-    {cat:"GLAM", name:"夜職女級プライドウーマン", core:"雑に扱われたくない。自己価値の防衛が強い。", style:"プライド系"},
-    {cat:"GLAM", name:"カリスマホスト（営業脳）", core:"相手の欲しい言葉を当てるのが上手い。", style:"営業系"},
-    {cat:"GLAM", name:"整形マシーン（改善鬼）", core:"コンプレックスを行動で潰す。変化が速い。", style:"改善系"},
-    {cat:"GLAM", name:"ブランド脳（世界観）", core:"雰囲気と統一感を重視。雑さが無理。", style:"世界観系"},
-    {cat:"GLAM", name:"盛り耐性ゼロ（正直者）", core:"盛りは好きでも嘘は苦手。正直で不器用。", style:"正直系"},
-    {cat:"GLAM", name:"ギャップ姫（内側堅実）", core:"表は派手、中は計画。表裏を回せる。", style:"二面性系"},
+    // ========== 夜職・盛り界隈 ==========
+    {cat:"GLAM", idx:0, name:"カリスマホスト（営業脳）",
+      vibe:"相手の欲しい言葉と温度を読んで出す盛り界隈。空気で勝つ。",
+      core:["人の反応読む","言葉選び上手い","場を回せる"],
+      trap:["やりすぎると操作っぽく見える","自分が空っぽになる"],
+      love:"依存を作らず対等に笑える人。境界線が作れる相手。",
+      job:"営業/交渉/広報/司会/接客。相手に合わせて勝てる仕事。",
+      media:"トーク番組、接客術、心理テク、密着系。"
+    },
+    {cat:"GLAM", idx:1, name:"整形マシーン（改善鬼）",
+      vibe:"コンプレックスを行動で潰す盛り界隈。変化が早い。",
+      core:["改善と継続","自己投資ができる","結果が出やすい"],
+      trap:["沼に入ると終わらない","他人比較で疲れる"],
+      love:"努力をバカにしない人。中身も見てくれる相手◎。",
+      job:"美容/デザイン/編集/フィットネス。改善の積み上げが武器。",
+      media:"美容医療、検証、ビフォアフ、整う系。"
+    },
+    {cat:"GLAM", idx:2, name:"夜職女級プライドウーマン",
+      vibe:"舐められたくない＆雑に扱われたくない盛り界隈。自尊心で守る。",
+      core:["自分の価値を守れる","強気に出れる","境界線が引ける"],
+      trap:["柔らかさが減ると誤解される","プライドで損する時がある"],
+      love:"誠実で筋が通る人。駆け引きより対話できる相手。",
+      job:"販売/美容/ブランディング/接客。自分を商品化できる。",
+      media:"恋リア、美容、垢抜け、ホスト密着（観察含む）。"
+    },
+    {cat:"GLAM", idx:3, name:"ブランド脳（世界観）",
+      vibe:"雰囲気・世界観が命の盛り界隈。雑さが無理。",
+      core:["世界観づくり","美意識","丁寧さ"],
+      trap:["理想が高く疲れる","雑な環境で消耗する"],
+      love:"丁寧で嘘が少ない人。扱いが雑な相手は相性×。",
+      job:"クリエイティブ/ディレクション/店舗づくり。",
+      media:"Vlog、ルームツアー、映像美、ルーティン。"
+    },
+    {cat:"GLAM", idx:4, name:"ギャップ姫（内側堅実）",
+      vibe:"外は派手、中は計画的。表裏を回せる盛り界隈。",
+      core:["二面性を使える","裏で段取り","現実も見れる"],
+      trap:["気を張りすぎる","本音が出にくい"],
+      love:"表面で判断しない人。内側の堅実さを見抜く相手◎。",
+      job:"企画/運営/マネジメント。表も裏も回す系。",
+      media:"バラエティ+学び系のハイブリッド。"
+    },
+    {cat:"GLAM", idx:5, name:"盛り耐性ゼロ（正直者）",
+      vibe:"盛る文化は好きでも嘘は苦手。素直で不器用。",
+      core:["誠実","信用される","ブレない"],
+      trap:["器用に立ち回れず損する","場の圧で疲れる"],
+      love:"比較や評価を持ち込まない人。安心して素直でいられる相手。",
+      job:"専門職/職人気質。正直さが信頼になる仕事。",
+      media:"手元作業、料理、職人、ゆる日常。"
+    },
 
-    // GACHI 6
-    {cat:"GACHI", name:"ガチ予定表マン", core:"締切・段取り・予約が勝ち筋。", style:"計画系"},
-    {cat:"GACHI", name:"ミス0教（再発防止）", core:"原因→再発防止が反射で出る。", style:"品質系"},
-    {cat:"GACHI", name:"コスパ神（最適化）", core:"損得と効率で判断。無駄が嫌い。", style:"合理系"},
-    {cat:"GACHI", name:"責任感モンスター", core:"逃げない。背負いすぎ注意。", style:"背負い系"},
-    {cat:"GACHI", name:"静かな努力家", core:"黙々と積む。結果で黙らせる。", style:"積み上げ系"},
-    {cat:"GACHI", name:"逆転狙いの追い込み職人", core:"締切前に覚醒する短期火力型。", style:"追い込み系"},
+    // ========== 堅実ガチ勢界隈 ==========
+    {cat:"GACHI", idx:0, name:"ガチ予定表マン",
+      vibe:"締切・段取り・リスク回避で勝つ堅実界隈。先に詰めて勝つ。",
+      core:["計画","継続","事故らない"],
+      trap:["柔軟さが落ちる","他人にも同じ精度を求めがち"],
+      love:"約束守る人。生活が整ってる相手が相性◎。",
+      job:"事務/PM/運用/経理/管理。仕組み化で勝つ。",
+      media:"解説/勉強/作業用BGM/効率系。"
+    },
+    {cat:"GACHI", idx:1, name:"ミス0教（再発防止）",
+      vibe:"やらかしを事件として処理できる堅実界隈。原因→対策が自然。",
+      core:["再発防止","冷静","品質意識"],
+      trap:["自分に厳しすぎる","失敗が怖くなる"],
+      love:"安心感のある安定系。感情の波が少ない相手が向く。",
+      job:"品質管理/監査/保守/医療事務寄り。ミス潰し。",
+      media:"検証、レビュー、比較、マニュアル系。"
+    },
+    {cat:"GACHI", idx:2, name:"コスパ神（最適化）",
+      vibe:"損得と効率で判断する堅実界隈。合理性が武器。",
+      core:["合理","比較","最適化"],
+      trap:["感情の説明が雑に見える","冷たいと言われる時がある"],
+      love:"合理性を理解してくれる人。感情だけで詰めない相手。",
+      job:"データ/金融/購買/分析。比較して決める仕事。",
+      media:"投資/節約/ガジェット/ビジネス。"
+    },
+    {cat:"GACHI", idx:3, name:"責任感モンスター",
+      vibe:"人が逃げる場面で逃げない堅実界隈。背負って回す。",
+      core:["責任感","信頼","やり切る"],
+      trap:["抱え込み","燃え尽き","他人に頼めない"],
+      love:"『休んでいい』と言える人。背負いすぎを止めてくれる相手。",
+      job:"リーダー/現場管理/教育係。信頼で回す。",
+      media:"スポーツ、挑戦ドキュメンタリー、努力系。"
+    },
+    {cat:"GACHI", idx:4, name:"静かな努力家",
+      vibe:"派手に言わず淡々と積む堅実界隈。結果で黙らせる。",
+      core:["継続","集中","内側が強い"],
+      trap:["損しても言わない","評価が遅れる"],
+      love:"干渉しすぎない人。信頼で繋がれる相手。",
+      job:"研究/技術/制作。黙々と強い。",
+      media:"長尺、作業、解説、ドキュメンタリー。"
+    },
+    {cat:"GACHI", idx:5, name:"逆転狙いの追い込み職人",
+      vibe:"普段ゆるいのに締切前に覚醒する堅実界隈。短期火力。",
+      core:["追い込み火力","集中","修羅場対応"],
+      trap:["普段の準備が薄くなる","波が出る"],
+      love:"波を責めず見守れる人。責めない相手が向く。",
+      job:"制作/編集/ライティング。締切がある仕事◎。",
+      media:"ストーリー性ある企画、短期集中、成長系。"
+    },
 
-    // LOVE 6
-    {cat:"LOVE", name:"恋愛裁判官（白黒）", core:"曖昧が嫌い。筋と約束が恋愛の土台。", style:"白黒系"},
-    {cat:"LOVE", name:"重めの一途（積み上げ型）", core:"信頼を積む。雑に扱われると冷める。", style:"一途系"},
-    {cat:"LOVE", name:"好きバレ職人（匂わせ）", core:"直接言わず空気で伝える。ズレると事故。", style:"匂わせ系"},
-    {cat:"LOVE", name:"秒速切り替えマン", core:"回復が早い。恋愛を人生の一部に置ける。", style:"切替系"},
-    {cat:"LOVE", name:"安心供給装置", core:"相手の不安を減らすのが得意。疲れやすい。", style:"安心系"},
-    {cat:"LOVE", name:"恋愛より自分軸", core:"主導権は自分。依存が苦手。尊重重視。", style:"自立系"},
+    // ========== 恋愛脳界隈 ==========
+    {cat:"LOVE", idx:0, name:"秒速切り替えマン",
+      vibe:"失敗しても切り替えが早い恋愛界隈。恋愛を人生の一部として扱える。",
+      core:["回復が早い","軽やか","次へ進める"],
+      trap:["相手が重いと冷める","深掘りが雑になる"],
+      love:"テンポが合う人。重くなりすぎない相手。",
+      job:"営業/企画/挑戦系。切替力が武器。",
+      media:"バラエティ、旅行、企画ドッキリ。"
+    },
+    {cat:"LOVE", idx:1, name:"恋愛裁判官（白黒）",
+      vibe:"曖昧が嫌い。約束と筋を重く扱う恋愛界隈。",
+      core:["筋が通る","誠実","話し合いできる"],
+      trap:["白黒つけすぎて疲れる","融通が利きにくい"],
+      love:"逃げずに話し合いできる人。誠実な相手が必須。",
+      job:"交渉/相談/調整。整合性が要る仕事。",
+      media:"恋リア、討論、心理解説。"
+    },
+    {cat:"LOVE", idx:2, name:"重めの一途（積み上げ型）",
+      vibe:"信頼を積む恋愛界隈。雑に扱われると一気に冷める。",
+      core:["一途","誠実","信頼を育てる"],
+      trap:["傷つくと深い","期待が重くなる"],
+      love:"言葉と行動が一致する人。浮つかない相手◎。",
+      job:"教育/ケア/対人支援。信頼の積み上げ。",
+      media:"ストーリー重視、長編ドラマ/映画。"
+    },
+    {cat:"LOVE", idx:3, name:"安心供給装置",
+      vibe:"相手の不安を減らす恋愛界隈。優しいが義務化すると疲れる。",
+      core:["共感","安心感","寄り添い"],
+      trap:["相手に吸われる","我慢しがち"],
+      love:"感謝を言える人。甘えすぎない相手が◎。",
+      job:"CS/福祉/受付/サポート。安心を作る仕事。",
+      media:"癒し、日常、料理、動物。"
+    },
+    {cat:"LOVE", idx:4, name:"好きバレ職人（匂わせ）",
+      vibe:"空気で伝える恋愛界隈。ロマンも事故も起きる。",
+      core:["雰囲気作り","表現","気遣い"],
+      trap:["察して欲しいが増える","ズレた時に地獄"],
+      love:"察し力高い人 or ちゃんと確認してくれる人。",
+      job:"広報/接客/表現系。空気づくり。",
+      media:"恋愛ショート、共感系、Vlog。"
+    },
+    {cat:"LOVE", idx:5, name:"恋愛より自分軸",
+      vibe:"恋愛も大事だが主導権は自分。依存が苦手。",
+      core:["自立","尊重","ブレない"],
+      trap:["距離が冷たく見える","甘え下手"],
+      love:"自立してて束縛しない人。尊重ができる相手。",
+      job:"専門職/クリエイティブ/個人で成果。",
+      media:"自己成長、学び、ルーティン。"
+    },
 
-    // KAGE 6
-    {cat:"KAGE", name:"省エネ仙人", core:"争わず穏やか。安定が好き。", style:"省エネ系"},
-    {cat:"KAGE", name:"人見知りのプロ", core:"少数精鋭。信頼すると深い。", style:"慎重系"},
-    {cat:"KAGE", name:"メンタル防壁（ガード硬）", core:"傷つく前に守る。安全圏で強い。", style:"防御系"},
-    {cat:"KAGE", name:"空気読む観察者", core:"黙って見てる。変化に気づく。", style:"観察系"},
-    {cat:"KAGE", name:"静かな反骨", core:"表は穏やか、中は芯が強い。", style:"芯系"},
-    {cat:"KAGE", name:"気分の波サーファー", core:"出力が波。波前提で設計すると強い。", style:"波系"},
+    // ========== 省エネ隠居界隈 ==========
+    {cat:"KAGE", idx:0, name:"省エネ仙人",
+      vibe:"無駄な争いを避けて平和に生きる隠居界隈。安定が好き。",
+      core:["平和主義","落ち着き","燃費が良い"],
+      trap:["刺激が減って停滞","逃げ癖が出る時がある"],
+      love:"静かな時間を共有できる人。落ち着いてる相手。",
+      job:"裏方/事務/制作/集中作業。",
+      media:"散歩、ASMR、作業、落ち着くやつ。"
+    },
+    {cat:"KAGE", idx:1, name:"人見知りのプロ",
+      vibe:"最初は固いが信頼すると深い隠居界隈。少数精鋭。",
+      core:["信頼が深い","裏切らない","少人数で強い"],
+      trap:["初速が遅い","誤解されやすい"],
+      love:"距離を詰めすぎない人。信頼構築できる相手。",
+      job:"研究/制作/職人気質。",
+      media:"淡々系、考察、解説。"
+    },
+    {cat:"KAGE", idx:2, name:"メンタル防壁（ガード硬）",
+      vibe:"傷つく前に守る隠居界隈。安全圏で強い。",
+      core:["自己管理","慎重","壊れにくい"],
+      trap:["心を開くのが遅い","疑い深くなる"],
+      love:"詰めずに理解する人。安心感ある相手。",
+      job:"運用保守/安定職/ルーチン強い仕事。",
+      media:"レビュー、比較、検証。"
+    },
+    {cat:"KAGE", idx:3, name:"空気読む観察者",
+      vibe:"喋らないけど見てる隠居界隈。変化に気づく。",
+      core:["察し","観察眼","沈黙が平気"],
+      trap:["言わないで損する","抱え込む"],
+      love:"沈黙を気まずくしない人。自然体の相手。",
+      job:"サポート/編集/調整役/裏方。",
+      media:"ドキュメンタリー、雰囲気Vlog、映画。"
+    },
+    {cat:"KAGE", idx:4, name:"静かな反骨",
+      vibe:"波風立てないが芯が強い隠居界隈。理不尽は覚えてる。",
+      core:["芯","誠実","筋を通す"],
+      trap:["我慢で溜める","爆発すると強い"],
+      love:"誠実で尊重できる人。嘘が多い相手は無理。",
+      job:"品質/改善/監査/専門職。",
+      media:"社会系、考察、討論（見る専）。"
+    },
+    {cat:"KAGE", idx:5, name:"気分の波サーファー",
+      vibe:"出力が波で変わる隠居界隈。波を前提に設計すると強い。",
+      core:["柔軟","自分の波を知ってる","無理しない"],
+      trap:["安定しないと自己嫌悪","継続が難しい"],
+      love:"波を責めない人。休むのを許せる相手。",
+      job:"自由度高い制作/編集/在宅寄り。",
+      media:"短尺→長尺を気分で行き来。ゆるい企画。"
+    },
   ];
 
-  // ---- 軸：E(外向) / C(計画) / A(共感) ----
-  // PART2のaxes（E/C/A）を使い、無ければ0
-  function calcAxisScores(){
+  // ---------- 軸（E/C/A）を“そこそこ正確に” ----------
+  // PART2でaxesは E/C/A を置いてる前提で読む（無いなら0）
+  function calcAxis(){
     const sum = {E:0, C:0, A:0};
-    const answers = (state.answers||[]);
-    answers.forEach((v,i)=>{
-      const ax = (Q[i] && Q[i].axes) ? Q[i].axes : null;
+    (state.answers||[]).forEach((v,i)=>{
+      if(typeof v !== "number") return;
+      const ax = Q[i] && Q[i].axes ? Q[i].axes : null;
       if(!ax) return;
-      Object.keys(sum).forEach(k=>{
-        if(ax[k]) sum[k] += v * ax[k];
-      });
+      if(ax.E) sum.E += v * ax.E;
+      if(ax.C) sum.C += v * ax.C;
+      if(ax.A) sum.A += v * ax.A;
     });
     return sum;
   }
 
-  // ---- 5界隈推定：番号ブロック加点 + キーワード補助 ----
+  // ---------- 界隈スコア（「2つしか出ない」問題を潰す強化版） ----------
   function calcCatScores(){
-    const s = {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0};
-    const answers = (state.answers||[]);
-    answers.forEach((v,i)=>{
-      const vv = (typeof v==="number") ? (Math.abs(v)+1) : 0;
+    const score = {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0};
 
-      // ブロック設計：ここが“5界隈をちゃんと出す”本体
-      // 1-20 対人→LOVE/KAGE寄り、21-40 判断→GACHI、41-60 感情→KAGE/LOVE、61-70 表現→SNS/LOVE、
-      // 71-80 生活管理→GACHI、81-90 SNS→SNS/GLAM、91-100 恋愛将来→LOVE
-      const n = i+1;
-      if(n<=10) { s.GACHI+=vv; s.LOVE+=vv*0.5; }
-      else if(n<=20){ s.LOVE+=vv; s.KAGE+=vv*0.7; }
-      else if(n<=30){ s.GACHI+=vv; }
-      else if(n<=40){ s.GACHI+=vv*0.7; s.LOVE+=vv*0.5; }
-      else if(n<=50){ s.KAGE+=vv; s.LOVE+=vv*0.6; }
-      else if(n<=60){ s.GACHI+=vv*0.6; s.KAGE+=vv*0.6; }
-      else if(n<=70){ s.SNS+=vv; s.LOVE+=vv*0.5; }
-      else if(n<=80){ s.GACHI+=vv; }
-      else if(n<=90){ s.SNS+=vv; s.GLAM+=vv*0.8; }
-      else { s.LOVE+=vv; }
+    // キーワードをめっちゃ増やす（質問文に出てくる単語ベース）
+    const re = {
+      SNS: /(投稿|バズ|自撮り|DM|いいね|フォロ|フォロー|拡散|リプ|インプレ|炎上|裏垢|タイムライン|SNS|インスタ|X|ツイ)/i,
+      GLAM: /(整形|美容|垢抜け|ブランド|ホスト|夜職|盛り|メイク|スキンケア|外見|見た目|ギャップ)/i,
+      GACHI: /(締切|提出|計画|予約|予算|検証|ルール|単位|テスト|再発防止|最適化|記録|管理|効率)/i,
+      LOVE: /(恋人|好きな人|告白|嫉妬|失恋|返信|束縛|彼氏|彼女)/i,
+      KAGE: /(不安|眠|疲|気まず|距離|黙|放置|様子見|逃げ|休む|メンタル)/i,
+    };
 
-      // キーワード補助（おまけ）
-      const text = (Q[i] && Q[i].q) ? Q[i].q : "";
-      if(/インスタ|裏垢|炎上|DM|バズ|自撮り|投稿/i.test(text)) s.SNS += 2;
-      if(/夜職|ホスト|整形|美容|ブランド|盛り/i.test(text)) s.GLAM += 2;
-      if(/提出|締切|計画|予算|予約|単位|検証|最適/i.test(text)) s.GACHI += 2;
-      if(/恋人|好きな人|失恋|嫉妬|告白|返信/i.test(text)) s.LOVE += 2;
-      if(/疲|眠|不安|気まず|距離|黙|放置/i.test(text)) s.KAGE += 2;
+    (state.answers||[]).forEach((v,i)=>{
+      if(typeof v !== "number") return;
+      const q = (Q[i] && Q[i].q) ? Q[i].q : "";
+      // 反応の強さ：否定/肯定は重め、中立は軽め
+      const w = (v === 0) ? 1 : 2;
+
+      // キーワード加点
+      Object.keys(re).forEach(k=>{
+        if(re[k].test(q)) score[k] += w;
+      });
+
+      // 追加：範囲で補助（PART2の構成上、81-90はSNS寄り、91-100はLOVE寄りなど）
+      if(i >= 80 && i <= 89) score.SNS += w;        // 81-90
+      if(i >= 90 && i <= 99) score.LOVE += w;       // 91-100
+      if(i >= 70 && i <= 79) score.GACHI += w;      // 生活/管理
+      if(i >= 40 && i <= 50) score.KAGE += 0.5*w;   // 感情処理はKAGE寄りに少し
     });
-    return s;
+
+    return score;
   }
 
-  function pickBestCat(catScores){
-    let best="SNS", bestV=-1;
-    Object.keys(catScores).forEach(k=>{
-      if(catScores[k] > bestV){ bestV = catScores[k]; best = k; }
-    });
-    return best;
+  function pickBestCats(catScore){
+    const arr = Object.entries(catScore).sort((a,b)=>b[1]-a[1]);
+    const top1 = arr[0] ? arr[0][0] : "SNS";
+    const top2 = arr[1] ? arr[1][0] : "GACHI";
+    const top3 = arr[2] ? arr[2][0] : "LOVE";
+    return {top1, top2, top3, ordered: arr};
   }
 
-  // ---- 6タイプ選択：E/C/Aの“最大のクセ”で決める ----
-  function pickType(bestCat, axis){
-    const pack = TYPES.filter(t=>t.cat===bestCat);
-
+  // ---------- 6タイプの選び方（界隈内の6枠に落とす） ----------
+  // maxAxis（E/C/A） × dir（+攻め / -守り）
+  function pickType(catKey, axis){
+    const pack = TYPES.filter(t=>t.cat===catKey);
     const aE=Math.abs(axis.E), aC=Math.abs(axis.C), aA=Math.abs(axis.A);
     const maxAxis = (aE>=aC && aE>=aA) ? "E" : (aC>=aE && aC>=aA) ? "C" : "A";
-    const dir = (axis[maxAxis] >= 0) ? 0 : 1;          // 攻め/守り
-    const which = (maxAxis==="E") ? 0 : (maxAxis==="C") ? 1 : 2; // 0..2
+    const dir = (axis[maxAxis] >= 0) ? 0 : 1; // 0=攻め 1=守り
+    const which = (maxAxis==="E") ? 0 : (maxAxis==="C") ? 1 : 2;
     const idx = dir*3 + which; // 0..5
     return pack[idx] || pack[0];
   }
 
-  // ---- 長文化テンプレ ----
-  function longify(t, catKey, axis){
-    const cat = CATS.find(c=>c.key===catKey) || {name:catKey, vibe:""};
-    const strength =
-      (axis.C>0 ? "段取り強め。ミスった時でも立て直しが早い。" : "段取りよりノリ・直感。勢いで突破できる。") +
-      (axis.E>0 ? " 人前でも出力が出やすい。" : " 一人で回復してから強くなる。") +
-      (axis.A>0 ? " 相手の気持ちも拾える。" : " 感情より事実・筋で動ける。");
-
-    const risk =
-      (axis.C<0 ? "計画が雑になった瞬間に事故りやすい（締切/金/約束）。" : "詰めすぎて疲れる（完璧主義）になりやすい。") +
-      (axis.E<0 ? " 返事遅れ・放置で誤解されやすい。" : " テンションで言いすぎて火種を作りがち。") +
-      (axis.A<0 ? " 言葉が刺さるときがある（正論パンチ注意）。" : " 優しさで抱え込みやすい。");
-
-    const love =
-`【恋愛】基本姿勢は「${axis.A>=0 ? "安心と会話" : "筋と距離感"}」。` +
-`向いてるのは、${axis.C>=0 ? "約束守れる" : "自由を尊重できる"}相手。` +
-`逆に地雷は「${axis.E>=0 ? "束縛＆沈黙" : "詰めすぎ＆監視"}」やな。`;
-
-    const job =
-`【仕事】${axis.C>=0 ? "仕組み化・再現性" : "瞬発力・突破力"}で勝つタイプ。` +
-`向く環境は「${axis.E>=0 ? "人がいる現場/企画" : "集中できる裏方"}」。` +
-`伸びるコツは「${axis.A>=0 ? "頼る/分担" : "言い方の丸め"}」。`;
-
-    const media =
-`【YouTube/娯楽】${axis.C>=0 ? "検証・解説・比較" : "企画・バラエティ"}が刺さりやすい。` +
-`しかも${axis.E>=0 ? "コメント欄も見て盛り上がる" : "静かに見てニヤる"}派。`;
-
-    const tips =
-`【精度を上げる改善】` +
-`①やらかし後は「${axis.C>=0 ? "再発防止を1個決める" : "一旦落ち着いてから謝る"}」` +
-`②人間関係は「${axis.A>=0 ? "確認して誤解を潰す" : "言葉を柔らかくする"}」` +
-`③SNSは「${catKey==="SNS" ? "反応で自尊心を決めない" : "自分の軸で使う"}」`;
-
-    return {
-      catName: cat.name,
-      catVibe: cat.vibe,
-      desc:
-`【あなたの界隈】${cat.name}（${cat.vibe}）\n` +
-`【タイプ名】${t.name}\n\n` +
-`【核】${t.core}\n` +
-`【強み】${strength}\n` +
-`【事故ポイント】${risk}\n\n` +
-`${tips}`,
-      love, job, media
-    };
+  // ---------- “長文”生成（スコアに応じて文章の色を変える） ----------
+  function levelText(v){
+    const a = Math.abs(v);
+    if(a >= 10) return "極";
+    if(a >= 6)  return "強";
+    if(a >= 3)  return "中";
+    return "弱";
+  }
+  function axisExplain(axis){
+    const e = axis.E, c=axis.C, a=axis.A;
+    const Eline = `外向(E)：${e>=0?"攻め寄り":"守り寄り"}（強さ: ${levelText(e)} / 値: ${e>=0?"+":""}${e}）`;
+    const Cline = `計画(C)：${c>=0?"計画寄り":"ノリ寄り"}（強さ: ${levelText(c)} / 値: ${c>=0?"+":""}${c}）`;
+    const Aline = `共感(A)：${a>=0?"共感寄り":"ドライ寄り"}（強さ: ${levelText(a)} / 値: ${a>=0?"+":""}${a}）`;
+    return {Eline, Cline, Aline};
   }
 
-  // ---- バッジ＆界隈ヘッダー強化 ----
-  function ensureBigCatHeader(){
-    const result = $("screenResult");
-    if(!result) return;
+  function longDescription(typeObj, catKey, cats, axis){
+    const catName = (CATS.find(c=>c.key===catKey)||{name:catKey}).name;
+    const sub1 = (CATS.find(c=>c.key===cats.top2)||{name:cats.top2}).name;
+    const sub2 = (CATS.find(c=>c.key===cats.top3)||{name:cats.top3}).name;
 
-    if(!$("bigCat")){
-      const big = document.createElement("div");
-      big.id = "bigCat";
-      big.style.fontSize = "clamp(18px, 4.2vw, 42px)";
-      big.style.fontWeight = "1000";
-      big.style.margin = "2px 0 6px";
-      big.style.lineHeight = "1.05";
-      big.style.background = "linear-gradient(90deg, rgba(110,242,255,.95), rgba(185,156,255,.95))";
-      big.style.webkitBackgroundClip = "text";
-      big.style.backgroundClip = "text";
-      big.style.color = "transparent";
-      big.style.letterSpacing = ".02em";
-      // badgesの上に入れる
-      const badges = $("badges");
-      badges.parentNode.insertBefore(big, badges);
+    const ax = axisExplain(axis);
+
+    // “あなたはこういう人物”を長文化（ブレにくい構造）
+    const p1 =
+`結論：あなたの主戦場は **${catName}**。ただし純粋100%じゃなくて、サブに **${sub1} / ${sub2}** の要素も混ざってるタイプ。
+この診断は「気分」じゃなく、やらかし・緊急・人間関係みたいな場面での“反応の癖”を拾ってる。だから当たりやすい。`;
+
+    const p2 =
+`あなたの核（タイプ名）：**${typeObj.name}**
+ひとことで言うと「${typeObj.vibe}」
+強みの出方は、だいたいこの3つで固定される：  
+・${typeObj.core[0]}  
+・${typeObj.core[1]}  
+・${typeObj.core[2]}  
+逆に、弱点（事故り方）はこの2つが多い：  
+・${typeObj.trap[0]}  
+・${typeObj.trap[1]}`;
+
+    const p3 =
+`行動の癖（軸の説明）：
+- ${ax.Eline}
+- ${ax.Cline}
+- ${ax.Aline}
+
+※この3軸は「どう振る舞うか」を分解しただけ。良い/悪いじゃない。
+ただ、恋愛・仕事・SNS・友達関係は、この3軸の組み合わせでほぼ決まる。`;
+
+    return [p1,p2,p3].join("\n\n");
+  }
+
+  function longLove(typeObj, axis){
+    const e = axis.E, c=axis.C, a=axis.A;
+    const add =
+      (a < 0) ? "あなたは“優しさ”を言葉で出すより、行動やルールで出す側。相手が察しないタイプだと誤解されやすいから、最低限だけ言語化すると恋愛が安定する。"
+      : "あなたは共感で相手を落ち着かせられる側。だから相手が依存しやすい。『全部背負わない』境界線を作ると恋愛の質が上がる。";
+    const add2 =
+      (c < 0) ? "ノリで進める恋は楽しいけど、すれ違いも増える。『確認するタイミング』だけ先に決めると事故が減る。"
+      : "計画寄りだから、相手に“管理されてる感”を出すと萎えられる時がある。ルールは共有、強制はしない。";
+    const add3 =
+      (e < 0) ? "守り寄りやから、好きになっても動き出しが遅い。小さくでもアクション（返信・会う頻度）を出すと誤解が減る。"
+      : "攻め寄りやから、熱量が高い。相手が追いつかん時は“間”を作ると上手くいく。";
+
+    return [
+      `相性の核：${typeObj.love}`,
+      `恋愛での伸ばし方：`,
+      `・${add}`,
+      `・${add2}`,
+      `・${add3}`,
+      `地雷（これやると詰む）：`,
+      `・「言わなくても分かるやろ」放置（誤解が雪だるま）`,
+      `・不安のまま詰める（相手を守りに入らせる）`,
+    ].join("\n");
+  }
+
+  function longJob(typeObj, axis){
+    const c = axis.C, e = axis.E;
+    const style =
+      (c >= 0) ? "あなたは『仕組みで勝つ』側。手順・チェック・テンプレがある環境で伸びる。"
+              : "あなたは『瞬発で勝つ』側。変化が多い現場や、短期勝負で火力が出る。";
+    const style2 =
+      (e >= 0) ? "人前でも勝てる。説明・交渉・見せ方が武器になる。"
+              : "裏方で勝てる。分析・制作・改善で静かに強い。";
+    return [
+      `向いてる職業（コア）：${typeObj.job}`,
+      `働き方の癖：`,
+      `・${style}`,
+      `・${style2}`,
+      `職場での“勝ち筋”：`,
+      `・得意な場面を先に固定（役割を取る）`,
+      `・苦手は“気合”じゃなく“仕組み”で潰す`,
+    ].join("\n");
+  }
+
+  function longMedia(typeObj, catKey){
+    const extra =
+      (catKey==="SNS")  ? "コメント欄・反応・伸び方まで含めて“作品”として見がち。"
+      : (catKey==="GACHI") ? "学び・比較・検証で『納得』するとハマる。"
+      : (catKey==="LOVE")  ? "人間関係の機微があるストーリー系に刺さりやすい。"
+      : (catKey==="GLAM")  ? "変化・ビフォアフ・世界観がある映像が刺さりやすい。"
+      : "落ち着く空気・長尺・静かな面白さに刺さりやすい。";
+    return [
+      `好きそうなYouTube/娯楽（コア）：${typeObj.media}`,
+      `ハマり方の特徴：${extra}`,
+      `おすすめの見方：『気分が落ちた時用』と『テンション上げたい用』で再生リスト分けると神。`,
+    ].join("\n");
+  }
+
+  // ---------- 表示（界隈をデカく） ----------
+  function renderBigCat(catKey, cats){
+    const badges = $("badges");
+    if(!badges) return;
+
+    const catName = (CATS.find(c=>c.key===catKey)||{name:catKey}).name;
+    const sub1 = (CATS.find(c=>c.key===cats.top2)||{name:cats.top2}).name;
+    const sub2 = (CATS.find(c=>c.key===cats.top3)||{name:cats.top3}).name;
+
+    // badgesを一旦クリアして、デカ表示を先頭に置く
+    badges.innerHTML = "";
+
+    const big = document.createElement("div");
+    big.className = "bigCat";
+    big.innerHTML = `
+      <div class="k">あなたの界隈</div>
+      <div class="v">${catName}</div>
+      <div class="sub">サブ成分：${sub1} / ${sub2}（混ざってるから、結果が立体的になる）</div>
+    `;
+    badges.appendChild(big);
+  }
+
+  function renderAxisBadges(axis){
+    const badges = $("badges");
+    if(!badges) return;
+
+    // bigCatの下に小バッジ追加
+    const addBadge = (txt)=>{
+      const s = document.createElement("span");
+      s.className = "badge";
+      s.textContent = txt;
+      badges.appendChild(s);
+    };
+
+    addBadge(`E(外向) ${axis.E>=0?"+":""}${axis.E} / ${levelText(axis.E)}`);
+    addBadge(`C(計画) ${axis.C>=0?"+":""}${axis.C} / ${levelText(axis.C)}`);
+    addBadge(`A(共感) ${axis.A>=0?"+":""}${axis.A} / ${levelText(axis.A)}`);
+    addBadge(`回答 ${state.answers.filter(v=>typeof v==="number").length}/${Q.length || 100}`);
+  }
+
+  // ---------- 結果確定 ----------
+  function calcAndRenderResult(){
+    const axis = calcAxis();
+    const catScore = calcCatScores();
+    const cats = pickBestCats(catScore);
+
+    const typeObj = pickType(cats.top1, axis);
+
+    // デカ界隈表示
+    renderBigCat(cats.top1, cats);
+    renderAxisBadges(axis);
+
+    // タイプ名
+    $("resultTitle").textContent = typeObj.name;
+
+    // 長文化（desc / love / job / media）
+    $("desc").textContent  = longDescription(typeObj, cats.top1, cats, axis);
+    $("love").textContent  = longLove(typeObj, axis);
+    $("job").textContent   = longJob(typeObj, axis);
+    $("media").textContent = longMedia(typeObj, cats.top1);
+
+    // さらに“長文追記ボックス”を各パネル末尾に追加（無ければ追加）
+    attachLongBoxes(typeObj, cats.top1, axis, cats);
+  }
+
+  function attachLongBoxes(typeObj, catKey, axis, cats){
+    // 既に追加済みなら二重に増やさない
+    const mark = "__plus_long_boxes__";
+    if(window[mark]) return;
+    window[mark] = true;
+
+    // 追加内容（精度寄りの「伸ばし方・地雷・取説」）
+    const kit = document.createElement("div");
+    kit.className = "longBox";
+    kit.innerHTML = `
+      <h4>取扱説明書（精度寄り）</h4>
+      <ul>
+        <li><b>最強になる条件：</b>「得意な場面」を先に固定して、苦手は仕組みで潰す。</li>
+        <li><b>事故る条件：</b>疲れてるのに無理して、人間関係で雑な一言が出た時。</li>
+        <li><b>回復のコツ：</b>睡眠→食事→環境（場所変える）→言語化（短く）で戻る。</li>
+      </ul>
+    `;
+
+    const kit2 = document.createElement("div");
+    kit2.className = "longBox";
+    kit2.innerHTML = `
+      <h4>次の一手（1週間で変わるやつ）</h4>
+      <ul>
+        <li>①「やらかし」したら：<b>謝罪 → 対策 → 代案</b>の順でテンプレ化</li>
+        <li>② 人間関係で迷ったら：<b>確認（質問）</b>を1回入れて誤解を止める</li>
+        <li>③ 継続が苦手なら：<b>毎日やる</b>じゃなく <b>週◯回</b>で設計</li>
+      </ul>
+    `;
+
+    // どこに挿す：結果画面の最初のパネル（descのパネル）に入れる
+    const descP = $("desc");
+    if(descP && descP.parentElement){
+      descP.parentElement.appendChild(kit);
+      descP.parentElement.appendChild(kit2);
     }
   }
 
-  function renderBadges(catKey, axis){
-    const wrap = $("badges");
-    if(!wrap) return;
-    wrap.innerHTML = "";
+  // ---------- 「結果ボタン」優先ハンドラ ----------
+  const toResultBtn = $("toResultBtn");
+  if(toResultBtn){
+    // 先にcaptureで取って、PART2のクリックを止める
+    toResultBtn.addEventListener("click", function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
 
-    const answered = (state.answers||[]).filter(v=>typeof v==="number").length;
-    const mk = (txt)=>{
-      const b=document.createElement("span");
-      b.className="badge";
-      b.textContent=txt;
-      return b;
-    };
-
-    wrap.appendChild(mk(`回答数 ${answered} / ${Q.length||100}`));
-    wrap.appendChild(mk(`E(外向) ${axis.E>=0?"+":""}${axis.E}`));
-    wrap.appendChild(mk(`C(計画) ${axis.C>=0?"+":""}${axis.C}`));
-    wrap.appendChild(mk(`A(共感) ${axis.A>=0?"+":""}${axis.A}`));
-    wrap.appendChild(mk(`界隈キー ${catKey}`));
-  }
-
-  function calcResultAndRender(){
-    ensureBigCatHeader();
-
-    const axis = calcAxisScores();
-    const catScores = calcCatScores();
-    const bestCat = pickBestCat(catScores);
-    const baseType = pickType(bestCat, axis);
-
-    const out = longify(baseType, bestCat, axis);
-
-    $("bigCat").textContent = out.catName;           // ← デカ表示
-    $("resultTitle").textContent = baseType.name;    // ← タイプ名
-    $("desc").textContent  = out.desc;
-    $("love").textContent  = out.love;
-    $("job").textContent   = out.job;
-    $("media").textContent = out.media;
-
-    renderBadges(bestCat, axis);
-  }
-
-  // ✅ 結果ボタン：最終的にこのPART3が “上書き” する
-  const btn = $("toResultBtn");
-  if(btn){
-    btn.addEventListener("click", ()=>{
       state.finished = true;
       try{ saveState(state); }catch(e){}
-      calcResultAndRender();
+      calcAndRenderResult();
       showScreen("screenResult");
-    });
+    }, true);
   }
 
-  // 復元時
+  // ---------- 既に finished で復元する場合 ----------
   setTimeout(()=>{
     if(state && state.finished){
-      calcResultAndRender();
+      calcAndRenderResult();
       showScreen("screenResult");
     }
   }, 0);
 
+  // デバッグ用
+  window.__EMBTI_PLUS_TYPES = TYPES;
 })();
 </script>
