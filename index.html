@@ -242,10 +242,10 @@ function renderFinalQuestion() {
   document.getElementById('nav-btns').classList.add('hide');
   document.getElementById('warn-text').classList.add('hide');
   const qText = document.getElementById('question-text');
-  qText.innerHTML = `<span style="color:var(--accent-p); font-size:1.4rem;">究極の選択：不幸のボタン</span><br><br>あなたが最も大切に思っている「あの人」の口座に1億円が振り込まれます。代わりに、あなたは消滅します。このボタンを渡せますか？`;
+  qText.innerHTML = `<span style="color:var(--accent-p); font-size:1.4rem;">究極の選択：不幸のボタン</span><br><br>想像してください。１つボタンがここにあります。ボタンを押したらあなたが最も大切に思っている「友達」の口座に1億円が振り込まれます。ただし、あなたは消えますし、あなたが押すことはできません。このボタンを大切な友達に預けられますか？`;
   const choices = document.getElementById('choices');
   choices.innerHTML = "";
-  [{t:"渡す",v:0},{t:"渡さない",v:1}].forEach(b=>{
+  [{t:"預けられる",v:0},{t:"預けられない",v:1}].forEach(b=>{
     const btn = document.createElement('button');
     btn.textContent = b.t;
     btn.onclick = () => { clearInterval(state.timer); state.ans = b.v; showResult(); };
