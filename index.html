@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>えむびーてぃーあいPlus </title>
+  <title>えむびーてぃーあいPlus | 究極版</title>
   <style>
     :root { --bg: #05070a; --accent-p: #ff7ca7; --accent-v: #bda6ff; --accent-b: #6ef2ff; --text: #ffffff; }
     * { box-sizing: border-box; }
@@ -20,8 +20,10 @@
     button { padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; text-align: left; }
     button:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
     .timer { font-size: 4rem; text-align: center; color: #ff4477; font-weight: 900; margin-bottom: 10px; font-family: monospace; text-shadow: 0 0 20px #ff4477; }
-    .res-area-name { font-size: 1.8rem; font-weight: 900; color: var(--accent-p); text-align:center; margin-bottom: 10px; }
+    .res-area-name { font-size: 1.8rem; font-weight: 900; color: var(--accent-p); text-align:center; margin-bottom: 5px; }
+    .res-type-name { font-size: 1rem; color: var(--accent-v); text-align: center; margin-bottom: 20px; font-weight: bold; }
     .section { background: rgba(255,255,255,0.04); border-radius: 20px; padding: 20px; margin-bottom: 15px; border-left: 4px solid var(--accent-v); }
+    .sec-title { font-weight: 900; color: var(--accent-v); margin-bottom: 10px; font-size: 0.9rem; }
     .essay-text { line-height: 1.8; font-size: 0.9rem; white-space: pre-wrap; }
     .final-box { background: #111; border: 2px solid #ff4477; padding: 20px; border-radius: 20px; margin-top: 20px; line-height: 1.7; }
     .hide { display: none !important; }
@@ -35,8 +37,12 @@
 <div class="container">
   <div id="screen-intro" class="card">
     <h1>えむびーてぃーあいPlus</h1>
-    <p style="text-align:center; color:#bbb; font-size:0.9rem;">深層心理を抉り出す、全100問の対話。<br>あなたの「本当の界隈」を暴きます。</p>
-    <button style="background:#fff; color:#000; margin-top:10px; text-align:center;" onclick="start(false)">診断を開始する</button>
+    <p style="text-align:center; color:#bbb; font-size:0.9rem; line-height:1.6;">
+      どこかの診断のような曖昧で無駄な5択質問を取り除き<br>
+      具体化されたよりわかりやすい3択×100問で<br>
+      あなたの思考パターンを徹底分析します
+    </p>
+    <button style="background:#fff; color:#000; margin-top:20px; text-align:center;" onclick="start(false)">診断を開始</button>
     <button id="resume-btn" class="hide" style="width:100%; margin-top:10px; border:1px solid #666; background:none; color:#fff; border-radius:16px; padding:16px; text-align:center;" onclick="start(true)">続きから再開</button>
   </div>
 
@@ -52,6 +58,7 @@
     <div id="choices" class="choices"></div>
     <div style="display:flex; gap:10px; width:100%;">
         <button class="sub-btn" onclick="goBack()">戻る</button>
+        <button id="force-finish-btn" class="sub-btn" onclick="forceFinish()">途中で結果を見る</button>
         <button class="sub-btn" onclick="resetAll()">リセット</button>
     </div>
   </div>
@@ -59,7 +66,14 @@
   <div id="screen-result" class="card hide">
     <img id="res-image" class="res-char-img" src="" alt="result">
     <div id="res-area" class="res-area-name"></div>
-    <div class="section"><div id="res-essay" class="essay-text"></div></div>
+    <div id="res-type" class="res-type-name"></div>
+    
+    <div class="section"><div class="sec-title">思考パターン</div><div id="res-thinking" class="essay-text"></div></div>
+    <div class="section"><div class="sec-title">恋愛傾向</div><div id="res-love" class="essay-text"></div></div>
+    <div class="section"><div class="sec-title">向いてる仕事</div><div id="res-job-yes" class="essay-text"></div></div>
+    <div class="section"><div class="sec-title">向いてない仕事</div><div id="res-job-no" class="essay-text"></div></div>
+    <div class="section"><div class="sec-title">レベルアップするには？</div><div id="res-levelup" class="essay-text"></div></div>
+
     <div id="final-box" class="final-box"></div>
     <button style="margin-top:20px; text-align:center;" onclick="resetAll()">トップへ戻る</button>
   </div>
@@ -67,7 +81,7 @@
 
 <script>
 const DB = [
-  // ① SNS・承認欲求
+  // ① SNS・承認欲求 (1-20)
   {cat:"SNS", q:"TikTokやX等でバズってる人を見ると、いいね数やコメント数を気にしてしまう", c:["つい数字を分析してしまう", "たまに見てしまう", "全く気にならない"]},
   {cat:"SNS", q:"友達の投稿が伸びていると、コメント欄やいいね数を全て確認する", c:["誰が反応してるか隅々まで見る", "少し覗く程度", "見ない"]},
   {cat:"SNS", q:"TikTokやX等でバズってる人を見るといいね数やコメント数を気にしてしまう", c:["自分の時と何が違うか考える", "いいなーと思う", "どうでもいい"]},
@@ -89,7 +103,7 @@ const DB = [
   {cat:"SNS", q:"他人の投稿に批判的なコメントをした事がある", c:["間違っているから指摘した", "イラっとして書いた", "ない"]},
   {cat:"SNS", q:"SNSはいかにいいねをたくさん貰うかが重要だ", c:["数字こそが正義", "多ければ嬉しい", "自己満足でいい"]},
 
-  // ② 夜職・盛り・自己価値
+  // ② 夜職・盛り・自己価値 (21-40)
   {cat:"GLAM", q:"見た目はお金でどうにかなる", c:["投資すれば必ず報われる", "ある程度はそう思う", "中身や素材が大事"]},
   {cat:"GLAM", q:"ここ1年は容姿を磨くことに1番お金をかけている", c:["美容が人生の最優先", "かなり使っている", "並程度"]},
   {cat:"GLAM", q:"可愛い・かっこいいと言われると自信が出る", c:["それが生きる糧", "素直に嬉しい", "お世辞だと思う"]},
@@ -111,7 +125,7 @@ const DB = [
   {cat:"GLAM", q:"自分を下げる発言は冗談でも、言われたら傷つく", c:["絶対許さない", "モヤっとする", "笑いに変える"]},
   {cat:"GLAM", q:"プライドは高い方だ", c:["折られるくらいなら死ぬ", "少し高いかも", "低いと思う"]},
 
-  // ③ メガネ真面目くん
+  // ③ メガネ真面目くん (41-60)
   {cat:"GACHI", q:"約束の時間は絶対守るべきだ", c:["5分前行動が当たり前", "時間は守るようにしている", "多少の遅れは許してほしい"]},
   {cat:"GACHI", q:"計画通りに進まないとイライラする", c:["予定が狂うとパニック・怒り", "少し焦る", "臨機応変に楽しむ"]},
   {cat:"GACHI", q:"ミスをすると原因を考える", c:["再発防止を徹底的に分析", "反省する", "次から気をつける"]},
@@ -133,7 +147,7 @@ const DB = [
   {cat:"GACHI", q:"利益が少しずつでもコツコツ積み立てれる", c:["複利の力を信じている", "貯金は得意", "すぐ使ってしまう"]},
   {cat:"GACHI", q:"眠い時は授業中でも友達の車でも寝る", c:["規律を守るため起きていたい", "たまに耐えられない", "すぐ寝る"]},
 
-  // ④ 恋愛至上主義
+  // ④ 恋愛至上主義 (61-80)
   {cat:"LOVE", q:"好きな人の誕生日に3万円以上は使いたい", c:["喜ぶ顔のためなら惜しくない", "記念日なら頑張る", "1万円以下で十分"]},
   {cat:"LOVE", q:"恋愛が生活の中心になりやすい", c:["恋人が世界の中心", "仕事と恋愛半々", "趣味や友達が優先"]},
   {cat:"LOVE", q:"相手の言動に一喜一憂しがち", c:["LINE一通で天国と地獄", "多少は振り回される", "冷静でいられる"]},
@@ -155,7 +169,7 @@ const DB = [
   {cat:"LOVE", q:"ニコイチの存在になりたい", c:["ペア画やペアルックをしたい", "たまにはいいかも", "恥ずかしい"]},
   {cat:"LOVE", q:"恋愛が人生を左右する", c:["恋次第で人生の質が変わる", "重要な要素ではある", "他にも大事なものはある"]},
 
-  // ⑤ インキャラ
+  // ⑤ インキャラ (81-99)
   {cat:"KAGE", q:"一人の時間がないとしんどい", c:["一人でしか回復できない", "たまに欲しくなる", "誰かといたい"]},
   {cat:"KAGE", q:"群れるより少人数が楽", c:["2人か3人が限界", "4,5人くらいなら", "大人数が好き"]},
   {cat:"KAGE", q:"学生の頃は群れている人たちは苦手だった", c:["住む世界が違うと思っていた", "少し苦手意識があった", "仲良くしていた"]},
@@ -178,11 +192,51 @@ const DB = [
 ];
 
 const MASTER = {
-  SNS: { area: "SNS界隈", img: "https://r.jina.ai/i/0681335c05c04803960012727a810d7a", essay: "あなたの価値基準は「他人の親指」にあります。通知が鳴るたびに心が跳ね、反応がないと世界から消えたような感覚に陥る。情報の感度は天才的ですが、鏡の中の自分よりも、画面の中の自分を愛しすぎていませんか？" },
-  GLAM: { area: "夜職・盛り・自己価値界隈", img: "https://r.jina.ai/i/6efd9943505748a39a9c80872efd726b", essay: "「自分を高く売ること」のプロフェッショナル。容姿やブランドという武装を解くことに恐怖を感じています。向上心は誰よりも強いですが、それは「ありのままの自分では愛されない」という悲しい確信の裏返しでもあります。" },
-  GACHI: { area: "メガネ真面目くん界隈", img: "https://r.jina.ai/i/7d363583204e43e7b16606a72661852f", essay: "世界のバグを許せない規律の守護者。論理と段取りを愛し、無責任を憎む。あなたの隣にいる人は安心感を得ますが、同時に裁かれるような緊張感も抱いています。正論で人を殴る快感を、正義と履き違えないように。" },
-  LOVE: { area: "恋愛至上主義界隈", img: "https://r.jina.ai/i/05727038e235470588657697472097e3", essay: "愛という名の重力に囚われた人。誰かの「一番」であることでしか、自分の酸素を確保できない。一喜一憂の激しさは人間味に溢れていますが、相手を失う恐怖が、結果的に相手を窮屈にさせていることに気づいて。" },
-  KAGE: { area: "自分を持ってるインキャラ界隈", img: "https://r.jina.ai/i/2d49015c92c943f29013915891392652", essay: "内側に広大な宇宙を持つ孤高の観測者。群れを嫌い、静寂を好む。あなたは冷たいのではなく、自分の感性を守るためにバリアを張っているだけ。その扉を開ける鍵を持つ人は極めて少ないですが、それこそがあなたの誇りです。" }
+  SNS: { 
+    area: "SNS・承認欲求界隈", 
+    type: "【デジタル承認モンスター型】",
+    thinking: "あなたの思考は常に「客観視という名の他人の目」に支配されています。何を見ても『これは映えるか』『どう反論されるか』を先に考えてしまい、純粋な体験が難しくなっている状態です。情報の波を読む力は天才的ですが、その分、自分の核となる意見が空洞化しやすく、数字の増減でアイデンティティが崩壊する危うさを持っています。",
+    love: "恋愛においても「見栄え」と「反応速度」を重視します。パートナーがSNSで自慢できる相手か、あるいは自分の投稿に真っ先に反応してくれるかが愛情の指標になりがちです。愛されている実感よりも、愛されているように周りに見えているか、という実感を優先してしまうため、本質的な孤独が埋まりにくい傾向があります。",
+    jobYes: "SNS運用担当、PR・広報、トレンドアナリスト、メディア編集者、インフルエンサー。",
+    jobNo: "地方公務員、工場での定型作業、顔出しNGの地味な事務職、アナログな伝統工芸。",
+    levelup: "1日のうち数時間はデジタルデトックスを行い、誰にも見せない日記を書くことで『自分だけの言葉』を取り戻してください。"
+  },
+  GLAM: { 
+    area: "夜職・盛り・自己価値界隈", 
+    type: "【自己武装ハイグレード型】",
+    thinking: "「自分は商品である」という冷徹かつストイックな思考の持ち主です。見た目や持ち物は自分を高く売るための投資であり、現状に満足せず常にアップデートを目指すエネルギーは凄まじいものがあります。しかし、その根底には『完璧でない自分には価値がない』という強烈な恐怖心が眠っており、休息を自分に許せない傾向があります。",
+    love: "恋愛は「価値の交換」になりがちです。自分と同等かそれ以上のスペックを相手に求め、ナメられないための武装を恋人の前でも解けません。奢られることや高価なプレゼントを自分の価値の証明書として扱うため、本当の意味で弱音を吐ける関係性を築くのに時間がかかるタイプです。",
+    jobYes: "不動産・高級車営業、美容外科カウンセラー、プロデューサー、夜職全般、芸能・モデル。",
+    jobNo: "ボランティア団体、個性を消す制服業務、年功序列の古い企業、福祉関係。",
+    levelup: "『何も持っていない、盛っていない自分』を肯定してくれる友人を一人でも持つことで、精神的な武装解除を覚えてください。"
+  },
+  GACHI: { 
+    area: "メガネ真面目くん界隈", 
+    type: "【規律の守護者・ジャッジ型】",
+    thinking: "「正しさ」と「効率」を最優先する論理的思考です。世界はルール通りに動くべきだと考えており、そこから外れる人間や事象に対して強い不快感を抱きます。責任感が強く、あなたの周りは秩序が保たれますが、同時に「正論で人を追い詰める」という無自覚な暴力性を秘めており、周囲に緊張感を与えてしまうことがあります。",
+    love: "計画的で安定した恋愛を好みます。デートの予約や将来設計などは完璧ですが、相手に「マナー」や「常識」を求めすぎるため、感情論で動くタイプとは衝突が絶えません。愛を数値や行動の積み重ねで判断するため、相手の『ただ寄り添ってほしい』という曖昧なニーズを見落としがちです。",
+    jobYes: "エンジニア、会計士・税理士、法務・コンプライアンス、品質管理、公務員。",
+    jobNo: "即興性が求められるお笑い芸人、ベンチャーの営業、芸術家、ルールが未整備な職場。",
+    levelup: "『無駄なこと』や『非効率な遊び』に全力で取り組む時間を作り、許容範囲（遊び）を広げるトレーニングをしてください。"
+  },
+  LOVE: { 
+    area: "恋愛至上主義界隈", 
+    type: "【共依存・愛の重力型】",
+    thinking: "人生の全ての意味を「他者との繋がり」に見出す思考パターンです。自分の幸せは自分ではなく、隣にいる誰かの機嫌によって決まります。感受性が豊かで共感能力が高い一方で、一人の時間を「虚無」と感じやすく、常に誰かと繋がっていないと自分の輪郭を保てないという脆さを持っています。",
+    love: "愛すること＝同化することだと考えています。恋人の全てを知り、全てを共有し、ニコイチでいたいという欲求が強く、束縛を愛の証として歓迎します。しかし、その重すぎる愛情は時に相手の酸素を奪い、結果的に別れを早めてしまう、あるいは不健全な共依存関係に陥るリスクが高いです。",
+    jobYes: "看護師・介護士、カウンセラー、ブライダル関係、ベビーシッター、ファンクラブ運営。",
+    jobNo: "孤独な研究職、冷徹な判断を要する経営陣、短期的な数字を追うトレーダー、警備員。",
+    levelup: "『一人の時間を楽しむ趣味』を死守してください。自分一人で機嫌を取れるようになれば、愛はもっと自由になります。"
+  },
+  KAGE: { 
+    area: "自分を持ってるインキャラ界隈", 
+    type: "【孤高の観測者・バリア型】",
+    thinking: "内側に強固な「自分だけの王国」を築いている思考です。外界のノイズを嫌い、最小限のエネルギーで社会と接しようとします。物事を深く洞察する力がありますが、それを外に出すことを「野暮」だと感じたり、否定されることを恐れて隠したりします。他人に期待しないことで平穏を保つ、ある種の諦観を美学としています。",
+    love: "精神的な深いつながりを重視しますが、パーソナルスペースを侵食されることを極端に嫌います。恋人であっても、自分の時間や思考を邪魔されるとスッと冷めてしまう瞬間があります。言葉にしなくても理解し合える関係を理想としますが、説明不足によるすれ違いで自ら関係を終わらせてしまうことも多いです。",
+    jobYes: "作家・ライター、プログラマー、研究職、イラストレーター、図書館司書。",
+    jobNo: "イベントMC、飛び込み営業、コールセンター、体育会系のチーム作業。",
+    levelup: "自分の考えていることを、あえて『10%増し』で言葉にして伝えてみてください。世界は意外と、あなたを拒絶しません。"
+  }
 };
 
 let state = { idx: 0, scores: {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0}, history: [], ans: null, timerVal: 45 };
@@ -227,6 +281,7 @@ function renderFinal() {
   document.getElementById('screen-quiz').classList.add('extreme-mode');
   document.getElementById('timer-ui').classList.remove('hide');
   document.getElementById('extra-info').classList.remove('hide');
+  document.getElementById('force-finish-btn').classList.add('hide');
   document.getElementById('q-num').textContent = "100";
   document.getElementById('progress-fill').style.width = "100%";
   
@@ -235,7 +290,7 @@ function renderFinal() {
   
   const choices = document.getElementById('choices');
   choices.innerHTML = "";
-  ["渡す", "渡さない"].forEach((txt, i) => {
+  ["あの人に渡す", "絶対に渡さない"].forEach((txt, i) => {
     const btn = document.createElement('button');
     btn.textContent = txt;
     btn.style.textAlign = "center";
@@ -250,6 +305,12 @@ function renderFinal() {
   }, 1000);
 }
 
+function forceFinish() {
+  if(confirm("【警告】\nまだ全ての質問に回答していません。このまま結果を見ると正確性が著しく落ちますが、よろしいですか？")) {
+    showResult();
+  }
+}
+
 function showResult() {
   document.getElementById('screen-quiz').classList.add('hide');
   document.getElementById('screen-result').classList.remove('hide');
@@ -257,14 +318,24 @@ function showResult() {
   const top = Object.keys(state.scores).reduce((a,b)=> state.scores[a] > state.scores[b]? a : b);
   const info = MASTER[top];
 
-  document.getElementById('res-image').src = info.img;
+  document.getElementById('res-image').src = `https://r.jina.ai/i/${info.area}`; 
   document.getElementById('res-area').textContent = info.area;
-  document.getElementById('res-essay').textContent = info.essay;
+  document.getElementById('res-type').textContent = info.type;
+  
+  document.getElementById('res-thinking').textContent = info.thinking;
+  document.getElementById('res-love').textContent = info.love;
+  document.getElementById('res-job-yes').textContent = info.jobYes;
+  document.getElementById('res-job-no').textContent = info.jobNo;
+  document.getElementById('res-levelup').textContent = info.levelup;
 
   let finalMsg = "";
-  if(state.ans === 0) finalMsg = "【ボタンを渡す】<br>―― その「信用」は、ただの押し付けだ。一番大切な人に「一生続く負い目」をプレゼントして、あなたは満足ですか？相手を試さずにはいられない。その確認作業を、あなたは友情と呼んでいる。";
-  else if(state.ans === 1) finalMsg = "【ボタンを渡さない】<br>―― あなたは、あの人を「見くびっている」。あの人が1億円に負けて、あなたを忘れてしまう可能性を確信している。それは自分への執着ではなく、相手への冷徹な「諦め」です。";
-  else finalMsg = "【沈黙】<br>どちらも選ばなかった。それは迷いではなく、あの人と金を同じ天秤に載せること自体を拒否した、唯一の誠実な回答です。";
+  if(state.idx < 99) {
+    finalMsg = "【中断された結果】<br>100問全ての対話を終えていないため、深層分析はロックされています。";
+  } else {
+    if(state.ans === 0) finalMsg = "【ボタンを渡す】<br>―― その「信用」は、ただの押し付けだ。一番大切な人に「一生続く負い目」をプレゼントして、あなたは満足ですか？相手を試さずにはいられない。その確認作業を、あなたは友情と呼んでいる。";
+    else if(state.ans === 1) finalMsg = "【ボタンを渡さない】<br>―― あなたは、あの人を「見くびっている」。あの人が1億円に負けて、あなたを忘れてしまう可能性を確信している。それは自分への執着ではなく、相手への冷徹な「諦め」です。";
+    else finalMsg = "【沈黙】<br>どちらも選ばなかった。それは迷いではなく、あの人と金を同じ天秤に載せること自体を拒否した、唯一の誠実な回答です。";
+  }
   
   document.getElementById('final-box').innerHTML = `<span style="color:#ff4477; font-weight:bold;">最後の回答への分析：</span><br><br>${finalMsg}`;
 }
