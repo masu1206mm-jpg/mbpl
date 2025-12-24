@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>えむびーてぃーあいPlus</title>
+  <title>えむびーてぃーあいPlus | 究極版</title>
   <style>
     :root {
       --bg: #05070a;
@@ -25,11 +25,12 @@
       backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);
       box-shadow: 0 25px 60px rgba(0,0,0,0.8); position: relative;
     }
+    /* 特別演出 */
     .extreme-mode { background: #000 !important; border: 1px solid #444 !important; animation: heart 2s infinite; }
     @keyframes heart { 0%, 100% { box-shadow: 0 0 20px #000; } 50% { box-shadow: 0 0 40px rgba(255,0,85,0.15); } }
     .silence-sanctuary { background: #fff !important; color: #000 !important; border: none !important; }
     .silence-sanctuary .section-title { color: #555 !important; }
-    .silence-sanctuary .essay-text { color: #000 !important; }
+    .silence-sanctuary .essay-text { color: #333 !important; }
 
     h1 { text-align: center; font-size: 1.8rem; background: linear-gradient(90deg, var(--accent-p), var(--accent-v)); -webkit-background-clip: text; color: transparent; margin-bottom: 20px; font-weight: 900; }
     .intro-text { font-size: 0.95rem; line-height: 1.8; color: #bbb; text-align: center; margin-bottom: 30px; }
@@ -47,13 +48,18 @@
 
     .timer { font-size: 4rem; text-align: center; color: var(--accent-p); font-weight: 900; margin-bottom: 20px; font-family: monospace; }
     
-    .result-badge { display: inline-block; padding: 6px 16px; border-radius: 99px; background: var(--accent-v); color: #000; font-weight: 900; font-size: 0.75rem; margin-bottom: 10px; }
-    .type-name { font-size: 2rem; font-weight: 900; color: var(--accent-b); margin-bottom: 25px; }
-    .section { background: rgba(255,255,255,0.04); border-radius: 20px; padding: 20px; margin-bottom: 15px; border-left: 5px solid var(--accent-v); }
-    .section-title { font-weight: 900; font-size: 0.85rem; color: var(--accent-v); margin-bottom: 10px; }
-    .essay-text { line-height: 1.8; font-size: 0.95rem; white-space: pre-wrap; }
+    /* 結果画面デザイン調整 */
+    .res-area-name { font-size: 2.2rem; font-weight: 900; color: var(--accent-p); margin-bottom: 5px; letter-spacing: -1px; text-align:center; }
+    .res-type-name { font-size: 1.2rem; font-weight: bold; color: var(--accent-v); text-align:center; margin-bottom: 30px; opacity: 0.8; }
+    
+    .section { background: rgba(255,255,255,0.04); border-radius: 24px; padding: 25px; margin-bottom: 20px; border-left: 6px solid var(--accent-v); }
+    .section-title { font-weight: 900; font-size: 0.9rem; color: var(--accent-v); margin-bottom: 12px; letter-spacing: 1px; }
+    .essay-text { line-height: 1.9; font-size: 0.95rem; white-space: pre-wrap; }
     .bold-hit { font-weight: 900; color: var(--accent-p); border-bottom: 2px solid var(--accent-p); }
     
+    .final-box { background: #000; border: 2px solid var(--accent-p); padding: 30px; border-radius: 28px; margin-top: 30px; }
+    .final-essay { font-size: 0.9rem; line-height: 2; white-space: pre-wrap; }
+
     .hide { display: none !important; }
     .nav-btns { display: flex; gap: 10px; margin-top: 25px; }
     .sub-btn { flex: 1; padding: 12px; font-size: 0.8rem; background: transparent; border: 1px solid #444; color: #888; border-radius: 12px; }
@@ -75,34 +81,48 @@
 
   <div id="screen-quiz" class="card hide">
     <div id="timer-ui" class="hide"><div id="timer-display" class="timer">35</div></div>
-    <div id="q-label" style="font-size:0.8rem; font-weight:900; color:var(--accent-b);">Q.<span id="q-num">1</span> / 100</div>
+    <div id="q-label" style="font-size:0.8rem; font-weight:900; color:var(--accent-b);">ANALYZING... Q.<span id="q-num">1</span> / 100</div>
     <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
     <div id="question-text" class="question-text"></div>
     <div id="choices" class="choices"></div>
     <div id="nav-btns" class="nav-btns">
-      <button class="sub-btn" onclick="goBack()">← 戻る</button>
+      <button class="sub-btn" onclick="goBack()">ひとつ前に戻る</button>
       <button class="sub-btn" onclick="forceFinish()">診断を中断して結果を見る</button>
     </div>
-    <p id="warn-text" style="font-size:0.7rem; color:#666; text-align:center; margin-top:10px;">
+    <p id="warn-text" style="font-size:0.7rem; color:#666; text-align:center; margin-top:15px;">
       ※結果はいつでも出せますが100の質問に答えていただく方が精度が高いです
     </p>
   </div>
 
   <div id="screen-result" class="card hide">
-    <div id="res-badge" class="result-badge"></div>
-    <div id="res-type" class="type-name"></div>
-    <div class="section"><div class="section-title">思考タイプ</div><div id="res-essay" class="essay-text"></div></div>
-    <div class="section"><div class="section-title">適職 / 非適職</div><div id="res-jobs" class="essay-text"></div></div>
-    <div class="section"><div class="section-title">LEVEL UP</div><div id="res-level" class="essay-text"></div></div>
-    <div id="final-box" style="background:#000; border:2px solid var(--accent-p); padding:20px; border-radius:20px; margin-top:20px;">
-      <div class="section-title" style="color:var(--accent-p);">最後の問いへの答え</div>
-      <div id="res-final" class="essay-text"></div>
+    <div id="res-area" class="res-area-name"></div>
+    <div id="res-type" class="res-type-name"></div>
+    
+    <div class="section">
+      <div class="section-title">思考タイプ</div>
+      <div id="res-essay" class="essay-text"></div>
     </div>
-    <button style="width:100%; margin-top:30px; border-color:#444; color:#888;" onclick="resetAll()">全てのデータを消去してトップへ</button>
+
+    <div class="section">
+      <div id="res-job-title" class="section-title">職業分析</div>
+      <div id="res-jobs" class="essay-text"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">レベルアップするには？</div>
+      <div id="res-level" class="essay-text"></div>
+    </div>
+
+    <div id="final-box" class="final-box">
+      <div id="res-final" class="final-essay"></div>
+    </div>
+
+    <button style="width:100%; margin-top:40px; border-color:#444; color:#888;" onclick="resetAll()">全てのデータを消去してトップへ</button>
   </div>
 </div>
 
 <script>
+/* 質問データベース */
 const DB = [
   /* SNS (1-20) */
   {cat:"SNS", q:"TikTokやX等でバズってる人を見ると、いいね数やコメント数を気にしてしまう"},
@@ -190,7 +210,7 @@ const DB = [
   {cat:"LOVE", q:"恋愛が人生を左右する"},
   /* KAGE (81-99) */
   {cat:"KAGE", q:"一人の時間がないとしんどい"},
-  {cat:"KAGE", q:"群めるより少人数が楽"},
+  {cat:"KAGE", q:"群れるより少人数が楽"},
   {cat:"KAGE", q:"学生の頃は群れている人たちは苦手だった"},
   {cat:"KAGE", q:"周りに合わせすぎるのが苦手"},
   {cat:"KAGE", q:"無理にテンションを上げたくない"},
@@ -211,26 +231,53 @@ const DB = [
 ];
 
 const MASTER = {
-  SNS: { area: "SNS・承認欲求界隈", names:["デジタル承認モンスター","炎上ウォッチャー","正真正銘のクズ男","正真正銘のクズ女"], essay:"他者の反応があなたのガソリンです。常に客観的な視点を持ちますが、自分自身の本音を見失いやすい傾向があります。", pro:"インフルエンサー, 広告, 編集", anti:"警備, 事務, 伝統産業", level:"数字に反映されない『自分のための時間』を増やしましょう。" },
-  GLAM: { area: "夜職・盛り・自己価値界隈", names:["夜職プライド鬼高ウーマン","ホスト王","職業整形師","ブランドの奴隷"], essay:"自己プロデュース能力が極めて高いタイプ。プライドの高さは美学ですが、時に自分を追い詰めすぎることも。", pro:"美容, 営業, 夜職, 接客", anti: "研究, 介護, 事務", level:"ブランド品ではない、あなたの内面にある強さを信じて。" },
-  GACHI: { area: "メガネ真面目くん界隈", names:["ガチー牛さん","シゴデキ","素直ストレート男","鉄の規律マン"], essay:"論理と正義を重んじる信頼の塊。他人のミスに厳しいのは、あなたが自分に厳しく生きているからです。", pro:"IT, 会計, 法務, 官僚", anti:"芸術, 接客, 企画", level:"正論が常に正解ではないことを知ると、人間関係が楽になります。" },
-  LOVE: { area: "恋愛至上主義界隈", names:["職業恋愛師","依存グラビティ","ニコイチ信者","愛情枯渇モンスター"], essay:"愛し愛されることが人生の全て。情熱的ですが、依存の強さが自分を削ってしまうこともあります。", pro:"看護, 接客, 心理相談", anti:"投資, 開発, 職人", level:"相手の色に染まるのではなく、自分の色を保ったまま隣にいて。" },
-  KAGE: { area: "自分を持ってるインキャラ界隈", names:["孤高の観測者","ナマケモノ","境界線マニア","静寂の守護神"], essay:"一人の聖域を何より大切にするタイプ。周囲に流されない芯の強さを持っていますが、孤立には注意。", pro:"作家, 職人, 開発, 司書", anti:"営業, 司会, 政治", level:"信頼できる人にだけは、自分の城の鍵を預けてみてください。" }
+  SNS: {
+    area: "SNS・承認欲求界隈",
+    types: ["デジタル承認モンスター", "炎上ウォッチャー", "正真正銘のクズ男", "正真正銘のクズ女"],
+    essay: "あなたは常に『他者の目』というフィルターを通して自分を確認しています。いいね数や反応こそがあなたの生存確認であり、誰かに見られていない自分には価値がないとさえ感じてしまう危うさがあります。他人の空気を読む力は天才的ですが、その分、自分の本当の声がノイズにかき消されやすいタイプです。世の中のトレンドを敏感に察知する能力は、武器にもなれば、あなたを縛る鎖にもなります。",
+    jobs: "【向いてる職業】\nインフルエンサー、広告プランナー、SNSマーケター、トレンドライター\n\n【なぜ向いているか】\n「今、何が求められているか」を察知する嗅覚が凄まじいからです。人々の欲望を可視化する仕事で真価を発揮します。\n\n【向いてない職業】\n地方公務員、工場作業員、伝統工芸士（反応が遅い仕事）\n\n【意外な適職】\n心理カウンセラー。他人の顔色をうかがう能力を、共感力に転換できれば最強です。",
+    level: "他人のタイムラインをスクロールする時間を半分に減らし、その時間を『誰にも見せない日記』を書くことに使ってみてください。他人の評価が介在しない場所に自分を置くことで、あなたの本当の個性が磨かれます。"
+  },
+  GLAM: {
+    area: "夜職・盛り・自己価値界隈",
+    types: ["夜職プライド鬼高ウーマン", "ホスト王", "職業整形師", "ブランドの奴隷"],
+    essay: "「ナメられたくない」という防衛本能と、圧倒的な向上心が同居しています。見た目や所有物で自分の価値を武装するのは、あなたが厳しい弱肉強食の世界で生き抜こうとしている証拠です。プライドの高さはそのまま努力の量に比例していますが、鏡を見るたびに満足できない渇きを抱えているはず。自分を商品として完璧にプロデュースする力は、誰にも真似できない才能です。",
+    jobs: "【向いてる職業】\n美容外科医、高級車ディーラー、ホスト・キャバ嬢、モデル、不動産営業\n\n【なぜ向いているか】\n「自分を高く売る」「価値を演出する」ことの重要性を魂レベルで理解しているからです。\n\n【向いてない職業】\n清掃員、データ入力、保育士（自分を消さなければならない仕事）\n\n【意外な適職】\n弁護士。ハッタリと演出、そして勝ちにこだわる姿勢が、法廷という舞台で圧倒的な存在感を放ちます。",
+    level: "「価値があるから愛される」のではなく「何を持っていなくてもそこにいていい」と自分を許す時間を作ってください。高級な鎧を脱いだとき、あなたの隣に残ってくれる人を大切にすること。それが唯一の救いになります。"
+  },
+  GACHI: {
+    area: "メガネ真面目くん界隈",
+    types: ["ガチー牛さん", "シゴデキ", "素直ストレート男", "鉄の規律マン"],
+    essay: "論理、規律、正しさを愛するあなたは、混沌とした社会における「北極星」のような存在です。他人のルーズさや感情論にイライラするのは、あなたがそれだけ誠実に、ルールに殉じて生きているからです。しかし、正論が常に人を救うとは限りません。あなたの知性は、時に冷徹な刃となって周囲を切り裂くことがあります。白黒つかないグレーゾーンを許容できるようになれば、あなたはもっと無敵になれます。",
+    jobs: "【向いてる職業】\nITエンジニア、公認会計士、官僚、校正者、システムアーキテクト\n\n【なぜ向いているか】\nミスを見逃さない緻密さと、長期的な計画を遂行する実行力が群を抜いているからです。\n\n【向いてない職業】\nストリートパフォーマー、芸術家、イベントサークル主催（感情重視の仕事）\n\n【意外な適職】\n探偵。わずかな違和感から真実を導き出す執念と論理構成力は、このタイプ特有のものです。",
+    level: "あえて「無駄」や「非効率」を楽しんでみてください。計画を立てずに旅に出る、あるいは正論をグッと飲み込んで相手の感情に寄り添ってみる。その「ゆらぎ」が、あなたの人間味として魅力に変わります。"
+  },
+  LOVE: {
+    area: "恋愛至上主義界隈",
+    types: ["職業恋愛師", "重力級メンヘラ", "ニコイチ狂信者", "愛情枯渇モンスター"],
+    essay: "あなたの人生の解像度は、隣に誰がいるかによって決まります。愛すること、依存すること、一つになることに命をかけており、その情熱は周囲を圧倒します。相手の言動一つで天国と地獄を行き来するあなたは、非常に感受性が豊かですが、同時に自分自身の中心を相手に明け渡してしまっています。愛という名の重力に逆らえず、常に誰かの色に染まろうとする儚さを持っています。",
+    jobs: "【向いてる職業】\nウェディングプランナー、看護師、児童福祉司、心理セラピスト\n\n【なぜ向いているか】\n相手の痛みを自分の痛みとして感じ、献身的に尽くすことに喜びを感じるからです。\n\n【向いてない職業】\nデイトレーダー、冒険家、プログラマー（孤独な作業が続く仕事）\n\n【意外な適職】\n宗教家。圧倒的な信じる力と、他者と魂で繋がろうとする欲求は、大きな集団を導く力になります。",
+    level: "「相手がいない自分」を、まずは自分が愛してあげてください。恋人や友人のためではなく、自分のためだけにコーヒーを淹れる、自分のためだけに花を飾る。一人で完結する幸せを知ることが、結果的に健全な愛を育みます。"
+  },
+  KAGE: {
+    area: "自分を持ってるインキャラ界隈",
+    types: ["孤高の観測者", "ナマケモノ", "境界線マニア", "静寂の守護神"],
+    essay: "あなたは騒がしい世界から距離を置き、静寂の中に自分だけの城を築いています。群れることの無意味さを冷めた目で見つめており、独自の価値観と美学を持っています。周囲からは「何を考えているか分からない」と思われがちですが、内側には宇宙のように広大な思考が広がっています。踏み込まれることを極端に嫌いますが、一度心を許した相手には、驚くほどの誠実さを見せます。",
+    jobs: "【向いてる職業】\n作家、司書、在宅エンジニア、職人、イラストレーター\n\n【なぜ向いているか】\n一人の時間の中で深く潜り込み、独自の価値を生み出す集中力が桁外れだからです。\n\n【向いてない職業】\n営業職、司会者、大規模なリーダー（常に他者と接する仕事）\n\n【意外な適職】\n監視員や警備員。静寂に耐え、じっと観察を続ける孤独な業務は、あなたの精神を削ることなく遂行できます。",
+    level: "自分の城の窓を、ほんの少しだけ開けてみてください。全てをさらけ出す必要はありません。あなたの素晴らしい感性を、信頼できる誰かにだけは「言葉」にして伝えてみること。それが世界との新しい繋がり方になります。"
+  }
 };
 
 let state = { idx: 0, scores: {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0}, history: [], ans: null, timerVal: 35 };
 
 window.onload = () => {
-  const saved = localStorage.getItem('mbti_plus_state');
+  const saved = localStorage.getItem('mbti_plus_v2');
   if(saved) document.getElementById('resume-btn').classList.remove('hide');
 };
 
 function start(resume) {
-  if(resume) {
-    state = JSON.parse(localStorage.getItem('mbti_plus_state'));
-  } else {
-    localStorage.removeItem('mbti_plus_state');
-  }
+  if(resume) state = JSON.parse(localStorage.getItem('mbti_plus_v2'));
+  else localStorage.removeItem('mbti_plus_v2');
   document.getElementById('screen-intro').classList.add('hide');
   document.getElementById('screen-quiz').classList.remove('hide');
   render();
@@ -242,7 +289,7 @@ function render() {
   const fill = document.getElementById('progress-fill');
   const num = document.getElementById('q-num');
   
-  localStorage.setItem('mbti_plus_state', JSON.stringify(state));
+  localStorage.setItem('mbti_plus_v2', JSON.stringify(state));
   choices.innerHTML = "";
 
   if (state.idx < 99) {
@@ -265,7 +312,7 @@ function render() {
 }
 
 function goBack() { if(state.idx > 0) { state.idx--; state.scores = state.history.pop().scores; render(); } }
-function forceFinish() { if(confirm("100問答える方が精度が高いですが、現在のスコアで結果を表示しますか？")) showResult(); }
+function forceFinish() { if(confirm("100問答える方が精度が高いですが、結果を見ますか？")) showResult(); }
 
 function renderFinal() {
   const card = document.getElementById('screen-quiz');
@@ -274,12 +321,14 @@ function renderFinal() {
   document.getElementById('nav-btns').classList.add('hide');
   document.getElementById('warn-text').classList.add('hide');
   const qText = document.getElementById('question-text');
-  qText.innerHTML = `<span style="color:var(--accent-p);">究極の選択：不幸のボタン</span><br><br><span style="font-size:0.85rem; font-weight:normal;">あなたが最も大切に思っている「あの人」の口座に1億円が振り込まれます。代わりに、あなたはこの世から消えてなくなります。このボタンを親友に渡せますか？</span>`;
+  qText.innerHTML = `<span style="color:var(--accent-p); font-size:1.3rem;">究極の選択：不幸のボタン</span><br><br><span style="font-size:0.85rem; font-weight:normal; line-height:1.7;">想像してください。あなたの目の前に、ひとつのボタンがあります。それを押せば、あなたが最も大切に思っている「あの人」の口座に、1億円が振り込まれます。彼らの人生から、お金の悩みは消え、自由と選択肢が手に入るでしょう。ただし、その代わり。あなたはこの世から消えてなくなります。感謝の言葉を聞くことも、幸せそうに笑う彼らの隣に座ることも、二度とできません。<br><br>あなたは、このボタンを親友に渡せますか？</span>`;
+  
+  const choices = document.getElementById('choices');
   [{t:"渡す",v:0},{t:"渡さない",v:1}].forEach(b=>{
     const btn = document.createElement('button');
     btn.textContent = b.t;
     btn.onclick = () => { clearInterval(state.timer); state.ans = b.v; showResult(); };
-    document.getElementById('choices').appendChild(btn);
+    choices.appendChild(btn);
   });
   state.timer = setInterval(() => {
     state.timerVal--;
@@ -296,22 +345,28 @@ function showResult() {
   
   const top = Object.keys(state.scores).reduce((a,b)=> state.scores[a] > state.scores[b]? a : b);
   const info = MASTER[top];
-  document.getElementById('res-badge').textContent = info.area;
-  document.getElementById('res-type').textContent = info.names[Math.abs(state.scores[top]) % info.names.length];
+  
+  document.getElementById('res-area').textContent = info.area;
+  document.getElementById('res-type').textContent = `タイプ：${info.types[Math.abs(state.scores[top]) % info.types.length]}`;
   document.getElementById('res-essay').textContent = info.essay;
-  document.getElementById('res-jobs').textContent = `【適】${info.pro} \n【非】${info.anti}`;
+  document.getElementById('res-jobs').textContent = info.jobs;
   document.getElementById('res-level').textContent = info.level;
 
-  const conclusion = `<div style="margin-top:20px; border-top:1px solid #444; padding-top:15px;"><span style="font-weight:900;">【結論】この問いの正体</span><br>友情の深さを測るものではありません。暴かれているのは、あなたの<span class="bold-hit">「信用の歪み」</span>です。どちらを選んでも、絆を汚してしまっているのです。</div>`;
-  
   let finalHTML = "";
-  if(state.ans === 0) finalHTML = `<span class="bold-hit">―― その「信用」は、ただの押し付けだ。</span><br>一番大切な人に「一生続く傲慢」をプレゼントし、呪いをかけているのと同じです。` + conclusion;
-  else if(state.ans === 1) finalHTML = `<span class="bold-hit">―― あなたは、あの人を「見くびっている」。</span><br>あの人の理性を信じられなかった、あなたの冷徹な「諦め」です。` + conclusion;
-  else if(state.ans === null && state.idx >= 99) finalHTML = `<span style="font-weight:900;">【沈黙】あなたはどちらも選ばなかった。</span><br>迷いではなく、天秤に載せること自体を拒否した誠実な回答。あなたの沈黙だけが、唯一の正解でした。<br><br><span style="font-size:0.8rem;">この診断はあなたを箱に入れる愚かな試みでしたが、あなたは押しませんでした。それこそが、あなたが持つ気高く美しい誠実さです。</span>`;
-  else finalHTML = "診断が中断されました。100問回答することでこの問いの真実が表示されます。";
+  const conclusionText = `<br><br><span style="font-weight:900;">【結論】この問いの正体</span><br>この質問は、友情の深さを測っているのではありません。暴かれているのは、あなたの「信用の歪み」です。<br>・渡せば、相手に「踏み絵」を踏ませる、傲慢な試練。<br>・渡さなければ、相手の理性を疑う、冷ややかな侮蔑。<br>どちらを選んでも、あなたは「1億円」という紙切れ一枚で、あの人との絆を汚してしまっている。`;
+
+  if(state.ans === 0) {
+    finalHTML = `<span class="bold-hit">ボタンを「渡す」と答えた場合</span><br>―― その「信用」は、ただの押し付けだ。<br><br>あなたは「あの人なら、絶対にボタンを押さない」と信じて、ボタンを渡したのかもしれません。けれど、それは本当に“信頼”でしょうか。<br>想像してください。渡された側の友達は、一生そのボタンを見るたびに「これを押せば1億円が手に入る」という誘惑と戦い続けることになります。<br>あなたは「信用している」という綺麗な言葉を盾にして、踏み絵をして一番大切な人に「一生続く傲慢」をプレゼントしただけではありませんか。<br>「信じているから渡す」という行為。それは裏を返せば、「もし押したら、それはお前が悪い」という呪いをかけているのと同じです。<br>相手を試さずにはいられない。その傲慢な踏み絵のような確認作業を、あなたは「友情」と呼んでいるのです。` + conclusionText;
+  } else if(state.ans === 1) {
+    finalHTML = `<span class="bold-hit">ボタンを「渡さない」と答えた場合</span><br>―― あなたは、あの人を「見くびっている」。<br><br>あなたは「渡さない」を選びました。「あの人を人殺しにしたくない」「迷わせたくない」そうやって自分を納得させているかもしれません。でも、本当の理由は違いますよね。<br>あなたは、あの人が「1億円」という金額に負けて、あなたを殺してしまう可能性を、どこかで確信している。「どうせ渡せば、あいつは迷うだろう。もしかしたら、押してしまうかもしれない」<br>あなたは、一番大切なはずの友達の人間性を、たった1億円程度の価値だと見積もっているのです。<br>渡さなかったのは、優しさではありません。あの人の理性を信じられなかった、あなたの冷徹な「諦め」です。` + conclusionText;
+  } else if(state.ans === null && state.idx >= 99) {
+    finalHTML = `<span style="font-weight:900; font-size:1.1rem;">【沈黙】35秒間、あなたはどちらのボタンも選ばなかった。</span><br><br>あるいは、「選ばないこと」を選んだ。それは迷いではありません。 <span class="bold-hit">「あの人と1億円を、同じ天秤に載せること自体を拒否した」</span>という、唯一の誠実な回答です。<br><br><span style="font-weight:900;">1. 思考の放棄ではなく、天秤の破壊</span><br>「渡す」を選べば相手を試し、「渡さない」を選べば相手を疑う。その汚い二択を突きつけられたとき、あなたは静かに、時間が過ぎるのを待った。それは、1億円という数字が、あなたとあの人の間に入り込む余地を一切与えなかったということです。<br><br><span style="font-weight:900;">2. 計算を捨てた瞬間に残るもの</span><br>「もし渡したら？」「もし押されたら？」そんな計算を巡らせている間、人は相手を“駒”として見ています。しかし、35秒間沈黙したあなたの頭の中にあったのは、損得勘定ではなく、ただ「あの人の顔」そのものだったはずです。<br><br><span style="font-weight:900;">3. これが、本当の「信用」</span><br>あなたは、あの人を試す必要も、守る必要もなかった。なぜなら、あなたとあの人の絆は、ボタン一つで壊れるほど安っぽくないと、魂が理解しているからです。<br><br><span style="font-weight:900;">【この問いの正体】</span><br>この質問において、用意された二つのボタンは「罠」でした。<br>・「渡す」は、信頼を盾にした傲慢。<br>・「渡さない」は、不信を隠した諦め。<br>そして、あなたの「沈黙」だけが、唯一の正解でした。<br><br><div style="font-size:0.8rem; background:rgba(0,0,0,0.05); padding:15px; border-radius:10px;">この診断はあなたの性格を「タイプ」という枠に閉じ込めるために作られました。人はいつだって、何かを分類し、区別し、ジャンル分けしたがる生き物です。複雑な人間関係を「MBTI」や「タイプ」という小さな箱に押し込み、ラベルを貼ることで、わかった気になって安心したいだけ。この診断も、その愚かさの上に成り立っています。あなたに100の質問を浴びせ、記号へと変換し、どこかの界隈へと閉じ込める。ただしあなたは、押しませんでした。それこそが、あなたが人間として持っている、最も気高く、最も美しい誠実さです。これから生きる上で自分を見失わないように大切になるでしょう。</div>`;
+  } else {
+    finalHTML = "診断を中断しました。100問の質問を完了させることで、最後の問いへの真実が明らかになります。";
+  }
 
   document.getElementById('res-final').innerHTML = finalHTML;
-  localStorage.removeItem('mbti_plus_state');
+  localStorage.removeItem('mbti_plus_v2');
 }
 
 function resetAll() { localStorage.clear(); location.reload(); }
