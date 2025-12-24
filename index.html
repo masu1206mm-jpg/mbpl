@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>えむびーてぃーあいPlus | 究極版</title>
+  <title>えむびーてぃーあいPlus </title>
   <style>
     :root { --bg: #05070a; --accent-p: #ff7ca7; --accent-v: #bda6ff; --accent-b: #6ef2ff; --text: #ffffff; }
     * { box-sizing: border-box; }
@@ -178,7 +178,7 @@ const DB = [
 ];
 
 const MASTER = {
-  SNS: { area: "SNS・承認欲求界隈", img: "https://r.jina.ai/i/0681335c05c04803960012727a810d7a", essay: "あなたの価値基準は「他人の親指」にあります。通知が鳴るたびに心が跳ね、反応がないと世界から消えたような感覚に陥る。情報の感度は天才的ですが、鏡の中の自分よりも、画面の中の自分を愛しすぎていませんか？" },
+  SNS: { area: "SNS界隈", img: "https://r.jina.ai/i/0681335c05c04803960012727a810d7a", essay: "あなたの価値基準は「他人の親指」にあります。通知が鳴るたびに心が跳ね、反応がないと世界から消えたような感覚に陥る。情報の感度は天才的ですが、鏡の中の自分よりも、画面の中の自分を愛しすぎていませんか？" },
   GLAM: { area: "夜職・盛り・自己価値界隈", img: "https://r.jina.ai/i/6efd9943505748a39a9c80872efd726b", essay: "「自分を高く売ること」のプロフェッショナル。容姿やブランドという武装を解くことに恐怖を感じています。向上心は誰よりも強いですが、それは「ありのままの自分では愛されない」という悲しい確信の裏返しでもあります。" },
   GACHI: { area: "メガネ真面目くん界隈", img: "https://r.jina.ai/i/7d363583204e43e7b16606a72661852f", essay: "世界のバグを許せない規律の守護者。論理と段取りを愛し、無責任を憎む。あなたの隣にいる人は安心感を得ますが、同時に裁かれるような緊張感も抱いています。正論で人を殴る快感を、正義と履き違えないように。" },
   LOVE: { area: "恋愛至上主義界隈", img: "https://r.jina.ai/i/05727038e235470588657697472097e3", essay: "愛という名の重力に囚われた人。誰かの「一番」であることでしか、自分の酸素を確保できない。一喜一憂の激しさは人間味に溢れていますが、相手を失う恐怖が、結果的に相手を窮屈にさせていることに気づいて。" },
@@ -235,7 +235,7 @@ function renderFinal() {
   
   const choices = document.getElementById('choices');
   choices.innerHTML = "";
-  ["あの人に渡す", "絶対に渡さない"].forEach((txt, i) => {
+  ["渡す", "渡さない"].forEach((txt, i) => {
     const btn = document.createElement('button');
     btn.textContent = txt;
     btn.style.textAlign = "center";
