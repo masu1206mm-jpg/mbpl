@@ -3,66 +3,35 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>えむびーてぃーあいPlus | 真・究極版</title>
+  <title>えむびーてぃーあいPlus | 100問完全版</title>
   <style>
-    :root {
-      --bg: #05070a;
-      --accent-p: #ff7ca7;
-      --accent-v: #bda6ff;
-      --accent-b: #6ef2ff;
-      --text: #ffffff;
-    }
+    :root { --bg: #05070a; --accent-p: #ff7ca7; --accent-v: #bda6ff; --accent-b: #6ef2ff; --text: #ffffff; }
     * { box-sizing: border-box; }
-    body {
-      margin: 0; min-height: 100vh;
-      font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
-      background: var(--bg); color: var(--text);
-      display: flex; justify-content: center; align-items: center; padding: 15px;
-    }
+    body { margin: 0; min-height: 100vh; font-family: "Hiragino Kaku Gothic ProN", sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; padding: 15px; }
     .container { max-width: 650px; width: 100%; transition: 0.5s; }
-    .card {
-      background: rgba(255,255,255,0.08); border-radius: 32px; padding: 30px;
-      backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
-    }
+    .card { background: rgba(255,255,255,0.08); border-radius: 32px; padding: 30px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
     .extreme-mode { background: #000 !important; border: 1px solid #ff4477 !important; animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 10px #ff4477; } 50% { box-shadow: 0 0 30px #ff4477; } 100% { box-shadow: 0 0 10px #ff4477; } }
-    
-    .silence-sanctuary { background: #ffffff !important; color: #000000 !important; border: none !important; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 10px #ff4477; } 50% { box-shadow: 0 0 30px #ff4477; } }
+    .silence-sanctuary { background: #fff !important; color: #000 !important; border: none !important; }
     .silence-sanctuary .section { background: rgba(0,0,0,0.05) !important; color: #000 !important; }
-    .silence-sanctuary .section-title { color: #333 !important; }
-    .silence-sanctuary .final-box { background: #f0f0f0 !important; border: 2px solid #000 !important; }
-
     h1 { text-align: center; font-size: 1.8rem; background: linear-gradient(90deg, var(--accent-p), var(--accent-v)); -webkit-background-clip: text; color: transparent; margin-bottom: 20px; font-weight: 900; }
     .intro-text { font-size: 0.95rem; line-height: 1.8; color: #bbb; text-align: center; margin-bottom: 30px; }
-    
     .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 20px 0; overflow: hidden; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-v), var(--accent-b)); width: 0%; transition: 0.4s; }
-    
     .question-text { font-size: 1.2rem; font-weight: bold; line-height: 1.6; min-height: 90px; margin-bottom: 30px; text-align: center; }
     .choices { display: grid; gap: 14px; }
-    button {
-      padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.05); color: #fff; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s;
-    }
+    button { padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
     button:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: var(--accent-p); }
-
-    .timer { font-size: 5rem; text-align: center; color: var(--accent-p); font-weight: 900; margin-bottom: 20px; font-family: 'Courier New', monospace; text-shadow: 0 0 20px var(--accent-p); }
-    
-    .res-area-name { font-size: 2.4rem; font-weight: 900; color: var(--accent-p); text-align:center; line-height: 1.2; margin-bottom: 5px; }
+    .timer { font-size: 5rem; text-align: center; color: var(--accent-p); font-weight: 900; margin-bottom: 20px; font-family: monospace; }
+    .res-area-name { font-size: 2.4rem; font-weight: 900; color: var(--accent-p); text-align:center; margin-bottom: 5px; }
     .res-type-name { font-size: 1.1rem; font-weight: bold; color: var(--accent-v); text-align:center; margin-bottom: 30px; }
-    
     .section { background: rgba(255,255,255,0.04); border-radius: 24px; padding: 25px; margin-bottom: 20px; border-left: 6px solid var(--accent-v); }
     .section-title { font-weight: 900; font-size: 0.95rem; color: var(--accent-v); margin-bottom: 12px; }
     .essay-text { line-height: 1.9; font-size: 1rem; white-space: pre-wrap; }
-    .bold-hit { font-weight: 900; color: var(--accent-p); font-size: 1.1rem; border-bottom: 2px solid var(--accent-p); }
-    
-    /* 最後の問い用：みえへん対策 */
-    .final-box { background: #000; border: 3px solid var(--accent-p); padding: 30px; border-radius: 28px; margin-top: 30px; box-shadow: 0 0 30px rgba(255,124,167,0.3); }
-    .final-essay { font-size: 1rem; line-height: 2; white-space: pre-wrap; color: #fff; }
-
+    .final-box { background: #000; border: 3px solid var(--accent-p); padding: 30px; border-radius: 28px; margin-top: 30px; color: #fff; font-size: 1rem; line-height: 2; }
     .hide { display: none !important; }
-    .sub-btn { flex: 1; padding: 12px; font-size: 0.8rem; background: transparent; border: 1px solid #444; color: #888; border-radius: 12px; margin-top: 10px; }
+    .sub-btn { flex: 1; padding: 12px; font-size: 0.8rem; background: transparent; border: 1px solid #444; color: #888; border-radius: 12px; }
+    .highlight-box { background: #222; padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px solid #444; color: #fff; }
   </style>
 </head>
 <body>
@@ -75,122 +44,171 @@
       無駄な曖昧な5択や質問などを全て具体化しており、あなたの思考パターンを高性能AIで詳細化します。<br><br>
       あなたの人生の参考になると幸いです。
     </div>
-    <button style="width:100%; background:#fff; color:#000; font-size:1.2rem; padding:25px;" onclick="start(false)">診断開始</button>
-    <button id="resume-btn" class="sub-btn hide" style="width:100%;" onclick="start(true)">前回の続きから再開する</button>
+    <button style="width:100%; background:#fff; color:#000; font-size:1.2rem;" onclick="start(false)">診断開始</button>
+    <button id="resume-btn" class="sub-btn hide" style="width:100%; margin-top:10px;" onclick="start(true)">続きから再開する</button>
   </div>
 
   <div id="screen-quiz" class="card hide">
     <div id="timer-ui" class="hide"><div id="timer-display" class="timer">45</div></div>
-    <div id="q-label" style="font-size:0.8rem; font-weight:900; color:var(--accent-b); letter-spacing: 2px;">Q.<span id="q-num">1</span> / 100</div>
+    <div id="q-label" style="font-size:0.8rem; font-weight:900; color:var(--accent-b);">Q.<span id="q-num">1</span> / 100</div>
     <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
     <div id="question-text" class="question-text"></div>
+    
+    <div id="extra-info" class="hide">
+      <div style="text-align:left; font-size:0.9rem; line-height:1.7; margin-bottom:20px;">
+        <span style="color:var(--accent-p); font-weight:900; border-bottom:2px solid var(--accent-p);">【この問いの本質】</span><br>
+        ここで問いかけているのは自己犠牲の精神ではありません。<br>
+        <div class="highlight-box">【あの人にとって、1億円とあなたの命、どちらに価値があると思っているのか】</div>
+        という、あなたの『傲慢さ』への問いです。
+      </div>
+    </div>
+
     <div id="choices" class="choices"></div>
     <div id="nav-btns" style="display:flex; gap:10px; margin-top:30px;">
       <button class="sub-btn" onclick="goBack()">戻る</button>
       <button class="sub-btn" onclick="forceFinish()">結果を見る</button>
     </div>
-    <p id="warn-text" style="font-size:0.75rem; color:#888; text-align:center; margin-top:15px;">
-      ※結果はいつでも出せますが100の質問に答えていただく方が精度が高いです
-    </p>
+    <p id="warn-text" style="font-size:0.7rem; color:#666; text-align:center; margin-top:15px;">※100の質問に答える方が精度が高いです</p>
   </div>
 
   <div id="screen-result" class="card hide">
     <div id="res-area" class="res-area-name"></div>
     <div id="res-type" class="res-type-name"></div>
-    
-    <div class="section">
-      <div class="section-title">思考分析</div>
-      <div id="res-essay" class="essay-text"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">職業ナビゲーション</div>
-      <div id="res-jobs" class="essay-text"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">自己研鑽のヒント</div>
-      <div id="res-level" class="essay-text"></div>
-    </div>
-
-    <div id="final-box" class="final-box">
-      <div id="res-final" class="final-essay"></div>
-    </div>
-
-    <button style="width:100%; margin-top:40px; border-color:#444; color:#888;" onclick="resetAll()">トップに戻る</button>
+    <div class="section"><div class="section-title">思考分析</div><div id="res-essay" class="essay-text"></div></div>
+    <div class="section"><div class="section-title">適職 / 非適職</div><div id="res-jobs" class="essay-text"></div></div>
+    <div class="section"><div class="section-title">レベルアップ術</div><div id="res-level" class="essay-text"></div></div>
+    <div id="final-box" class="final-box"></div>
+    <button style="width:100%; margin-top:40px; border-color:#444; color:#888;" onclick="resetAll()">全てのデータを消去してトップへ</button>
   </div>
 </div>
 
 <script>
-/* 質問と、質問に合わせた専用選択肢 */
+// 100問の質問（送っていただいた全カテゴリー・具体的3択）
 const DB = [
-  {cat:"SNS", q:"TikTokやXでバズってる人を見ると、いいね数を無意識に確認している", c:["自然に見てしまう", "気にならない", "全く見ない"]},
-  {cat:"SNS", q:"友達の投稿が伸びていると、コメント欄までチェックして空気感を把握する", c:["つい見てしまう", "たまに気付く程度", "見ない"]},
-  {cat:"SNS", q:"炎上している話題は、経緯を最初から最後まで追いかけたくなる", c:["詳しく追いたい", "概要だけでいい", "興味がない"]},
-  {cat:"SNS", q:"ストーリーを上げた直後は、既読や反応が来ないかソワソワする", c:["ソワソワする", "少し気になる", "置いたら忘れる"]},
-  {cat:"SNS", q:"投稿前は、誤字脱字や見え方を何度も入念にチェックする", c:["かなりチェックする", "一度見返す程度", "そのまま出す"]},
-  {cat:"SNS", q:"反応が期待より少ないと、投稿したこと自体を後悔して消したくなる", c:["消したくなる", "少し寂しい", "気にしない"]},
-  {cat:"SNS", q:"自分を一番良く見せられる角度や加工の技術には自信がある", c:["自信がある", "人並みには", "全くない"]},
-  {cat:"SNS", q:"フォロワー数が多い人を見ると、少しだけ「すごい人」だと先入観を持つ", c:["思ってしまう", "あまり関係ない", "全く思わない"]},
-  {cat:"SNS", q:"身近な友達が大きな幸せを報告していると、心のどこかで嫉妬心が混ざる", c:["混ざる", "素直に祝える", "何も感じない"]},
-  {cat:"SNS", q:"バズっている投稿を見ると、なぜ伸びたのかを無意識に分析する", c:["分析する", "たまに考える", "ただ楽しむ"]},
-  /* (中略: 同様の手法で全100問の選択肢を個別に最適化済み) */
+  /* SNS (1-20) */
+  {cat:"SNS", q:"SNSでバズっている投稿のコメント数や「いいね数」が自分より多いと気になる", c:["つい比較して見てしまう", "少し気になる", "全く見ない"]},
+  {cat:"SNS", q:"友達の投稿が伸びていると、コメントの中身まで細かく確認する", c:["隅々まで見る", "たまに流し見する", "見ない"]},
+  {cat:"SNS", q:"炎上騒動を見つけると、経緯を一から全て調べたくなる", c:["徹底的に追う", "概要だけでいい", "興味がない"]},
+  {cat:"SNS", q:"ストーリーを上げた後は、誰が見たか頻繁にチェックする", c:["何度も確認する", "たまに見る", "放置する"]},
+  {cat:"SNS", q:"投稿前に自分の写真や文章を何度も見返す", c:["納得いくまで直す", "一度見返す程度", "直感で出す"]},
+  {cat:"SNS", q:"反応が少ない投稿は、恥ずかしくなって消したくなる", c:["すぐ消したくなる", "少し凹む", "気にしない"]},
+  {cat:"SNS", q:"自撮りを上げる際、加工や角度に並々ならぬこだわりがある", c:["こだわり抜く", "少し加工する", "無加工に近い"]},
+  {cat:"SNS", q:"フォロワー数を見て、その人の価値を判断してしまうことがある", c:["判断材料にする", "少し意識する", "全く気にしない"]},
+  {cat:"SNS", q:"友達の幸せな報告に、100%の祝福より嫉妬が勝ってしまう", c:["正直、嫉妬する", "半々くらい", "素直に祝える"]},
+  {cat:"SNS", q:"バズっている投稿の「理由」を自分なりに分析するのが好きだ", c:["無意識に分析する", "たまに考える", "ただ見るだけ"]},
+  {cat:"SNS", q:"SNS上での自分のキャラクターや立ち位置を常に意識している", c:["キャラを守る", "少し意識する", "ありのままでいる"]},
+  {cat:"SNS", q:"誰からも承認されない状態が続くと不安になる", c:["かなり不安になる", "少し落ち着かない", "一人が楽"]},
+  {cat:"SNS", q:"裏垢などでニュースや話題に自分の意見を毒づくことがある", c:["よく言う", "たまに書く", "しない"]},
+  {cat:"SNS", q:"炎上している人を見て「自分ならもっとうまくやる」と考える", c:["強く思う", "たまに思う", "思わない"]},
+  {cat:"SNS", q:"投稿時間を「一番伸びる時間」に合わせることが多い", c:["計算して予約する", "意識して投稿する", "好きな時に出す"]},
+  {cat:"SNS", q:"有名人にDMを送ったり、執拗に反応を求めたことがある", c:["送ったことがある", "送りたいが我慢する", "興味がない"]},
+  {cat:"SNS", q:"他人の投稿に批判的なコメントや指摘を書き込んだことがある", c:["書いたことがある", "書きそうになる", "絶対しない"]},
+  {cat:"SNS", q:"SNSにおいて「いいね」の数は自分の人気度と直結していると思う", c:["その通りだと思う", "一つの指標だと思う", "関係ない"]},
+  {cat:"SNS", q:"バズっている投稿のコメント欄の「空気」を読むのが得意だ", c:["すぐ察知できる", "なんとなくわかる", "わからない"]},
+  {cat:"SNS", q:"通知が来ると何をしていても即座にスマホを手に取ってしまう", c:["即チェックする", "早めに見る", "後回しにする"]},
+
+  /* GLAM (21-40) */
+  {cat:"GLAM", q:"見た目を良くするためなら、お金をかけるのは当然の投資だ", c:["惜しみなく使う", "計画的に使う", "そこまでかけない"]},
+  {cat:"GLAM", q:"この一年、自分磨き（美容・整形等）を最優先にしてきた", c:["人生の第一優先だ", "努力はしている", "あまりしてない"]},
+  {cat:"GLAM", q:"他人から「可愛い・かっこいい」と言われないと自信が保てない", c:["その言葉が必須だ", "言われると嬉しい", "自分次第だ"]},
+  {cat:"GLAM", q:"第一印象で他人にナメられるのは絶対に避けたい", c:["武装して挑む", "少し意識する", "自然体でいい"]},
+  {cat:"GLAM", q:"整形は努力の一環であり、美しさを買うのは正義だと思う", c:["完全に同意する", "肯定派である", "自然が一番"]},
+  {cat:"GLAM", q:"恋愛市場において、自分の市場価値はかなり高い方だと思う", c:["自信満々である", "平均よりは上", "自信はない"]},
+  {cat:"GLAM", q:"10万円以上のブランド品を複数所有している", c:["たくさん持っている", "いくつか持っている", "持っていない"]},
+  {cat:"GLAM", q:"メイクや髪型が決まらなくて、予定をキャンセルしたことがある", c:["実際にある", "したくなる", "絶対しない"]},
+  {cat:"GLAM", q:"自分を安売りしてでも、手に入れたいステータスがある", c:["手段は選ばない", "迷うが欲しい", "自分は売らない"]},
+  {cat:"GLAM", q:"自分より容姿が劣る人を見ると、内心安心してしまう", c:["正直安心する", "少し意識する", "思わない"]},
+  {cat:"GLAM", q:"異性との食事は、絶対に奢ってもらいたい（または奢りたい）", c:["それが礼儀だ", "できればそうしたい", "割り勘でいい"]},
+  {cat:"GLAM", q:"鏡を見るたびに自分のコンプレックスを数えてしまう", c:["絶えず気になる", "たまに気になる", "自分を愛している"]},
+  {cat:"GLAM", q:"自分を高く見せるための「嘘」や「演出」は悪いことじゃない", c:["賢い戦略だ", "時と場合による", "誠実でありたい"]},
+  {cat:"GLAM", q:"恋愛は結局「女は顔、男はお金」で決まると思う", c:["それが現実だ", "一理ある", "愛がすべて"]},
+  {cat:"GLAM", q:"他人にどう見られているか、歩いている時も気になる", c:["常に意識する", "たまに鏡を見る", "気にしない"]},
+  {cat:"GLAM", q:"自分を下げるような自虐ネタを他人に言われると本気で傷つく", c:["絶対許せない", "少しイラつく", "笑い飛ばせる"]},
+  {cat:"GLAM", q:"自分のプライドを傷つける相手とは、即座に縁を切る", c:["即ブロックする", "距離を置く", "話し合う"]},
+  {cat:"GLAM", q:"高級な場所にふさわしい人間になるために努力している", c:["かなり背伸びする", "少し意識する", "気にしない"]},
+  {cat:"GLAM", q:"自分のコンプレックスを消すために、人生をかけている", c:["人生のテーマだ", "意識はしている", "受け入れている"]},
+  {cat:"GLAM", q:"他人の不幸よりも、自分の美しさが損なわれる方が怖い", c:["自分の美が大事", "どちらも怖い", "他人の幸せが大事"]},
+
+  /* GACHI (41-60) */
+  {cat:"GACHI", q:"約束の時間は5分前到着が当たり前だと思う", c:["絶対守る", "ほぼ守る", "多少遅れても平気"]},
+  {cat:"GACHI", q:"計画が1分でも狂うと、心の中で激しくイライラする", c:["許容できない", "少し焦る", "臨機応変に楽しむ"]},
+  {cat:"GACHI", q:"仕事や勉強でミスをした際、原因を突き止めるまで眠れない", c:["徹底分析する", "反省はする", "次で取り返す"]},
+  {cat:"GACHI", q:"人の小さな言い間違いやマナーの悪さを即座に指摘したくなる", c:["指摘してしまう", "我慢する", "気にしない"]},
+  {cat:"GACHI", q:"信号無視やポイ捨てをする人を見ると、軽蔑を感じる", c:["強く軽蔑する", "マナー違反だと思う", "どうでもいい"]},
+  {cat:"GACHI", q:"デートや食事の際、事前の予約や段取りは必須だと思う", c:["予約は絶対", "した方がいい", "行き当たりばったり"]},
+  {cat:"GACHI", q:"自分の知らないところで物事が決まっていると不安になる", c:["把握しておきたい", "報告は欲しい", "任せる"]},
+  {cat:"GACHI", q:"無責任な言動をする人が同じチームにいると耐えられない", c:["排除したくなる", "関わりたくない", "受け流す"]},
+  {cat:"GACHI", q:"将来のために、今の快楽を犠牲にして努力できる", c:["ストイックにやる", "ある程度やる", "今を楽しみたい"]},
+  {cat:"GACHI", q:"LINEの誤字や脱字、敬語の使い方に敏感である", c:["非常に気になる", "少し気になる", "伝わればいい"]},
+  {cat:"GACHI", q:"食事は栄養バランスや効率を最優先して決める", c:["健康管理は義務だ", "少し意識する", "食べたいものを食べる"]},
+  {cat:"GACHI", q:"自分のお金を1円単位で家計簿などで管理している", c:["完璧に管理する", "大まかにやる", "管理しない"]},
+  {cat:"GACHI", q:"リーダーや責任のある役職を任されることが多い", c:["進んで受ける", "任されたらやる", "絶対やりたくない"]},
+  {cat:"GACHI", q:"ルールを守らない自由人を見ると「ずるい」より「汚い」と思う", c:["卑怯だと思う", "不公平だと思う", "自由でいい"]},
+  {cat:"GACHI", q:"友達の秘密は、どんなことがあっても墓まで持っていく", c:["絶対漏らさない", "信頼による", "つい言ってしまう"]},
+  {cat:"GACHI", q:"同じ失敗を二度繰り返さないよう、自分なりのマニュアルを作る", c:["対策を形にする", "頭に叩き込む", "次は気をつける"]},
+  {cat:"GACHI", q:"恋愛対象は、甘えさせてくれる人より尊敬できる人がいい", c:["尊敬が最優先", "どちらかと言えば", "甘えたい"]},
+  {cat:"GACHI", q:"電車の遅延などで予定が崩れると、その日一日ブルーになる", c:["かなり引きずる", "少し落ち込む", "気にしない"]},
+  {cat:"GACHI", q:"コツコツと積み立てる貯金や投資を長く継続できている", c:["継続は得意だ", "なんとか続けている", "すぐやめる"]},
+  {cat:"GACHI", q:"眠くても、人前では背筋を伸ばして規律正しく振る舞う", c:["常に律する", "意識はする", "寝る時は寝る"]},
+
+  /* LOVE (61-80) */
+  {cat:"LOVE", q:"好きな人の誕生日には、自分の給料の多くを注ぎ込みたい", c:["惜しみなく使う", "少し背伸びする", "無理のない範囲"]},
+  {cat:"LOVE", q:"恋愛がうまくいっていないと、仕事や勉強が手につかなくなる", c:["生活が崩れる", "少し影響が出る", "切り離せる"]},
+  {cat:"LOVE", q:"相手の何気ない一言で、天国にも地獄にも落ちる", c:["一喜一憂が激しい", "少し気になる", "動じない"]},
+  {cat:"LOVE", q:"返信の「速さ」こそが自分への愛情の深さだと思う", c:["速さが愛だ", "早い方が嬉しい", "関係ない"]},
+  {cat:"LOVE", q:"友達以上恋人未満の「曖昧な関係」は1日も耐えられない", c:["白黒つけたい", "少し落ち着かない", "楽しめる"]},
+  {cat:"LOVE", q:"好きな人のためなら、自分の趣味や価値観を変えてもいい", c:["相手に染まりたい", "歩み寄る", "自分を貫く"]},
+  {cat:"LOVE", q:"相手が何をしているか分からないと、不安でスマホが手放せない", c:["常に把握したい", "たまに気になる", "放置できる"]},
+  {cat:"LOVE", q:"恋人とは世界で二人だけの「ニコイチ」になりたい", c:["一体化したい", "親密でいたい", "自立した関係"]},
+  {cat:"LOVE", q:"失恋した時は、数日間全ての予定をキャンセルして引きこもる", c:["立ち直れない", "少し休む", "無理してでも動く"]},
+  {cat:"LOVE", q:"恋人の異性の友達には、たとえ健全でも嫉妬してしまう", c:["激しく嫉妬する", "少しモヤモヤする", "気にしない"]},
+  {cat:"LOVE", q:"相手から束縛されると「必要とされている」と感じて安心する", c:["束縛は大歓迎", "少しなら嬉しい", "絶対嫌だ"]},
+  {cat:"LOVE", q:"常に「愛されている」という言葉での確認が必要だ", c:["毎日言ってほしい", "たまに聞きたい", "行動で示して"]},
+  {cat:"LOVE", q:"都合のいい関係になりそうになったら、すぐに関係を切る", c:["即拒絶する", "話し合う", "ずるずる続く"]},
+  {cat:"LOVE", q:"恋人の行動履歴を全て共有アプリ等で把握しておきたい", c:["GPS共有したい", "予定だけ知りたい", "知らなくていい"]},
+  {cat:"LOVE", q:"自分を犠牲にしてでも、相手に「依存されたい」と思う", c:["依存されたい", "必要とされたい", "自立してほしい"]},
+  {cat:"LOVE", q:"相手の過去の恋愛経験まで全て聞き出さないと気が済まない", c:["全部知りたい", "少し気になる", "知りたくない"]},
+  {cat:"LOVE", q:"帰宅時間や飲み会の相手を制限されるのは愛の証だと思う", c:["管理されたい", "少しなら許せる", "不自由だ"]},
+  {cat:"LOVE", q:"自分よりも恋人の幸せを優先するのが、本当の愛だと信じている", c:["自分を殺せる", "歩み寄る", "まず自分が大事"]},
+  {cat:"LOVE", q:"恋人がいない人生は、色がない映画のように感じる", c:["恋愛は人生の主役", "あった方がいい", "自分だけでも楽しい"]},
+  {cat:"LOVE", q:"結婚よりも「燃え上がるような恋」を常に求めている", c:["刺激がほしい", "安定もほしい", "平穏が一番"]},
+
+  /* KAGE (81-99) */
+  {cat:"KAGE", q:"一人の時間がないと、どんなに好きな相手でも疲れてしまう", c:["一人の時間が必須", "少しなら大丈夫", "ずっと一緒がいい"]},
+  {cat:"KAGE", q:"大人数での飲み会より、カフェで一人で読書する方が有意義だ", c:["一人が充実する", "少人数ならいい", "みんなで騒ぎたい"]},
+  {cat:"KAGE", q:"学生時代、群れている人たちを見て「薄っぺらい」と思っていた", c:["冷めた目で見ていた", "少し距離を置いた", "自分も混ざっていた"]},
+  {cat:"KAGE", q:"周りのテンションに合わせて無理に盛り上げるのは苦痛だ", c:["絶対したくない", "多少は合わせる", "盛り上げるのは好き"]},
+  {cat:"KAGE", q:"自分の世界を汚されるくらいなら、友達が少なくても構わない", c:["孤高でいたい", "理解者だけでいい", "たくさん友達がほしい"]},
+  {cat:"KAGE", q:"知らない場所で一人で過ごすことに、全く抵抗がない", c:["一人旅が得意", "たまに行く", "誰かと行きたい"]},
+  {cat:"KAGE", q:"人の悩みを聞くよりも、自分の内面と向き合う時間の方が長い", c:["内省が趣味だ", "たまに考える", "外に刺激を求める"]},
+  {cat:"KAGE", q:"流行っている音楽やファッションには、あえて手を出さない", c:["自分流を貫く", "気に入れば買う", "流行は追う"]},
+  {cat:"KAGE", q:"誰にも踏み込まれたくない「心の聖域」がはっきりある", c:["誰にも教えない", "信頼する人には話す", "オープンである"]},
+  {cat:"KAGE", q:"自分のペースを乱される予定の変更は、たとえ親友でも嫌だ", c:["断る・イラつく", "渋々合わせる", "気にしない"]},
+  {cat:"KAGE", q:"接客業や、不特定多数と話す仕事は精神的に削られる", c:["絶対向いていない", "少し疲れる", "話すのは好き"]},
+  {cat:"KAGE", q:"自分の感情は、信頼できる極一部の人にしか見せない", c:["徹底的に隠す", "少しは出す", "常にオープン"]},
+  {cat:"KAGE", q:"SNSは見る専門（ROM）で、自分の日常は発信したくない", c:["絶対発信しない", "たまに投稿する", "頻繁に発信する"]},
+  {cat:"KAGE", q:"勉強や作業は、自宅よりも「誰も自分を知らないカフェ」の方が捗る", c:["適度な匿名性がいい", "家が一番", "誰かとやりたい"]},
+  {cat:"KAGE", q:"他人が怒っていても、理不尽なら絶対に謝りたくない", c:["自分を曲げない", "場を収めるため謝る", "すぐ謝る"]},
+  {cat:"KAGE", q:"「自分を持っているね」と言われるのが、一番の褒め言葉だ", c:["最高の褒め言葉", "嬉しい", "そうでもない"]},
+  {cat:"KAGE", q:"無駄な人間関係を整理する「人間関係リセット」をしたことがある", c:["実際にある", "したくなる", "絶対しない"]},
+  {cat:"KAGE", q:"空気を読むことよりも、自分の沈黙を大切にしたい", c:["沈黙を守る", "少しは合わせる", "空気を読む"]},
+  {cat:"KAGE", q:"他人の評価よりも、自分が自分を納得させているかが重要だ", c:["自己評価がすべて", "他人の目も少し", "他人の評価が大事"]}
 ];
-// 実際には100問分ありますが、コードを短縮してエッセンスのみ記載。残りは既存質問を個別の選択肢で補完します。
-while(DB.length < 99) {
-  const qList = ["SNS","GLAM","GACHI","LOVE","KAGE"];
-  const cat = qList[Math.floor(Math.random()*qList.length)];
-  DB.push({cat: cat, q: `質問サンプル_${DB.length+1}`, c:["強くそう思う","まあそう思う","そう思わない"]});
-}
 
 const MASTER = {
-  SNS: {
-    area: "SNS・承認欲求界隈",
-    types: ["デジタル承認モンスター", "炎上ウォッチャー", "正真正銘のクズ男", "正真正銘のクズ女"],
-    essay: "あなたは『他者の視線』という鏡を通じてしか、自分の轮郭を保てない危うさを持っています。人との繋がりを数値（いいね・フォロワー）で測る癖があり、数字が減ることは自分の価値が削られることに直結しています。トレンドを掴む能力は随一ですが、常にスマホの向こう側に振り回されている感覚があるはずです。",
-    jobs: "【適職】SNSマーケター、広告代理店、インフルエンサー、広報\n【理由】大衆の心理を先読みし、感情を動かす『フック』を見つけるのが天才的に上手いため。\n【意外な適職】詐欺師（※犯罪ですが才能の向き先として）。人の弱みや欲を嗅ぎ取る嗅覚が鋭すぎます。",
-    level: "通知を切る勇気を持ちましょう。画面の中ではなく、現実の自分が何を感じ、何を食べて、何を面白いと思ったか。誰にも報告しない『秘密の幸せ』を積み上げることが、あなたの本当の自信になります。"
-  },
-  GLAM: {
-    area: "夜職・盛り・自己価値界隈",
-    types: ["夜職プライド鬼高ウーマン", "ホスト王", "職業整形師", "ブランドの奴隷"],
-    essay: "「武装」こそがあなたの生存戦略です。容姿やブランド、肩書きといった外的な価値で自分を塗り固めることで、内側の脆さを守っています。美しさや強さへの執着は凄まじく、目標のためなら自分を追い込むことを厭いません。しかし、その完璧主義があなた自身を苦しめる呪いにもなっています。",
-    jobs: "【適職】美容外科医、高級営業、夜職プロデューサー、モデル\n【理由】「理想の自分」を作る苦しみを知っているため、他人のコンプレックスをビジネスに変える力があります。\n【意外な適職】弁護士。見た目とハッタリ、そして論理的な武装で敵を圧倒する舞台に向いています。",
-    level: "鎧を脱いだ自分を愛してくれる人を一人だけ見つけてください。すべてを完璧に見せる必要はありません。弱さを見せられる相手を持つことが、あなたの唯一の逃げ場になります。"
-  },
-  GACHI: {
-    area: "メガネ真面目くん界隈",
-    types: ["ガチー牛さん", "シゴデキ", "素直ストレート男", "鉄の規律マン"],
-    essay: "感情よりも論理、自由よりも規律。あなたは混沌とした世界を『正しさ』で整理したいと考えています。他人のいい加減さに強いストレスを感じるのは、あなたが誠実すぎるからです。しかし、あなたの「正論」は時に人を追い詰め、あなた自身もその「正しさ」の檻に閉じ込めてしまっています。",
-    jobs: "【適職】会計士、エンジニア、官僚、校正、分析官\n【理由】100%の精度が求められる世界で、あなたの徹底した仕事ぶりは神の如き信頼を得ます。\n【意外な適職】哲学者。なぜ人はルールを守るべきか、といった抽象的な問いに答えを出せる思考の深さがあります。",
-    level: "『無駄』を愛してください。役に立たないこと、計画にないこと、論理的でないこと。それらが人生を彩るスパイスだと気づいたとき、あなたの世界はもっと優しくなります。"
-  },
-  LOVE: {
-    area: "恋愛至上主義界隈",
-    types: ["依存グラビティ", "ニコイチ信者", "愛情枯渇モンスター", "重力級メンヘラ"],
-    essay: "愛することが人生のすべて。あなたは自分自身の軸を、好きな相手の懐に預けてしまっています。相手の反応一つで世界が輝き、あるいは崩壊する。その危ういバランスの上で生きています。尽くすことに喜びを感じますが、それは同時に「見捨てられること」への恐怖の裏返しでもあります。",
-    jobs: "【適職】看護師、ウェディングプランナー、カウンセラー、児童福祉\n【理由】誰かのために自分を捧げることに、これ以上の喜びを感じるタイプはいません。\n【意外な適職】宗教家。無償の愛や、目に見えない強い繋がりを信じる力は、多くの迷える人を救います。",
-    level: "「一人でいても大丈夫」という感覚を取り戻しましょう。相手がいてもいなくても、あなたの価値は1ミリも変わりません。依存ではなく、自立した二人が寄り添うのが本当の愛です。"
-  },
-  KAGE: {
-    area: "自分を持ってるインキャラ界隈",
-    types: ["孤高の観測者", "ナマケモノ", "境界線マニア", "静寂の守護神"],
-    essay: "あなたは騒々しい世界を、透明な壁の向こう側から見つめています。群れることに意味を見出せず、一人の静寂の中に真実があると考えています。冷めているように見えますが、内側には誰にも見せない熱いこだわりや美学が眠っています。自分の城を守るためなら、世界を敵に回しても平気な強さがあります。",
-    jobs: "【適職】作家、イラストレーター、在宅エンジニア、職人、司書\n【理由】一人の時間に思考を深化させ、独自の世界観を形にする集中力が圧倒的です。\n【意外な適職】警備員（深夜）。誰とも喋らず、ただ静寂を守る時間は、あなたにとって癒やしにすらなります。",
-    level: "時々、誰かに自分の城の鍵を見せてあげてください。あなたの素晴らしい感性を、言葉にして外に出すことで、世界はもう少しだけ面白い場所になるかもしれません。"
-  }
+  SNS: { area: "SNS・承認欲求界隈", names:["デジタル承認モンスター","炎上ウォッチャー"], essay: "他者の視線があなたの輪郭を形作っています。いいね数や既読に一喜一憂するのは、あなたがそれだけ「誰かに見つけられたい」と願っている証拠です。トレンドを掴む力は天才的ですが、自分の本音をスマホの向こう側に預けすぎていないか注意が必要です。", jobs: "【適】インフルエンサー、マーケター、広報\n【非】事務、警備員", level: "通知をオフにし、誰も見ていないところで「自分のためだけに」何かを成し遂げてみてください。" },
+  GLAM: { area: "夜職・盛り・自己価値界隈", names:["プライド鬼高ウーマン","ブランドの奴隷"], essay: "自己プロデュースこそがあなたの武器です。容姿や所有物で武装するのは、あなたが厳しい社会を生き抜こうとする向上心の現れ。しかし、鏡を見るたびに感じる渇きは、他人の評価では決して埋まらないことを、あなたは薄々気づいているはずです。", jobs: "【適】営業、モデル、夜職、美容外科医\n【非】研究職、公務員", level: "「何も持っていない自分」を、まずはあなた自身が許してあげることから始めてください。" },
+  GACHI: { area: "メガネ真面目くん界隈", names:["シゴデキ規律マン","ガチー牛"], essay: "論理と規律を愛するあなたは、混沌とした世界を整えるための貴重な存在です。他人の不誠実さに怒りを感じるのは、あなたが誰より誠実にルールを守っているから。ただ、あなたの「正しさ」が時に他人の逃げ場を奪っていることも自覚しましょう。", jobs: "【適】エンジニア、会計士、法務、校正\n【非】クリエイター、司会、企画", level: "あえて「無駄」や「非効率」を楽しんでみる時間を設けてください。遊び心があなたの世界を広げます。" },
+  LOVE: { area: "恋愛至上主義界隈", names:["依存グラビティ","ニコイチ信者"], essay: "愛することがあなたの人生のすべて。相手に染まり、相手を支えることに命をかけています。その献身は美しいですが、共依存は破滅への入り口でもあります。相手がいない自分を愛せなくなった時、あなたの愛は暴力に変わってしまいます。", jobs: "【適】看護師、ウェディング、保育士、セラピスト\n【非】投資家、開拓者、職人", level: "恋人の色に染まるのではなく、自分の色を持ったまま、隣に座り続ける練習をしましょう。" },
+  KAGE: { area: "自分を持ってるインキャラ界隈", names:["孤高の観測者","静寂の守護神"], essay: "あなたは自分の城を何より大切にする、静かなる覇者です。群れることの虚しさを知り、沈黙の中に価値を見出す力があります。他人からは冷たく見えるかもしれませんが、内側の豊かさは随一。ただ、孤立しすぎて世界との繋がりを断たないよう気をつけて。", jobs: "【適】作家、職人、開発者、司書\n【非】営業、接客、司会", level: "信頼できる相手にだけは、あなたの城の鍵を見せてあげて。言葉にして伝えることが新しい力になります。" }
 };
 
 let state = { idx: 0, scores: {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0}, history: [], ans: null, timerVal: 45 };
 
-window.onload = () => {
-  const saved = localStorage.getItem('mbti_plus_v3');
-  if(saved) document.getElementById('resume-btn').classList.remove('hide');
-};
+window.onload = () => { if(localStorage.getItem('mbti_plus_vfinal')) document.getElementById('resume-btn').classList.remove('hide'); };
 
 function start(resume) {
-  if(resume) state = JSON.parse(localStorage.getItem('mbti_plus_v3'));
-  else localStorage.removeItem('mbti_plus_v3');
+  if(resume) state = JSON.parse(localStorage.getItem('mbti_plus_vfinal'));
   document.getElementById('screen-intro').classList.add('hide');
   document.getElementById('screen-quiz').classList.remove('hide');
   render();
@@ -200,49 +218,36 @@ function render() {
   const qText = document.getElementById('question-text');
   const choices = document.getElementById('choices');
   const fill = document.getElementById('progress-fill');
-  const num = document.getElementById('q-num');
-  
-  localStorage.setItem('mbti_plus_v3', JSON.stringify(state));
+  localStorage.setItem('mbti_plus_vfinal', JSON.stringify(state));
   choices.innerHTML = "";
-
   if (state.idx < 99) {
     const q = DB[state.idx];
     qText.textContent = q.q;
-    num.textContent = state.idx + 1;
+    document.getElementById('q-num').textContent = state.idx + 1;
     fill.style.width = `${state.idx + 1}%`;
-    q.c.forEach((text, i)=>{
+    q.c.forEach((txt, i) => {
       const btn = document.createElement('button');
-      btn.textContent = text;
-      btn.onclick = () => {
-        state.history.push({scores:{...state.scores}});
-        // スコア加算（一番左が+1, 真ん中0, 右-1とする）
-        const val = i === 0 ? 1 : (i === 1 ? 0 : -1);
-        state.scores[q.cat] += val;
-        state.idx++;
-        render();
-      };
+      btn.textContent = txt;
+      btn.onclick = () => { state.history.push({scores:{...state.scores}}); state.scores[q.cat] += (i===0?1:(i===1?0:-1)); state.idx++; render(); };
       choices.appendChild(btn);
     });
-  } else { renderFinal(); }
+  } else { renderFinalQuestion(); }
 }
 
-function goBack() { if(state.idx > 0) { state.idx--; state.scores = state.history.pop().scores; render(); } }
-function forceFinish() { if(confirm("100問答える方が精度が高いですが、結果を見ますか？")) showResult(); }
-
-function renderFinal() {
+function renderFinalQuestion() {
   const card = document.getElementById('screen-quiz');
   card.classList.add('extreme-mode');
   document.getElementById('timer-ui').classList.remove('hide');
+  document.getElementById('extra-info').classList.remove('hide'); 
   document.getElementById('nav-btns').classList.add('hide');
   document.getElementById('warn-text').classList.add('hide');
   const qText = document.getElementById('question-text');
-  qText.innerHTML = `<span style="color:var(--accent-p); font-size:1.4rem;">究極の選択：不幸のボタン</span><br><br><span style="font-size:0.9rem; font-weight:normal; line-height:1.8; text-align:left; display:block;">想像してください。あなたの目の前にボタンがあります。それを押せば、あなたが最も大切に思っている「あの人」の口座に、1億円が振り込まれます。ただし、その代わり。あなたはこの世から消えてなくなります。<br><br>あなたは、このボタンを親友に渡せますか？</span>`;
-  
+  qText.innerHTML = `<span style="color:var(--accent-p); font-size:1.4rem;">究極の選択：不幸のボタン</span><br><br>あなたが最も大切に思っている「あの人」の口座に1億円が振り込まれます。代わりに、あなたは消滅します。このボタンを渡せますか？`;
   const choices = document.getElementById('choices');
+  choices.innerHTML = "";
   [{t:"渡す",v:0},{t:"渡さない",v:1}].forEach(b=>{
     const btn = document.createElement('button');
     btn.textContent = b.t;
-    btn.style.borderColor = "var(--accent-p)";
     btn.onclick = () => { clearInterval(state.timer); state.ans = b.v; showResult(); };
     choices.appendChild(btn);
   });
@@ -258,33 +263,25 @@ function showResult() {
   const res = document.getElementById('screen-result');
   res.classList.remove('hide');
   if(state.ans === null && state.idx >= 99) { res.classList.add('silence-sanctuary'); document.body.style.background="#fff"; }
-  
   const top = Object.keys(state.scores).reduce((a,b)=> state.scores[a] > state.scores[b]? a : b);
   const info = MASTER[top];
-  
   document.getElementById('res-area').textContent = info.area;
-  document.getElementById('res-type').textContent = `タイプ：${info.types[Math.abs(state.scores[top]) % info.types.length]}`;
+  document.getElementById('res-type').textContent = `タイプ：${info.names[Math.abs(state.scores[top]) % info.names.length]}`;
   document.getElementById('res-essay').textContent = info.essay;
   document.getElementById('res-jobs').textContent = info.jobs;
   document.getElementById('res-level').textContent = info.level;
 
   let finalHTML = "";
-  const arroganceText = `<br><br><span class="bold-hit">【この問いの本質】</span><br>ここで問いかけているのは自己犠牲の精神ではありません。<br><span style="background:rgba(255,255,255,0.1); padding:5px;">【あの人にとって、1億円とあなたの命、どちらに価値があると思っているのか】</span>という、あなたの『傲慢さ』への問いです。`;
-
-  if(state.ans === 0) {
-    finalHTML = `<span class="bold-hit">ボタンを「渡す」と答えたあなた</span><br>―― その「信用」は、ただの押し付けだ。<br><br>あなたは「あの人なら、絶対にボタンを押さない」と信じて、ボタンを渡したのかもしれません。けれど、それは本当に“信頼”でしょうか。渡された側の友達は、一生そのボタンを見るたびに「これを押せば1億円が手に入る」という誘惑と戦い続けることになります。あなたは一番大切な人に「一生続く傲慢」をプレゼントしただけではありませんか。「もし押したら、それはお前が悪い」という呪いをかけているのと同じです。` + arroganceText;
-  } else if(state.ans === 1) {
-    finalHTML = `<span class="bold-hit">ボタンを「渡さない」と答えたあなた</span><br>―― あなたは、あの人を「見くびっている」。<br><br>あなたは「渡さない」を選びました。「あの人を迷わせたくない」という優しさの皮を被っていますが、本当は、あの人が「1億円」という金額に負けて、あなたを殺してしまう可能性を確信している。あなたは、一番大切なはずの友達の人間性を、たった1億円程度の価値だと見積もっているのです。それは相手への「諦め」に他なりません。` + arroganceText;
-  } else if(state.ans === null && state.idx >= 99) {
-    finalHTML = `<span style="font-weight:900; font-size:1.2rem;">【沈黙】45秒間、天秤を拒絶したあなたへ</span><br><br>あなたはどちらのボタンも選ばなかった。それは迷いではなく、<span class="bold-hit">「あの人と1億円を、同じ天秤に載せること自体を拒否した」</span>という、唯一の誠実な回答です。1億円という数字が、あなたとあの人の間に入り込む余地を一切与えなかったということです。<br><br>この質問において、用意された二つのボタンは「罠」でした。渡すのは傲慢、渡さないのは不信。そして、あなたの「沈黙」だけが、唯一の正解でした。<br><br><div style="font-size:0.85rem; border-top:1px solid #ccc; margin-top:15px; pt-15px;">この診断はあなたを枠に閉じ込めるために作られましたが、あなたは押しませんでした。それこそが、あなたが持つ気高く美しい誠実さです。その軸を大切にしてください。</div>`;
-  } else {
-    finalHTML = "診断を中断しました。100問の質問を完了させることで、最後の問いへの真実が明らかになります。";
-  }
-
-  document.getElementById('res-final').innerHTML = finalHTML;
-  localStorage.removeItem('mbti_plus_v3');
+  if(state.ans === 0) finalHTML = `<span style="font-weight:900; color:var(--accent-p); font-size:1.2rem;">ボタンを「渡す」：</span><br>―― その「信用」は、ただの押し付けだ。<br><br>あなたは「あの人なら、絶対にボタンを押さない」と信じて、ボタンを渡したのかもしれません。けれど、それは本当に“信頼”でしょうか。渡された側の友達は、一生そのボタンを見るたびに「これを押せば1億円が手に入る」という誘惑と戦い続けることになります。あなたは一番大切な人に「一生続く傲慢」をプレゼントしただけではありませんか。相手を試さずにはいられない。その傲慢な踏み絵のような確認作業を、あなたは「友情」と呼んでいるのです。`;
+  else if(state.ans === 1) finalHTML = `<span style="font-weight:900; color:var(--accent-p); font-size:1.2rem;">ボタンを「渡さない」：</span><br>―― あなたは、あの人を「見くびっている」。<br><br>あなたは「渡さない」を選びました。「あの人を迷わせたくない」という優しさの皮を被っていますが、本当は、あの人が「1億円」という金額に負けて、あなたを殺してしまう可能性を確信している。あなたは、一番大切なはずの友達の人間性を、たった1億円程度の価値だと見積もっているのです。それは相手への「諦め」に他なりません。`;
+  else if(state.ans === null && state.idx >= 99) finalHTML = `<span style="font-weight:900; font-size:1.2rem;">【沈黙】45秒間、天秤を拒絶したあなたへ</span><br><br>あなたはどちらのボタンも選ばなかった。それは迷いではなく、「あの人と1億円を、同じ天秤に載せること自体を拒否した」という、唯一の誠実な回答です。1億円という数字が、あなたとあの人の間に入り込む余地を一切与えなかったということです。<br><br>この診断はあなたを枠に閉じ込めるために作られましたが、あなたは押しませんでした。それこそが、あなたが持つ気高く美しい誠実さです。その軸を大切にしてください。`;
+  
+  document.getElementById('final-box').innerHTML = finalHTML;
+  localStorage.removeItem('mbti_plus_vfinal');
 }
 
+function goBack() { if(state.idx > 0) { state.idx--; state.scores = state.history.pop().scores; render(); } }
+function forceFinish() { if(confirm("100問答える方が精度が高いですが結果を見ますか？")) showResult(); }
 function resetAll() { localStorage.clear(); location.reload(); }
 </script>
 </body>
