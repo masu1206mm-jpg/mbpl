@@ -32,15 +32,8 @@
     .hide { display: none !important; }
     .sub-btn { flex: 1; padding: 10px; font-size: 0.75rem; background: transparent; border: 1px solid #444; color: #888; border-radius: 12px; }
     .highlight-box { background: #222; padding: 12px; border-radius: 10px; margin: 12px 0; border: 1px solid #444; color: #fff; font-size: 0.85rem; }
-
-    /* スマホ対応用画像スタイル */
     .res-char-img { width: 100%; max-width: 260px; aspect-ratio: 1/1; border-radius: 20px; margin: 0 auto 20px; display: block; object-fit: cover; border: 2px solid var(--accent-v); }
-    
-    @media (max-width: 480px) {
-      .card { padding: 20px; border-radius: 24px; }
-      h1 { font-size: 1.4rem; }
-      .res-area-name { font-size: 1.5rem; }
-    }
+    @media (max-width: 480px) { .card { padding: 20px; border-radius: 24px; } h1 { font-size: 1.4rem; } .res-area-name { font-size: 1.5rem; } }
   </style>
 </head>
 <body>
@@ -53,8 +46,8 @@
       すべての質問に具体性を持たせ、曖昧さを排除しました。<br><br>
       ※結果はあなたの本質を鋭く突く可能性があります。
     </div>
-    <button style="background:#fff; color:#000;" onclick="start(false)">最初から診断開始</button>
-    <button id="resume-btn" class="sub-btn hide" style="width:100%; margin-top:10px; display:none;" onclick="start(true)">続きから再開する</button>
+    <button style="background:#fff; color:#000;" onclick="start(false)">診断開始</button>
+    <button id="resume-btn" class="sub-btn hide" onclick="start(true)">続きから再開する</button>
   </div>
 
   <div id="screen-quiz" class="card hide">
@@ -62,7 +55,6 @@
     <div id="q-label" style="font-size:0.75rem; font-weight:900; color:var(--accent-b);">Q.<span id="q-num">1</span> / 100</div>
     <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
     <div id="question-text" class="question-text"></div>
-    
     <div id="extra-info" class="hide">
       <div style="text-align:left; font-size:0.85rem; line-height:1.6; margin-bottom:15px;">
         <span style="color:var(--accent-p); font-weight:900; border-bottom:2px solid var(--accent-p);">【この問いの本質】</span><br>
@@ -71,7 +63,6 @@
         という、あなたの『傲慢さ』への問いです。
       </div>
     </div>
-
     <div id="choices" class="choices"></div>
     <div id="nav-btns" style="display:flex; gap:8px; margin-top:25px;">
       <button class="sub-btn" onclick="goBack()">戻る</button>
@@ -87,21 +78,116 @@
     <div class="section"><div class="section-title">恋愛傾向とこれからの歩き方</div><div id="res-love" class="essay-text"></div></div>
     <div class="section"><div class="section-title">適職・非適職ナビ</div><div id="res-jobs" class="essay-text"></div></div>
     <div id="final-box" class="final-box"></div>
-    <button style="margin-top:30px; border-color:#444; color:#888;" onclick="resetAll()">診断をリセットしてトップへ</button>
+    <button style="margin-top:30px; border-color:#444; color:#888;" onclick="resetAll()">トップへ戻る</button>
   </div>
 </div>
 
 <script>
-const rawDB = [
-  {cat:"SNS", q:"SNSでバズっている投稿のいいね数を気にしてしまう", c:["つい確認してしまう", "たまに気になる", "全く見ない"]},
-  {cat:"SNS", q:"友達の投稿が伸びていると、コメント欄までチェックする", c:["隅々まで見る", "少し見る", "見ない"]},
-  {cat:"GLAM", q:"見た目を良くするためにお金をかけるのは当然だと思う", c:["投資だと思う", "人並みにかける", "かけない"]},
-  {cat:"GACHI", q:"約束の時間は絶対に守るべきだと思う", c:["5分前行動", "時間ちょうど", "多少遅れても良い"]},
-  {cat:"LOVE", q:"好きな人の返信速度で愛情を測ってしまう", c:["測ってしまう", "少し気になる", "気にしない"]},
-  {cat:"KAGE", q:"一人の時間がないと、どんなに好きな相手でも疲れる", c:["絶対必要", "あれば嬉しい", "いらない"]}
+// 100問の具体的質問データをすべて展開
+const DB = [
+  {cat:"SNS", q:"SNSで流れてきた『自分より不幸そうな投稿』を見て、少しだけ安心したことがある", c:["正直、ある", "無意識に見てるかも", "全くない"]},
+  {cat:"GLAM", q:"SNSにアップする写真は、納得がいくまで何十枚も撮り直す", c:["当然の儀式", "たまにこだわる", "一発撮り"]},
+  {cat:"GACHI", q:"映画館や飲食店で、マナーを守らない客がいると殺意に近い怒りを感じる", c:["許せない、軽蔑する", "イライラする", "気にしない"]},
+  {cat:"LOVE", q:"好きな人の『元恋人』のSNSを特定し、こっそりチェックしたことがある", c:["経験済み", "しようと思った事はある", "興味がない"]},
+  {cat:"KAGE", q:"休日に誰とも一言も喋らなくても、寂しさより快適さが勝つ", c:["圧倒的快適", "夕方頃に少し寂しい", "耐えられない"]},
+  {cat:"SNS", q:"SNSのフォロワーが減ると、原因を本気で分析・反省する", c:["分析する", "少し落ち込む", "気にしない"]},
+  {cat:"GLAM", q:"ブランドロゴが大きく入ったアイテムを持つと、自分の格が上がった気がする", c:["自信が出る", "多少意識する", "興味がない"]},
+  {cat:"GACHI", q:"『なんとかなる』という言葉は、準備不足な人間が無責任に使う言葉だと思う", c:["その通りだと思う", "時と場合による", "好きな言葉だ"]},
+  {cat:"LOVE", q:"相手が自分を好きか確信が持てないと、わざと冷たくして反応を試してしまう", c:["やってしまう", "自制はするが分かる", "したくない"]},
+  {cat:"KAGE", q:"『みんなで協力して』と言われると、一人でやった方が早いとまず思う", c:["即座に思う", "心の中で思う", "協力は大事だ"]},
+  {cat:"SNS", q:"バズっている投稿のコメント欄で、必死に反論している人を見ると滑稽だと思う", c:["強く思う", "不毛だなと思う", "熱くていいと思う"]},
+  {cat:"GLAM", q:"他人と食事に行くとき、味よりも『店の格』や『映え』を優先して選ぶ", c:["それが正義", "多少は考慮する", "味が全て"]},
+  {cat:"GACHI", q:"遅刻をしてきた相手が『ごめん』だけで済ませようとすると、誠意を感じず追求したくなる", c:["徹底的に正す", "顔には出す", "許して流す"]},
+  {cat:"LOVE", q:"恋人のスマホに通知が来た際、画面をチラ見して誰からか確認してしまう", c:["無意識に見てる", "見たい衝動を抑える", "見ない"]},
+  {cat:"KAGE", q:"自分だけの秘密の隠れ家や、誰にも教えたくないお気に入りの場所がある", c:["いくつかある", "一つはある", "特にない"]},
+  {cat:"SNS", q:"『自分磨き』の内容をSNSに報告しないのは、やっていないのと同じだと思う", c:["報告までがセット", "たまに報告する", "自分だけでいい"]},
+  {cat:"GLAM", q:"美しくないもの、ダサいものに囲まれていると、自分まで汚染される気がする", c:["激しく同意", "少しは気にする", "気にしない"]},
+  {cat:"GACHI", q:"感情論で訴えかけてくる人間とは、話が通じないと感じてシャットアウトする", c:["即座に拒絶", "論理に引き戻す", "寄り添おうとする"]},
+  {cat:"LOVE", q:"『愛しているなら、全てを犠牲にして私を優先すべきだ』という考えが、心の奥にある", c:["ある", "理解はできる", "エゴだと思う"]},
+  {cat:"KAGE", q:"飲み会よりも、深夜に一人で音楽を聴く方が贅沢だと思う", c:["人生の至福", "たまには必要", "飲み会が楽しい"]},
+  // ... (以下、100問目まで同様の形式でデータが続きます)
+  // スペースの都合上、以下に残り80問を省略せず流し込みます
+  {cat:"SNS", q:"「知り合いの不幸」をニュースや投稿で知った時、まずスマホの充電残量を確認した", c:["無意識に確認した", "少し気になった", "そんなことしない"]},
+  {cat:"GLAM", q:"自分の顔が映らない鏡の前を通る時でも、無意識に髪を整えている", c:["常に整えている", "たまにやる", "意識していない"]},
+  {cat:"GACHI", q:"「やる気が出ない」という言葉を吐く人間を、心の底で見下している", c:["かなり見下している", "甘えだと思う", "共感できる"]},
+  {cat:"LOVE", q:"相手が他の異性と親しげに話しているのを見ると、復讐に近い感情が湧く", c:["激しく湧く", "モヤモヤする", "信頼している"]},
+  {cat:"KAGE", q:"エレベーターに他人が乗ってきそうになると、密かに「閉」ボタンを連打する", c:["連打する", "少し焦る", "待ってあげる"]},
+  {cat:"SNS", q:"自分への批判コメントを見つけると、その相手のプロフィールを執拗にチェックする", c:["徹底的に洗う", "少し見る", "無視する"]},
+  {cat:"GLAM", q:"美容整形に対して「メンテナンス」という感覚で抵抗がない", c:["全くない", "少しはある", "抵抗がある"]},
+  {cat:"GACHI", q:"説明書を読まずに機械を操作する人間を見ると、知能を疑ってしまう", c:["疑う", "効率悪いと思う", "自分も読まない"]},
+  {cat:"LOVE", q:"「重い」と言われることは、それだけ深く愛している証拠だと思っている", c:["その通りだと思う", "少し思う", "迷惑だと思う"]},
+  {cat:"KAGE", q:"自動会計機やセルフレジがある店を優先して選ぶ", c:["絶対選ぶ", "あれば選ぶ", "どっちでもいい"]},
+  {cat:"SNS", q:"誰かの炎上騒ぎを見ると、正義感よりも「ワクワク」が勝ってしまう", c:["ワクワクする", "少し気になる", "不快に思う"]},
+  {cat:"GLAM", q:"安い服を着ている日は、誰にも会いたくないし外も歩きたくない", c:["本当に嫌だ", "少し引け目を感じる", "気にしない"]},
+  {cat:"GACHI", q:"「とりあえず謝る」という態度が、議論を放棄しているようで一番腹が立つ", c:["猛烈に腹が立つ", "イライラする", "場が収まるならいい"]},
+  {cat:"LOVE", q:"別れた相手のSNSが更新されると、自分より幸せになっていないか確認する", c:["必ず確認する", "たまに見る", "見ない"]},
+  {cat:"KAGE", q:"「週末何してた？」という質問に、正直に答えるのが苦痛で嘘をつく", c:["よくある", "たまにある", "普通に答える"]},
+  {cat:"SNS", q:"インフルエンサーが勧めている商品は、中身より「持っていること」が重要だ", c:["重要だと思う", "少しは意識する", "中身が大事"]},
+  {cat:"GLAM", q:"自分の体型が1kgでも増えると、この世の終わりのような絶望を感じる", c:["絶望する", "かなり焦る", "気にしない"]},
+  {cat:"GACHI", q:"「空気を読む」という文化は、無能が有能の足を引っ張るための道具だ", c:["強く同意する", "一理ある", "空気は読むべき"]},
+  {cat:"LOVE", q:"恋人の過去の恋愛人数を、自分より少ないことを願っている", c:["強く願う", "少し気になる", "どうでもいい"]},
+  {cat:"KAGE", q:"映画やアニメを1.5倍速以上で見るのが当たり前になっている", c:["当たり前", "たまにやる", "等倍で見る"]},
+  {cat:"SNS", q:"フォローバックされないと、数日後にそっとフォローを外す", c:["必ず外す", "たまに整理する", "気にしない"]},
+  {cat:"GLAM", q:"食事中も自分の写り方を気にして、カトラリーの持ち方を作法より「見栄え」で変える", c:["やる", "無意識に意識する", "作法が大事"]},
+  {cat:"GACHI", q:"占いやスピリチュアルを信じている人間とは、深い付き合いができない", c:["絶対無理", "少し距離を置く", "否定はしない"]},
+  {cat:"LOVE", q:"「どこに行きたい？」と聞かれ、相手が自分の行きたい場所を当てるのを待っている", c:["待ってしまう", "たまにやる", "自分から言う"]},
+  {cat:"KAGE", q:"誕生日のお祝いメッセージへの返信が面倒で、通知を溜め込んでしまう", c:["かなり溜める", "少し遅れる", "すぐ返す"]},
+  {cat:"SNS", q:"DMの既読無視をされると、相手がSNSを更新していないか監視し始める", c:["監視する", "少し気になる", "忘れる"]},
+  {cat:"GLAM", q:"ハイブランドの紙袋を捨てられずに部屋に飾ったり、サブバッグとして使っている", c:["使っている", "捨てられない", "即捨てる"]},
+  {cat:"GACHI", q:"仕事や勉強の計画が10分でもズレると、その日全てのやる気が失せる", c:["失せる", "少しイライラする", "修正すればいい"]},
+  {cat:"LOVE", q:"GPSアプリで相手の居場所を常に把握しておきたい（またはしている）", c:["把握したい", "安心材料になる", "束縛だと思う"]},
+  {cat:"KAGE", q:"「明日、急に暇になったから遊ぼう」と言われると、たとえ暇でも断る", c:["断る", "理由をつけて回避", "喜んでいく"]},
+  {cat:"SNS", q:"グループラインで自分の発言だけスタンプがつかないと、夜も眠れないほど気になる", c:["猛烈に気になる", "少し不安になる", "気にしない"]},
+  {cat:"GLAM", q:"加工アプリを通していない自分の顔を、鏡以外で直視できない", c:["直視できない", "あまり見たくない", "平気"]},
+  {cat:"GACHI", q:"「普通は〜」という言葉を使う人間を、自分の価値観を押し付ける傲慢な奴だと思う", c:["強く思う", "少し思う", "自分も使う"]},
+  {cat:"LOVE", q:"相手が落ち込んでいる時、心配するより先に「自分への愛が減らないか」を心配する", c:["正直思う", "少しよぎる", "相手を優先する"]},
+  {cat:"KAGE", q:"美容院やタクシーでは、なるべく会話をしなくて済むように仕向ける", c:["徹底する", "最小限にする", "楽しく話す"]},
+  {cat:"SNS", q:"自分の投稿が伸びなかった時、時間帯やハッシュタグのせいにしている", c:["必ず分析する", "たまに思う", "内容が悪かった"]},
+  {cat:"GLAM", q:"お金がない時でも、生活費を削って美容やファッションに注ぎ込む", c:["注ぎ込む", "たまにやる", "絶対にしない"]},
+  {cat:"GACHI", q:"マニュアル通りに動かない部下や後輩を見ると、指導するより先に呆れてしまう", c:["呆れる", "厳しく注意する", "寄り添う"]},
+  {cat:"LOVE", q:"相手の好みに合わせて自分のファッションや趣味を180度変えることができる", c:["余裕で変える", "多少は合わせる", "自分を貫く"]},
+  {cat:"KAGE", q:"実家の家族であっても、同じ部屋に長時間いられると苦痛を感じる", c:["かなり苦痛", "少し疲れる", "平気"]},
+  {cat:"SNS", q:"「自分だけの特別な体験」も、誰にも言えないなら価値が半分以下になると思う", c:["本当にそう思う", "少しは思う", "自分だけが知ればいい"]},
+  {cat:"GLAM", q:"自分より容姿が劣っていると思う人間といると、優越感で居心地が良くなる", c:["正直、そう", "無意識に感じる", "全く思わない"]},
+  {cat:"GACHI", q:"「頑張ればできる」という精神論を、無能が使う最も嫌いな言葉の一つだと思っている", c:["嫌いすぎる", "少し嫌い", "努力は大事"]},
+  {cat:"LOVE", q:"喧嘩をした時、自分に非があっても相手が謝るまで口を利かない", c:["絶対謝らない", "つい意地を張る", "自分から謝る"]},
+  {cat:"KAGE", q:"他人の不幸話を聞いている時、表情だけ悲しそうにして心では別のことを考えている", c:["よくある", "たまにある", "親身に聞く"]},
+  {cat:"SNS", q:"有名人と少しでも繋がりがあることを、チャンスがあれば周囲に自慢したい", c:["絶対自慢する", "匂わせる", "隠しておく"]},
+  {cat:"GLAM", q:"鏡に映る自分を見る時間が、1日のうちで合計1時間を超えている", c:["超えている", "30分くらい", "数分"]},
+  {cat:"GACHI", q:"ルールを守らない奴は、それだけで「社会から排除されても文句を言えない」と思う", c:["当然だと思う", "少し厳しすぎる", "更生の余地はある"]},
+  {cat:"LOVE", q:"「結婚」は愛のゴールではなく、相手を一生縛り付けるための契約だと思っている", c:["その通りだ", "一理ある", "愛の形だ"]},
+  {cat:"KAGE", q:"人混みの中を歩く時、周囲の人間を「ただの障害物」だと思っている", c:["思っている", "無意識に避けるだけ", "人間として意識する"]},
+  {cat:"SNS", q:"「いいね」の数で、その日の自分の機嫌が左右される", c:["完全に左右される", "少し影響する", "関係ない"]},
+  {cat:"GLAM", q:"食事中、美味しさよりも「食べている自分の姿」が綺麗かどうかを気にしている", c:["常に気にしている", "少し意識する", "味に集中する"]},
+  {cat:"GACHI", q:"自分より能力が低い上司の指示には、たとえ正しくても従いたくない", c:["絶対嫌だ", "嫌々従う", "仕事と割り切る"]},
+  {cat:"LOVE", q:"恋人がいない期間が3ヶ月以上続くと、自分の価値が消滅したような恐怖を感じる", c:["恐怖を感じる", "かなり焦る", "独身最高"]},
+  {cat:"KAGE", q:"「困った時はお互い様」という言葉を聞くと、依存される予感がして身構える", c:["激しく身構える", "少し警戒する", "いい言葉だ"]},
+  {cat:"SNS", q:"SNSで誰かを褒める時は、それによって「性格が良い自分」を演出したい時だ", c:["演出している", "たまにある", "心から褒める"]},
+  {cat:"GLAM", q:"トレンドが過ぎたブランド品を持っている人を見ると、心の中で「終わった人」と判定する", c:["判定する", "少しダサいと思う", "何とも思わない"]},
+  {cat:"GACHI", q:"「なんとなく」で決断を下す人間は、ギャンブラーと同じで信用できない", c:["信用できない", "危なっかしい", "直感も大事"]},
+  {cat:"LOVE", q:"相手に「私と仕事どっちが大事？」という質問を、真剣にぶつけたことがある（またはしたい）", c:["ある/したい", "冗談でなら", "絶対しない"]},
+  {cat:"KAGE", q:"自分に万が一のことがあった時、パソコンやスマホの中身を誰にも見られずに消去する術を用意している", c:["完璧に用意済み", "考えたことはある", "気にしない"]},
+  {cat:"SNS", q:"誰かの投稿の「粗探し」をして、心の中で突っ込むのが密かな楽しみだ", c:["かなりの楽しみ", "たまにやる", "そんなことしない"]},
+  {cat:"GLAM", q:"人前で泣くのは、計算された「演出」であることが多い", c:["ほぼ計算", "たまに混ざる", "常に本心"]},
+  {cat:"GACHI", q:"「夢を追いかける」という言葉は、現実逃避の言い換えに過ぎないと思う", c:["その通りだ", "時と場合による", "夢は素晴らしい"]},
+  {cat:"LOVE", q:"好きな人の全てを知りたいので、こっそりポケットの中や財布を確認したことがある", c:["ある", "やりたいが我慢", "絶対しない"]},
+  {cat:"KAGE", q:"「友達の友達」を紹介される場面が、人生で最も苦痛な時間の一つだ", c:["地獄だと思う", "かなり苦手", "平気"]},
+  {cat:"SNS", q:"ストーリーの閲覧履歴（足跡）をチェックして、特定の誰かが見ているか確認する", c:["毎回必ずする", "たまにする", "しない"]},
+  {cat:"GLAM", q:"高い買い物をする時、ローンを組んででも「今」の自分を飾り立てることを選ぶ", c:["迷わず選ぶ", "たまにやる", "貯めてから買う"]},
+  {cat:"GACHI", q:"予定通りに進まない旅行なら、行かない方がマシだと思っている", c:["本当にそう思う", "少し思う", "ハプニングも楽しい"]},
+  {cat:"LOVE", q:"相手の携帯のパスワードを、偶然を装って盗み見ようとしたことがある", c:["ある", "チャンスがあれば", "絶対しない"]},
+  {cat:"KAGE", q:"他人に自分の弱みを見せるくらいなら、一人で抱えて自滅する方がマシだ", c:["圧倒的にそう", "少し思う", "相談する"]},
+  {cat:"SNS", q:"「SNS断食」を宣言したものの、数時間後には気になって覗いてしまった", c:["よくある", "一度はある", "決めたら通す"]},
+  {cat:"GLAM", q:"自分の死後、遺影に使う写真は最高に盛れているものにしてほしいと指定している", c:["指定済み", "考えている", "何でもいい"]},
+  {cat:"GACHI", q:"挨拶を返さない人間は、それだけで人間関係を絶つに値する無礼者だ", c:["絶つ", "かなり嫌う", "忘れてただけかも"]},
+  {cat:"LOVE", q:"「一生一緒」という言葉を、相手に何度も言わせることで安心を得ている", c:["言わせている", "たまに確認する", "必要ない"]},
+  {cat:"KAGE", q:"自分の葬式に誰も来なくても、静かに終わるならそれが理想だと思っている", c:["理想的だ", "少し寂しい", "賑やかにしてほしい"]},
+  {cat:"SNS", q:"有名人の不倫やスキャンダルは、正義の鉄槌が下るのをずっと待っていた感覚になる", c:["スカッとする", "自業自得だと思う", "興味ない"]},
+  {cat:"GLAM", q:"鏡を見るたび、「自分はもっと評価されるべき特別な人間だ」と確信している", c:["確信している", "たまに思う", "思わない"]},
+  {cat:"GACHI", q:"遅刻の理由が「体調不良」であっても、管理不足として減点対象にする", c:["厳しく減点", "少し引く", "お大事にと思う"]},
+  {cat:"LOVE", q:"プレゼントの値段が、自分への愛の重さに比例していると信じている", c:["信じている", "少しは比例する", "気持ちが大事"]},
+  {cat:"KAGE", q:"世界が明日終わるとしても、今日までと同じように一人で過ごしたい", c:["一人でいたい", "少し迷う", "誰かといたい"]}
 ];
-const DB = [];
-for(let i=0; i<99; i++) { DB.push(rawDB[i % rawDB.length]); }
 
 const MASTER = {
   SNS: { 
@@ -142,26 +228,24 @@ const MASTER = {
     names:["孤高の観測者","静寂の守護神"], 
     essay: "あなたは静かなる美学を持っています。群れることに意味を感じず、一人の思考の中で宇宙を広げるタイプ。冷淡に見られがちですが、内側には誰にも譲れない強固な「こだわり」を秘めています。", 
     love: "【傾向】深い精神的な繋がりを求めますが、自分の領域を侵されるのを嫌います。相手に自分の時間を奪われると感じると、急に冷めてフェードアウトしてしまうことも。\n【対策】相手はエスパーではありません。あなたが何を大切にしているか、なぜ一人になりたいかを言葉で説明して。理解者を得ることで、あなたの孤独はより豊かなものになります。",
-    jobs: "【向いている】プログラマー、研究職、作家、職人。誰にも邪魔されない環境で、独自の技術や知見を掘り下げる仕事で歴史に名を残します。\n【向いていない】接客業全バランス、多人数チームでの営業、司会業。不特定多数との浅いコミュニケーションの連続は、あなたの脳を疲弊させます。"
+    jobs: "【向いている】プログラマー、研究職、作家、職人。誰にも邪魔されない環境で、独自の技術や知見を掘り下げる仕事で歴史に名を残します。\n【向いていない】接客業全般、多人数チームでの営業、司会業。不特定多数との浅いコミュニケーションの連続は、あなたの脳を疲弊させます。"
   }
 };
 
 let state = { idx: 0, scores: {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0}, history: [], ans: null, timerVal: 45 };
 
-// 起動時に保存されたデータがあるか確認
 window.onload = () => {
-    const saved = localStorage.getItem('mbti_plus_save');
-    if (saved) {
-        document.getElementById('resume-btn').style.display = 'block';
-    }
+  const saved = localStorage.getItem('mbti_plus_vfinal');
+  if (saved) document.getElementById('resume-btn').classList.remove('hide');
 };
 
 function start(resume) {
   if(resume) {
-      const saved = localStorage.getItem('mbti_plus_save');
-      if(saved) state = JSON.parse(saved);
+    const saved = localStorage.getItem('mbti_plus_vfinal');
+    if(saved) state = JSON.parse(saved);
   } else {
-      localStorage.removeItem('mbti_plus_save');
+    state = { idx: 0, scores: {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0}, history: [], ans: null, timerVal: 45 };
+    localStorage.removeItem('mbti_plus_vfinal');
   }
   document.getElementById('screen-intro').classList.add('hide');
   document.getElementById('screen-quiz').classList.remove('hide');
@@ -172,20 +256,23 @@ function render() {
   const qText = document.getElementById('question-text');
   const choices = document.getElementById('choices');
   const fill = document.getElementById('progress-fill');
-  
-  // 進行状況を保存
-  localStorage.setItem('mbti_plus_save', JSON.stringify(state));
+  localStorage.setItem('mbti_plus_vfinal', JSON.stringify(state));
   
   choices.innerHTML = "";
-  if (state.idx < 99) {
+  if (state.idx < 99 && state.idx < DB.length) {
     const q = DB[state.idx];
     qText.textContent = q.q;
     document.getElementById('q-num').textContent = state.idx + 1;
-    fill.style.width = `${state.idx + 1}%`;
+    fill.style.width = `${((state.idx + 1)/100)*100}%`;
     q.c.forEach((txt, i) => {
       const btn = document.createElement('button');
       btn.textContent = txt;
-      btn.onclick = () => { state.history.push({scores:{...state.scores}}); state.scores[q.cat] += (i===0?1:(i===1?0:-1)); state.idx++; render(); };
+      btn.onclick = () => { 
+        state.history.push({scores:{...state.scores}}); 
+        state.scores[q.cat] += (i===0?1:(i===1?0:-1)); 
+        state.idx++; 
+        render(); 
+      };
       choices.appendChild(btn);
     });
   } else { renderFinalQuestion(); }
@@ -197,7 +284,7 @@ function renderFinalQuestion() {
   document.getElementById('timer-ui').classList.remove('hide');
   document.getElementById('extra-info').classList.remove('hide'); 
   const qText = document.getElementById('question-text');
-  qText.innerHTML = `<span style="color:var(--accent-p); font-size:1.2rem;">究極の選択：不幸のボタン</span><br><br>あなたが最も大切に思っている「あの人」の口座に1億円が振り込まれます。代わりに、あなたは消滅します。このボタンを渡せますか？`;
+  qText.innerHTML = `<span style="color:var(--accent-p); font-size:1.3rem;">究極の選択：不幸のボタン</span><br><br>あなたが最も大切に思っている「あの人」の口座に1億円が振り込まれます。代わりに、あなたは消滅します。このボタンを渡せますか？`;
   const choices = document.getElementById('choices');
   choices.innerHTML = "";
   [{t:"渡す",v:0},{t:"渡さない",v:1}].forEach(b=>{
@@ -217,18 +304,15 @@ function showResult() {
   const res = document.getElementById('screen-result');
   res.classList.remove('hide');
   const finished = (state.idx >= 99);
-  
   if(state.ans === null && finished) { res.classList.add('silence-sanctuary'); document.body.style.background="#fff"; }
   const top = Object.keys(state.scores).reduce((a,b)=> state.scores[a] > state.scores[b]? a : b);
   const info = MASTER[top];
-
   document.getElementById('res-image').src = info.img;
   document.getElementById('res-area').textContent = info.area;
   document.getElementById('res-type').textContent = `タイプ：${info.names[Math.abs(state.scores[top]) % info.names.length]}`;
   document.getElementById('res-essay').textContent = info.essay;
   document.getElementById('res-love').textContent = info.love;
   document.getElementById('res-jobs').textContent = info.jobs;
-
   let finalHTML = "";
   if(!finished) {
     finalHTML = `<div style="text-align:center; color:#888;">【最後の質問：未回答】<br>100問全てに回答した方のみ、<br>深層心理の分析が表示されます。</div>`;
@@ -241,8 +325,8 @@ function showResult() {
 }
 
 function goBack() { if(state.idx > 0) { state.idx--; state.scores = state.history.pop().scores; render(); } }
-function forceFinish() { if(confirm("途中で結果を見ますか？（最後の問いは表示されません）")) showResult(); }
-function resetAll() { localStorage.removeItem('mbti_plus_save'); location.reload(); }
+function forceFinish() { if(confirm("途中で結果を見ますか？")) showResult(); }
+function resetAll() { localStorage.removeItem('mbti_plus_vfinal'); location.reload(); }
 </script>
 </body>
 </html>
