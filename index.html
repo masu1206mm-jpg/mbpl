@@ -7,34 +7,40 @@
   <style>
     :root { --bg: #05070a; --accent-p: #ff7ca7; --accent-v: #bda6ff; --accent-b: #6ef2ff; --text: #ffffff; }
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; font-family: "Hiragino Kaku Gothic ProN", sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; padding: 15px; }
+    body { margin: 0; min-height: 100vh; font-family: "Hiragino Kaku Gothic ProN", sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; padding: 10px; }
     .container { max-width: 650px; width: 100%; transition: 0.5s; }
-    .card { background: rgba(255,255,255,0.08); border-radius: 32px; padding: 30px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+    .card { background: rgba(255,255,255,0.08); border-radius: 32px; padding: 25px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
     .extreme-mode { background: #000 !important; border: 1px solid #ff4477 !important; animation: pulse 2s infinite; }
     @keyframes pulse { 0%, 100% { box-shadow: 0 0 10px #ff4477; } 50% { box-shadow: 0 0 30px #ff4477; } }
     .silence-sanctuary { background: #fff !important; color: #000 !important; border: none !important; }
     .silence-sanctuary .section { background: rgba(0,0,0,0.05) !important; color: #000 !important; }
-    h1 { text-align: center; font-size: 1.8rem; background: linear-gradient(90deg, var(--accent-p), var(--accent-v)); -webkit-background-clip: text; color: transparent; margin-bottom: 20px; font-weight: 900; }
-    .intro-text { font-size: 0.95rem; line-height: 1.8; color: #bbb; text-align: center; margin-bottom: 30px; }
-    .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 20px 0; overflow: hidden; }
+    h1 { text-align: center; font-size: 1.6rem; background: linear-gradient(90deg, var(--accent-p), var(--accent-v)); -webkit-background-clip: text; color: transparent; margin-bottom: 20px; font-weight: 900; }
+    .intro-text { font-size: 0.9rem; line-height: 1.7; color: #bbb; text-align: center; margin-bottom: 25px; }
+    .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 15px 0; overflow: hidden; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-v), var(--accent-b)); width: 0%; transition: 0.4s; }
-    .question-text { font-size: 1.2rem; font-weight: bold; line-height: 1.6; min-height: 90px; margin-bottom: 30px; text-align: center; }
-    .choices { display: grid; gap: 14px; }
-    button { padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    .question-text { font-size: 1.1rem; font-weight: bold; line-height: 1.5; min-height: 80px; margin-bottom: 25px; text-align: center; }
+    .choices { display: grid; gap: 12px; }
+    button { padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
     button:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: var(--accent-p); }
-    .timer { font-size: 5rem; text-align: center; color: var(--accent-p); font-weight: 900; margin-bottom: 20px; font-family: monospace; }
-    .res-area-name { font-size: 2.2rem; font-weight: 900; color: var(--accent-p); text-align:center; margin-bottom: 5px; }
-    .res-type-name { font-size: 1.1rem; font-weight: bold; color: var(--accent-v); text-align:center; margin-bottom: 30px; }
-    .section { background: rgba(255,255,255,0.04); border-radius: 24px; padding: 25px; margin-bottom: 20px; border-left: 6px solid var(--accent-v); }
-    .section-title { font-weight: 900; font-size: 0.95rem; color: var(--accent-v); margin-bottom: 12px; }
-    .essay-text { line-height: 1.9; font-size: 0.95rem; white-space: pre-wrap; }
-    .final-box { background: #000; border: 3px solid var(--accent-p); padding: 30px; border-radius: 28px; margin-top: 30px; color: #fff; font-size: 1rem; line-height: 2; }
+    .timer { font-size: 4rem; text-align: center; color: var(--accent-p); font-weight: 900; margin-bottom: 15px; font-family: monospace; }
+    .res-area-name { font-size: 1.8rem; font-weight: 900; color: var(--accent-p); text-align:center; margin-bottom: 5px; word-break: break-all; }
+    .res-type-name { font-size: 1rem; font-weight: bold; color: var(--accent-v); text-align:center; margin-bottom: 25px; }
+    .section { background: rgba(255,255,255,0.04); border-radius: 20px; padding: 20px; margin-bottom: 15px; border-left: 5px solid var(--accent-v); }
+    .section-title { font-weight: 900; font-size: 0.85rem; color: var(--accent-v); margin-bottom: 10px; }
+    .essay-text { line-height: 1.8; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; }
+    .final-box { background: #000; border: 2px solid var(--accent-p); padding: 25px; border-radius: 24px; margin-top: 25px; color: #fff; font-size: 0.95rem; line-height: 1.8; }
     .hide { display: none !important; }
-    .sub-btn { flex: 1; padding: 12px; font-size: 0.8rem; background: transparent; border: 1px solid #444; color: #888; border-radius: 12px; }
-    .highlight-box { background: #222; padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px solid #444; color: #fff; }
+    .sub-btn { flex: 1; padding: 10px; font-size: 0.75rem; background: transparent; border: 1px solid #444; color: #888; border-radius: 12px; }
+    .highlight-box { background: #222; padding: 12px; border-radius: 10px; margin: 12px 0; border: 1px solid #444; color: #fff; font-size: 0.85rem; }
 
-    /* キャラクター画像用の追加スタイル */
-    .res-char-img { width: 100%; max-width: 280px; aspect-ratio: 1/1; border-radius: 24px; margin: 0 auto 20px; display: block; object-fit: cover; border: 2px solid var(--accent-v); }
+    /* スマホ対応用画像スタイル */
+    .res-char-img { width: 100%; max-width: 260px; aspect-ratio: 1/1; border-radius: 20px; margin: 0 auto 20px; display: block; object-fit: cover; border: 2px solid var(--accent-v); }
+    
+    @media (max-width: 480px) {
+      .card { padding: 20px; border-radius: 24px; }
+      h1 { font-size: 1.4rem; }
+      .res-area-name { font-size: 1.5rem; }
+    }
   </style>
 </head>
 <body>
@@ -47,18 +53,18 @@
       すべての質問に具体性を持たせ、曖昧さを排除しました。<br><br>
       ※結果はあなたの本質を鋭く突く可能性があります。
     </div>
-    <button style="width:100%; background:#fff; color:#000; font-size:1.2rem;" onclick="start(false)">診断開始</button>
-    <button id="resume-btn" class="sub-btn hide" style="width:100%; margin-top:10px;" onclick="start(true)">続きから再開する</button>
+    <button style="background:#fff; color:#000;" onclick="start(false)">最初から診断開始</button>
+    <button id="resume-btn" class="sub-btn hide" style="width:100%; margin-top:10px; display:none;" onclick="start(true)">続きから再開する</button>
   </div>
 
   <div id="screen-quiz" class="card hide">
     <div id="timer-ui" class="hide"><div id="timer-display" class="timer">45</div></div>
-    <div id="q-label" style="font-size:0.8rem; font-weight:900; color:var(--accent-b);">Q.<span id="q-num">1</span> / 100</div>
+    <div id="q-label" style="font-size:0.75rem; font-weight:900; color:var(--accent-b);">Q.<span id="q-num">1</span> / 100</div>
     <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
     <div id="question-text" class="question-text"></div>
     
     <div id="extra-info" class="hide">
-      <div style="text-align:left; font-size:0.9rem; line-height:1.7; margin-bottom:20px;">
+      <div style="text-align:left; font-size:0.85rem; line-height:1.6; margin-bottom:15px;">
         <span style="color:var(--accent-p); font-weight:900; border-bottom:2px solid var(--accent-p);">【この問いの本質】</span><br>
         ここで問いかけているのは自己犠牲の精神ではありません。<br>
         <div class="highlight-box">【あの人にとって、1億円とあなたの命、どちらに価値があると思っているのか】</div>
@@ -67,7 +73,7 @@
     </div>
 
     <div id="choices" class="choices"></div>
-    <div id="nav-btns" style="display:flex; gap:10px; margin-top:30px;">
+    <div id="nav-btns" style="display:flex; gap:8px; margin-top:25px;">
       <button class="sub-btn" onclick="goBack()">戻る</button>
       <button class="sub-btn" onclick="forceFinish()">中断して結果を見る</button>
     </div>
@@ -81,7 +87,7 @@
     <div class="section"><div class="section-title">恋愛傾向とこれからの歩き方</div><div id="res-love" class="essay-text"></div></div>
     <div class="section"><div class="section-title">適職・非適職ナビ</div><div id="res-jobs" class="essay-text"></div></div>
     <div id="final-box" class="final-box"></div>
-    <button style="width:100%; margin-top:40px; border-color:#444; color:#888;" onclick="resetAll()">トップへ戻る</button>
+    <button style="margin-top:30px; border-color:#444; color:#888;" onclick="resetAll()">診断をリセットしてトップへ</button>
   </div>
 </div>
 
@@ -127,7 +133,7 @@ const MASTER = {
     area: "恋愛至上主義界隈", 
     names:["依存グラビティ","ニコイチ信者"], 
     essay: "愛することが人生の主軸であり、それ以外はすべて「ついで」です。誰かに必要とされることでしか自分の価値を感じられず、相手の気分があなたの天候を決定してしまいます。", 
-    love: "【傾向】相手の好みに自分を染め上げる「透明な人間」になりがち。重すぎる愛は時に相手を支配し、共依存の沼へ引きずり込みます。相手がいないとぬ死ぬ、という覚悟が逆に相手を遠ざけています。\n【対策】「自分だけの趣味」を一つ持って。あなたが自立した個体として存在することで、相手は初めてあなたを「追いかけたい」と思うようになります。愛しすぎないことが、愛される秘訣です。",
+    love: "【傾向】相手の好みに自分を染め上げる「透明な人間」になりがち。重すぎる愛は時に相手を支配し、共依存の沼へ引きずり込みます。相手がいないと死ぬ、という覚悟が逆に相手を遠ざけています。\n【対策】「自分だけの趣味」を一つ持って。あなたが自立した個体として存在することで、相手は初めてあなたを「追いかけたい」と思うようになります。愛しすぎないことが、愛される秘訣です。",
     jobs: "【向いている】看護師、ブライダルプランナー、ベビーシッター、セラピスト。誰かに寄り添い、慈しむ仕事において右に出る者はいません。\n【向いていない】投資トレーダー、冷徹な経営判断が必要な役職、孤独なフリーランス。感情を切り捨てる仕事はあなたの魂を削ります。"
   },
   KAGE: { 
@@ -136,14 +142,27 @@ const MASTER = {
     names:["孤高の観測者","静寂の守護神"], 
     essay: "あなたは静かなる美学を持っています。群れることに意味を感じず、一人の思考の中で宇宙を広げるタイプ。冷淡に見られがちですが、内側には誰にも譲れない強固な「こだわり」を秘めています。", 
     love: "【傾向】深い精神的な繋がりを求めますが、自分の領域を侵されるのを嫌います。相手に自分の時間を奪われると感じると、急に冷めてフェードアウトしてしまうことも。\n【対策】相手はエスパーではありません。あなたが何を大切にしているか、なぜ一人になりたいかを言葉で説明して。理解者を得ることで、あなたの孤独はより豊かなものになります。",
-    jobs: "【向いている】プログラマー、研究職、作家、職人。誰にも邪魔されない環境で、独自の技術や知見を掘り下げる仕事で歴史に名を残します。\n【向いていない】接客業全般、多人数チームでの営業、司会業。不特定多数との浅いコミュニケーションの連続は、あなたの脳を疲弊させます。"
+    jobs: "【向いている】プログラマー、研究職、作家、職人。誰にも邪魔されない環境で、独自の技術や知見を掘り下げる仕事で歴史に名を残します。\n【向いていない】接客業全バランス、多人数チームでの営業、司会業。不特定多数との浅いコミュニケーションの連続は、あなたの脳を疲弊させます。"
   }
 };
 
 let state = { idx: 0, scores: {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0}, history: [], ans: null, timerVal: 45 };
 
+// 起動時に保存されたデータがあるか確認
+window.onload = () => {
+    const saved = localStorage.getItem('mbti_plus_save');
+    if (saved) {
+        document.getElementById('resume-btn').style.display = 'block';
+    }
+};
+
 function start(resume) {
-  if(resume) state = JSON.parse(localStorage.getItem('mbti_plus_vfinal'));
+  if(resume) {
+      const saved = localStorage.getItem('mbti_plus_save');
+      if(saved) state = JSON.parse(saved);
+  } else {
+      localStorage.removeItem('mbti_plus_save');
+  }
   document.getElementById('screen-intro').classList.add('hide');
   document.getElementById('screen-quiz').classList.remove('hide');
   render();
@@ -153,7 +172,10 @@ function render() {
   const qText = document.getElementById('question-text');
   const choices = document.getElementById('choices');
   const fill = document.getElementById('progress-fill');
-  localStorage.setItem('mbti_plus_vfinal', JSON.stringify(state));
+  
+  // 進行状況を保存
+  localStorage.setItem('mbti_plus_save', JSON.stringify(state));
+  
   choices.innerHTML = "";
   if (state.idx < 99) {
     const q = DB[state.idx];
@@ -175,7 +197,7 @@ function renderFinalQuestion() {
   document.getElementById('timer-ui').classList.remove('hide');
   document.getElementById('extra-info').classList.remove('hide'); 
   const qText = document.getElementById('question-text');
-  qText.innerHTML = `<span style="color:var(--accent-p); font-size:1.4rem;">究極の選択：不幸のボタン</span><br><br>あなたが最も大切に思っている「あの人」の口座に1億円が振り込まれます。代わりに、あなたは消滅します。このボタンを渡せますか？`;
+  qText.innerHTML = `<span style="color:var(--accent-p); font-size:1.2rem;">究極の選択：不幸のボタン</span><br><br>あなたが最も大切に思っている「あの人」の口座に1億円が振り込まれます。代わりに、あなたは消滅します。このボタンを渡せますか？`;
   const choices = document.getElementById('choices');
   choices.innerHTML = "";
   [{t:"渡す",v:0},{t:"渡さない",v:1}].forEach(b=>{
@@ -195,13 +217,12 @@ function showResult() {
   const res = document.getElementById('screen-result');
   res.classList.remove('hide');
   const finished = (state.idx >= 99);
+  
   if(state.ans === null && finished) { res.classList.add('silence-sanctuary'); document.body.style.background="#fff"; }
   const top = Object.keys(state.scores).reduce((a,b)=> state.scores[a] > state.scores[b]? a : b);
   const info = MASTER[top];
 
-  // キャラクター画像を表示
   document.getElementById('res-image').src = info.img;
-  
   document.getElementById('res-area').textContent = info.area;
   document.getElementById('res-type').textContent = `タイプ：${info.names[Math.abs(state.scores[top]) % info.names.length]}`;
   document.getElementById('res-essay').textContent = info.essay;
@@ -221,7 +242,7 @@ function showResult() {
 
 function goBack() { if(state.idx > 0) { state.idx--; state.scores = state.history.pop().scores; render(); } }
 function forceFinish() { if(confirm("途中で結果を見ますか？（最後の問いは表示されません）")) showResult(); }
-function resetAll() { localStorage.clear(); location.reload(); }
+function resetAll() { localStorage.removeItem('mbti_plus_save'); location.reload(); }
 </script>
 </body>
 </html>
