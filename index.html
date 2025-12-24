@@ -3,89 +3,78 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>(偽)えむびーてぃーあいPlus</title>
-  <meta name="description" content="3択×100問の超具体派 性格診断。(偽)えむびーてぃーあいPlus" />
+  <title>えむびーてぃーあいPlus</title>
+  <meta name="description" content="3択×100問の超具体派 性格診断。えむびーてぃーあいPlus" />
   <style>
     :root{
-      /* ===== Theme ===== */
       --bg0:#0b1020;
-      --bg1:#0a0f1d;
-      --card: rgba(255,255,255,.08);
-      --card2: rgba(255,255,255,.12);
-      --stroke: rgba(255,255,255,.14);
-      --stroke2: rgba(255,255,255,.20);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --muted2: rgba(255,255,255,.58);
+      --bg1:#070b16;
+      --card:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.14);
+      --stroke2:rgba(255,255,255,.22);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.70);
+      --muted2:rgba(255,255,255,.55);
+      --shadow:0 18px 60px rgba(0,0,0,.45);
+      --r:20px;
+      --r2:16px;
+      --max:980px;
 
-      --accent:#bda6ff;
-      --accent2:#6ef2ff;
-      --accent3:#ff7ca7;
+      --a1:#bda6ff;
+      --a2:#6ef2ff;
+      --a3:#ff7ca7;
       --good:#7CFFB2;
       --warn:#FFD37C;
-
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
-      --r: 20px;
-      --r2: 16px;
-      --max: 980px;
+      --bad:#FF7CA7;
     }
 
-    *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html,body{ height:100%; }
+    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+    html,body{height:100%;}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Helvetica Neue", Arial;
-      color: var(--text);
+      color:var(--text);
       background:
-        radial-gradient(1100px 680px at 16% 8%, rgba(189,166,255,.20), transparent 60%),
-        radial-gradient(900px 560px at 86% 12%, rgba(110,242,255,.16), transparent 60%),
+        radial-gradient(1100px 680px at 16% 8%, rgba(189,166,255,.18), transparent 60%),
+        radial-gradient(900px 560px at 86% 12%, rgba(110,242,255,.14), transparent 60%),
         radial-gradient(900px 700px at 50% 105%, rgba(255,124,167,.10), transparent 60%),
-        linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 50%, var(--bg1) 100%);
-      padding: 16px;
-      padding-bottom: 44px;
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 55%, var(--bg1) 100%);
+      padding:16px;
+      padding-bottom:44px;
     }
 
-    .wrap{ max-width:var(--max); margin:0 auto; }
-
-    /* ===== Top ===== */
+    .wrap{max-width:var(--max); margin:0 auto;}
     .top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap: 12px;
-      margin-top: 6px;
-      margin-bottom: 12px;
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:12px; margin-top:6px; margin-bottom:12px;
     }
-    .brand{ display:flex; flex-direction:column; gap:8px; }
-    .brandRow{ display:flex; align-items:center; gap:10px; }
+    .brand{display:flex; flex-direction:column; gap:8px;}
+    .brandRow{display:flex; align-items:center; gap:10px;}
     .appIcon{
-      width:40px; height:40px; border-radius: 14px;
+      width:42px; height:42px; border-radius:14px;
       background: linear-gradient(135deg, rgba(189,166,255,.95), rgba(110,242,255,.80));
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
       border:1px solid rgba(255,255,255,.22);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
       display:grid; place-items:center;
-      color:#0b1020;
-      font-weight: 1000;
-      letter-spacing: .02em;
-      user-select:none;
+      color:#0b1020; font-weight:1000; user-select:none;
     }
     .title{
       margin:0;
-      font-weight: 1000;
-      letter-spacing: .01em;
-      line-height: 1.10;
+      font-weight:1000;
+      letter-spacing:.01em;
+      line-height:1.10;
       font-size: clamp(20px, 3.6vw, 34px);
-      background: linear-gradient(90deg, var(--accent3), var(--accent), var(--accent2));
+      background: linear-gradient(90deg, var(--a3), var(--a1), var(--a2));
       -webkit-background-clip:text;
       background-clip:text;
       color: transparent;
     }
     .subtitle{
       margin:0;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.55;
-      max-width: 46ch;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.6;
+      max-width: 56ch;
     }
 
     .pill{
@@ -101,13 +90,12 @@
       white-space:nowrap;
     }
     .pillDot{
-      width:7px; height:7px; border-radius:99px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      width:7px; height:7px; border-radius:999px;
+      background: linear-gradient(90deg, var(--a1), var(--a2));
       box-shadow: 0 0 0 3px rgba(189,166,255,.12);
-      flex: 0 0 auto;
+      flex:0 0 auto;
     }
 
-    /* ===== Card ===== */
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
       border:1px solid var(--stroke);
@@ -122,25 +110,23 @@
       border-bottom:1px solid rgba(255,255,255,.10);
       display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
-
-    .progressWrap{ display:flex; flex-direction:column; gap:8px; width:100%; }
+    .progressWrap{display:flex; flex-direction:column; gap:8px; width:100%;}
     .metaRow{
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       color: var(--muted);
       font-size: 12px;
     }
-    .metaLeft{ display:flex; align-items:center; gap:10px; }
+    .metaLeft{display:flex; align-items:center; gap:10px;}
     .chip{
       display:inline-flex; align-items:center; gap:6px;
       padding: 6px 10px;
       border-radius: 999px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.78);
+      color: rgba(255,255,255,.80);
       font-size: 12px;
       user-select:none;
     }
-    .chipIcon{ opacity:.9; }
 
     .bar{
       height: 11px;
@@ -157,9 +143,10 @@
       transition: width .22s ease;
     }
 
-    .content{ padding: 14px; }
+    .content{padding:14px;}
+    .hide{display:none !important;}
 
-    /* ===== Intro ===== */
+    /* Intro */
     .hero{
       display:flex; flex-direction:column; gap:10px;
       padding: 12px;
@@ -167,22 +154,22 @@
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
     }
-    .q{
-      font-size: clamp(16px, 2.9vw, 20px);
+    .heroTitle{
+      font-size: clamp(16px, 3.0vw, 20px);
       line-height: 1.55;
-      font-weight: 950;
+      font-weight: 1000;
       margin:0;
-      letter-spacing: .01em;
+      letter-spacing:.01em;
     }
-    .sub{
+    .heroText{
       margin:0;
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
-    .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
-    @media (max-width: 760px){ .grid2{ grid-template-columns:1fr; } }
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;}
+    @media (max-width: 760px){ .grid2{grid-template-columns:1fr;} }
 
     .panel{
       border:1px solid rgba(255,255,255,.12);
@@ -194,15 +181,15 @@
       margin:0 0 8px 0;
       font-size: 14px;
       letter-spacing:.02em;
-      color: rgba(255,255,255,.90);
+      color: rgba(255,255,255,.92);
       display:flex; align-items:center; gap:8px;
     }
     .panel p, .panel li{
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.65;
     }
-    .panel ul{ margin: 8px 0 0 18px; padding:0; }
+    .panel ul{margin:8px 0 0 18px; padding:0;}
     .note{
       margin-top:8px;
       font-size: 11px;
@@ -210,27 +197,27 @@
       line-height: 1.55;
     }
 
-    /* ===== Buttons ===== */
+    /* Buttons */
     .controls{
-      margin-top: 14px;
+      margin-top:14px;
       display:flex; flex-wrap:wrap; gap:10px;
-      justify-content:space-between;
-      align-items:center;
+      justify-content:space-between; align-items:center;
     }
-    .smallBtns{ display:flex; gap:10px; flex-wrap:wrap; }
+    .smallBtns{display:flex; gap:10px; flex-wrap:wrap;}
 
+    button{font-family:inherit;}
     .ghost{
       padding: 11px 12px;
       border-radius: 999px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.72);
+      color: rgba(255,255,255,.76);
       cursor:pointer;
       font-size: 13px;
       transition: background .16s ease, border-color .16s ease, transform .06s ease;
     }
-    .ghost:hover{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.22); }
-    .ghost:active{ transform: scale(.99); }
+    .ghost:hover{background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.22);}
+    .ghost:active{transform: scale(.99);}
 
     .primary{
       padding: 12px 14px;
@@ -241,16 +228,24 @@
       font-weight: 1000;
       cursor:pointer;
       font-size: 13px;
-      transition: filter .16s ease, transform .06s ease;
       box-shadow: 0 10px 30px rgba(110,242,255,.10);
-      min-width: 160px;
+      min-width: 180px;
       text-align:center;
+      transition: filter .16s ease, transform .06s ease;
     }
-    .primary:hover{ filter: brightness(1.03); }
-    .primary:active{ transform: scale(.99); }
+    .primary:hover{filter: brightness(1.03);}
+    .primary:active{transform: scale(.99);}
 
-    /* ===== Quiz ===== */
-    .choices{ display:grid; grid-template-columns:1fr; gap:10px; margin-top: 10px; }
+    /* Quiz */
+    .qText{
+      font-size: clamp(16px, 2.9vw, 20px);
+      line-height: 1.6;
+      font-weight: 1000;
+      margin: 0 0 10px 0;
+      letter-spacing:.01em;
+      white-space: pre-wrap;
+    }
+    .choices{display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px;}
     .btn{
       width:100%;
       padding: 14px 14px;
@@ -265,45 +260,65 @@
       transition: transform .06s ease, background .16s ease, border-color .16s ease;
       display:flex; align-items:flex-start; gap:10px;
     }
-    .btn:hover{ background: rgba(255,255,255,.11); border-color: rgba(255,255,255,.24); }
-    .btn:active{ transform: scale(.995); }
+    .btn:hover{background: rgba(255,255,255,.11); border-color: rgba(255,255,255,.24);}
+    .btn:active{transform: scale(.995);}
     .tag{
       font-size: 12px;
-      color: rgba(255,255,255,.82);
+      color: rgba(255,255,255,.85);
       border:1px solid rgba(255,255,255,.18);
       background: rgba(255,255,255,.06);
       padding: 3px 8px;
       border-radius: 999px;
       margin-top: 2px;
-      flex: 0 0 auto;
+      flex:0 0 auto;
       user-select:none;
     }
-    .btnText{ flex:1; }
-
+    .btnText{flex:1; white-space:pre-wrap;}
     .help{
       margin-top: 10px;
       color: var(--muted2);
       font-size: 12px;
-      line-height: 1.55;
+      line-height: 1.6;
       padding: 10px 12px;
       border-radius: 14px;
       border:1px dashed rgba(255,255,255,.14);
       background: rgba(255,255,255,.04);
     }
 
-    /* ===== Result ===== */
-    .resultTitle{
-      font-size: clamp(20px, 4vw, 34px);
+    /* Result */
+    .resultTop{
+      padding: 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      margin-bottom: 12px;
+    }
+    .bigCat{
+      font-size: clamp(20px, 4.4vw, 44px);
       font-weight: 1000;
-      margin: 4px 0 10px;
-      line-height: 1.12;
-      background: linear-gradient(90deg, var(--accent3), var(--accent), var(--accent2));
+      margin:0 0 6px 0;
+      line-height: 1.05;
+      background: linear-gradient(90deg, rgba(110,242,255,.95), rgba(185,156,255,.95));
       -webkit-background-clip:text;
       background-clip:text;
       color: transparent;
-      letter-spacing:.01em;
+      letter-spacing:.02em;
     }
-    .badgeRow{ display:flex; flex-wrap:wrap; gap:8px; margin: 6px 0 12px; }
+    .typeName{
+      margin:0 0 8px 0;
+      font-weight: 1000;
+      color: rgba(255,255,255,.90);
+      font-size: 14px;
+      letter-spacing:.02em;
+    }
+    .vibe{
+      margin:0;
+      color: rgba(255,255,255,.70);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .badgeRow{display:flex; flex-wrap:wrap; gap:8px; margin: 10px 0 12px;}
     .badge{
       display:inline-flex; align-items:center; gap:8px;
       border:1px solid rgba(255,255,255,.16);
@@ -311,13 +326,29 @@
       padding: 7px 10px;
       border-radius: 999px;
       font-size: 12px;
-      color: rgba(255,255,255,.82);
+      color: rgba(255,255,255,.84);
       user-select:none;
     }
 
-    /* ===== Misc ===== */
-    .hide{ display:none !important; }
+    .sectionTitle{
+      margin: 14px 0 8px;
+      font-size: 14px;
+      font-weight: 1000;
+      letter-spacing:.02em;
+      color: rgba(255,255,255,.92);
+    }
+    .block{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      border-radius: 16px;
+      padding: 12px;
+      color: rgba(255,255,255,.86);
+      font-size: 13px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
 
+    /* Toast */
     .toast{
       position: fixed;
       left: 50%;
@@ -336,10 +367,29 @@
       z-index: 50;
       box-shadow: 0 10px 40px rgba(0,0,0,.35);
     }
-    .toast.show{
-      opacity: 1;
-      transform: translateX(-50%) translateY(-4px);
+    .toast.show{opacity: 1; transform: translateX(-50%) translateY(-4px);}
+
+    details{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      color: rgba(255,255,255,.86);
     }
+    summary{cursor:pointer; color: rgba(255,255,255,.88); font-weight:900;}
+    .timerPill{
+      margin-left:auto;
+      display:none;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: rgba(255,255,255,.88);
+      user-select:none;
+    }
+    .timerPill.show{display:inline-flex;}
   </style>
 </head>
 
@@ -349,15 +399,11 @@
       <div class="brand">
         <div class="brandRow">
           <div class="appIcon">＋</div>
-          <h1 class="title">(偽)えむびーてぃーあいPlus</h1>
+          <h1 class="title">えむびーてぃーあいPlus</h1>
         </div>
         <p class="subtitle">3択×100問。すべて「具体的な場面」を想像して、否定・中立・肯定でテンポ良く回答します。</p>
       </div>
-
-      <div class="pill">
-        <span class="pillDot"></span>
-        スマホ最適化 / 途中保存対応
-      </div>
+      <div class="pill"><span class="pillDot"></span>スマホ最適化 / 途中保存 / ひとつ前に戻る</div>
     </div>
 
     <div class="card" id="app">
@@ -366,9 +412,9 @@
           <div class="metaRow">
             <div class="metaLeft">
               <div id="stepText">準備中…</div>
-              <span class="chip"><span class="chipIcon">💾</span><span id="saveText">保存: ON</span></span>
+              <span class="chip">💾 <span id="saveText">保存: ON</span></span>
             </div>
-            <div class="chip"><span class="chipIcon">🧠</span>3択 × 100問</div>
+            <span class="timerPill" id="timerPill">⏳ 40</span>
           </div>
           <div class="bar"><div id="barFill"></div></div>
         </div>
@@ -377,29 +423,31 @@
       <!-- Intro -->
       <div class="content" id="screenIntro">
         <div class="hero">
-          <p class="q">ルールは簡単です。すべて「自分が主人公」として想像し、直感で選んでください。</p>
-          <p class="sub">迷った場合は「中立」で問題ありません。背伸びせず、普段の自分に近い方を選んでください。</p>
+          <p class="heroTitle">えむびーてぃーあいPlusとは</p>
+          <p class="heroText">
+            えむびーてぃーあいの強化版であり、あなたの思考パターンを「高性能AI」と「研究結果」から詳細化します。<br>
+            直感で構いません。背伸びせず、普段の自分に近いものを選んでください。
+          </p>
         </div>
 
         <div class="grid2">
           <div class="panel">
-            <h3>✅ 回答形式（3択）</h3>
+            <h3>✅ 回答形式</h3>
             <ul>
-              <li><b>否定</b>：しない／避ける／言わない など</li>
-              <li><b>中立</b>：状況次第／様子を見る／相談する など</li>
-              <li><b>肯定</b>：する／向き合う／言う など</li>
+              <li><b>否定</b>：しない／避ける／言わない</li>
+              <li><b>中立</b>：状況次第／様子を見る／相談する</li>
+              <li><b>肯定</b>：する／向き合う／言う</li>
             </ul>
+            <div class="note">※途中でやめても保存されます。</div>
           </div>
-
           <div class="panel">
-            <h3>📌 この診断の狙い</h3>
-            <p>
-              「性格＝気分」ではなく、<b>緊急時・対人関係・判断が必要な場面</b>で出る
-              “反応パターン”を拾います。そのため質問数は多め（100問）です。
-            </p>
-            <div class="note">
-              ※本コンテンツは娯楽目的です。医療・心理の専門的判断の代替にはなりません。
-            </div>
+            <h3>📌 機能</h3>
+            <ul>
+              <li>途中保存（自動）</li>
+              <li>ひとつ前に戻る（選び直し可能）</li>
+              <li>100問目のみ 40秒タイマー演出</li>
+            </ul>
+            <div class="note">※娯楽コンテンツです。医療・心理の専門判断の代替にはなりません。</div>
           </div>
         </div>
 
@@ -407,14 +455,13 @@
           <div class="smallBtns">
             <button class="ghost" id="resetAll">最初から（データ削除）</button>
           </div>
-          <button class="primary" id="startBtn">開始する（100問）</button>
+          <button class="primary" id="startBtn">診断開始</button>
         </div>
       </div>
 
       <!-- Quiz -->
       <div class="content hide" id="screenQuiz">
-        <p class="q" id="qText">質問</p>
-
+        <div class="qText" id="qText">質問</div>
         <div class="choices" id="choices"></div>
 
         <div class="help" id="helpText">
@@ -423,7 +470,7 @@
 
         <div class="controls">
           <div class="smallBtns">
-            <button class="ghost" id="backBtn">1つ戻る</button>
+            <button class="ghost" id="backBtn">ひとつ戻る</button>
             <button class="ghost" id="skipBtn">保留（中立で進む）</button>
           </div>
           <button class="primary" id="toResultBtn">結果を見る</button>
@@ -432,31 +479,31 @@
 
       <!-- Result -->
       <div class="content hide" id="screenResult">
-        <div class="badgeRow" id="badges"></div>
-        <div class="resultTitle" id="resultTitle">結果</div>
-
-        <div class="grid2">
-          <div class="panel">
-            <h3>あなたの傾向</h3>
-            <p id="desc"></p>
-          </div>
-          <div class="panel">
-            <h3>恋愛で相性が良い相手</h3>
-            <p id="love"></p>
-          </div>
-          <div class="panel">
-            <h3>向いている職業</h3>
-            <p id="job"></p>
-          </div>
-          <div class="panel">
-            <h3>好みそうなYouTube/娯楽</h3>
-            <p id="media"></p>
-          </div>
+        <div class="resultTop">
+          <div class="bigCat" id="bigCat">界隈</div>
+          <div class="typeName" id="typeName">タイプ名</div>
+          <p class="vibe" id="vibe">説明</p>
+          <div class="badgeRow" id="badges"></div>
         </div>
+
+        <div class="sectionTitle">思考傾向</div>
+        <div class="block" id="desc"></div>
+
+        <div class="sectionTitle">向いている職業</div>
+        <div class="block" id="jobGood"></div>
+
+        <div class="sectionTitle">向いていない職業</div>
+        <div class="block" id="jobBad"></div>
+
+        <div class="sectionTitle">成長するためには</div>
+        <div class="block" id="levelup"></div>
+
+        <div class="sectionTitle" style="font-size:16px;">最後の質問について</div>
+        <div class="block" id="finalEssay"></div>
 
         <div class="controls">
           <div class="smallBtns">
-            <button class="ghost" id="shareBtn">結果テキストをコピー</button>
+            <button class="ghost" id="copyBtn">結果テキストをコピー</button>
             <button class="ghost" id="restartBtn">もう一度やる</button>
           </div>
           <button class="primary" id="homeBtn">トップへ</button>
@@ -468,10 +515,8 @@
   <div class="toast" id="toast">コピーしました</div>
 
   <script>
-    // ========== 設定（パート1の土台） ==========
-    const STORAGE_KEY = "fake_mbtiai_plus_v1";
-
-    const $ = (id) => document.getElementById(id);
+    // 共通ヘルパー（PART2/3もこれを使います）
+    const $ = (id)=>document.getElementById(id);
 
     function toast(msg){
       const t = $("toast");
@@ -480,1119 +525,22 @@
       setTimeout(()=>t.classList.remove("show"), 1200);
     }
 
-    function saveState(state){
-      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
-    }
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : null;
-      }catch(e){ return null; }
-    }
-    function clearState(){
-      try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-    }
-
     function showScreen(which){
-      $("screenIntro").classList.add("hide");
-      $("screenQuiz").classList.add("hide");
-      $("screenResult").classList.add("hide");
+      ["screenIntro","screenQuiz","screenResult"].forEach(id=>$(id).classList.add("hide"));
       $(which).classList.remove("hide");
     }
 
-    function setProgress(i, total){
+    function setProgress(i,total){
       const pct = total ? Math.round((i/total)*100) : 0;
       $("barFill").style.width = pct + "%";
       $("stepText").textContent = total ? `Q${Math.min(i+1,total)} / ${total}` : "準備中…";
     }
 
-    // ※パート2/3で上書きされる前提のダミー（互換維持）
-    const QUESTIONS = [];
-    const TYPES = [];
-
-    let state = {
-      idx: 0,
-      answers: [],
-      scores: {},
-      finished: false
-    };
-
-    function boot(){
-      const saved = loadState();
-      if(saved && saved.answers && typeof saved.idx === "number"){
-        state = saved;
-        $("saveText").textContent = "保存: ON（復元）";
-        if(state.finished){
-          showScreen("screenResult");
-          setProgress(QUESTIONS.length ? QUESTIONS.length-1 : 0, QUESTIONS.length || 100);
-        }else if(state.idx > 0 || (state.answers && state.answers.length)){
-          showScreen("screenQuiz");
-        }else{
-          showScreen("screenIntro");
-        }
-      }else{
-        showScreen("screenIntro");
-      }
-      setProgress(state.idx, QUESTIONS.length || 100);
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[m]));
     }
-
-    // ボタン（パート2が機能を上書きする前提で、ここでは最低限の挙動のみ）
-    $("resetAll").addEventListener("click", ()=>{
-      clearState();
-      state = {idx:0, answers:[], scores:{}, finished:false};
-      toast("保存データを削除しました");
-      showScreen("screenIntro");
-      setProgress(0, QUESTIONS.length || 100);
-      $("saveText").textContent = "保存: ON";
-    });
-
-    $("startBtn").addEventListener("click", ()=>{
-      showScreen("screenQuiz");
-      toast("開始しました");
-      // 実描画はパート2で実装される想定
-    });
-
-    $("homeBtn").addEventListener("click", ()=>{
-      showScreen("screenIntro");
-      toast("トップへ戻りました");
-    });
-
-    $("restartBtn").addEventListener("click", ()=>{
-      clearState();
-      state = {idx:0, answers:[], scores:{}, finished:false};
-      showScreen("screenQuiz");
-      toast("リスタートしました");
-      // 実描画はパート2で
-    });
-
-    $("shareBtn").addEventListener("click", async ()=>{
-      const text =
-`(偽)えむびーてぃーあいPlus 結果
-・${$("resultTitle").textContent}
-・${$("desc").textContent}`;
-      try{
-        await navigator.clipboard.writeText(text);
-        toast("コピーしました");
-      }catch(e){
-        toast("コピーに失敗しました");
-      }
-    });
-
-    // パート2で動作追加される想定（ここではプレースホルダ）
-    $("backBtn").addEventListener("click", ()=> toast("この操作はパート2で有効になります"));
-    $("skipBtn").addEventListener("click", ()=> toast("この操作はパート2で有効になります"));
-    $("toResultBtn").addEventListener("click", ()=> toast("結果表示はパート2/3で有効になります"));
-
-    boot();
   </script>
-</body>
-</html>
 
-  <!-- ここにパート2を貼る -->
-<script>
-/* =========================
-   (偽)えむびーてぃーあいPlus - PART2（作り直し版）
-   ✅ 1〜99はシャッフル（毎回ランダム）
-   ✅ 100問目は固定（最後の“ボタン”）
-   ✅ 戻る/選び直し可能（スコアも差し引き）
-   ✅ 保存・復元
-   ✅ 問題ごとに「界隈タグ」を持たせる（キーワード依存しない）
-   ✅ 99問までは3択、100問目だけ2択（+沈黙は伏せる…はPART3/特別演出で実装）
-========================= */
-
-(function(){
-  const STORAGE_KEY = "fake_mbtiai_plus_v2_shuffle";
-  const $ = (id) => document.getElementById(id);
-
-  // ---- ローカル保存（PART1に同名関数があるけど、衝突を避けて別名で） ----
-  function saveV2(state){
-    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
-  }
-  function loadV2(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : null;
-    }catch(e){ return null; }
-  }
-  function clearV2(){
-    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-  }
-
-  // ---- ここから「あなたの100問」 ----
-  // 1〜99：3択（否定/中立/肯定）
-  // 100：2択（渡す/渡さない） ※沈黙は“伏せる”のでここではまだ出さない
-  //
-  // 各問に tags: {cat:"SNS|GLAM|GACHI|LOVE|KAGE"} を明示してる
-  // → 後でPART3で「界隈の境界」を質問タグで100%決められる
-
-  const Q_RAW = [
-    // ---- ① SNS・承認欲求界隈 1-20 ----
-    {no:1,  cat:"SNS", q:"TikTokやX等でバズってる人を見ると、いいね数やコメント数を気にしてしまう", a:"気にしない/見ない", b:"ちょっと気になる", c:"かなり気にする/見に行く"},
-    {no:2,  cat:"SNS", q:"友達の投稿が伸びていると、コメント欄やいいね数を全て確認する", a:"見ない", b:"少し見る", c:"全部確認する"},
-    {no:3,  cat:"SNS", q:"TikTokやX等でバズってる人を見るといいね数やコメント数を気にしてしまう", a:"気にしない/見ない", b:"ちょっと気になる", c:"かなり気にする/見に行く"},
-    {no:4,  cat:"SNS", q:"炎上してる話題を一から調べて追う癖がある", a:"追わない", b:"たまに追う", c:"追いがち"},
-    {no:5,  cat:"SNS", q:"ストーリーを上げた後、友達からの反応をずっと待っている", a:"待たない", b:"少し気にする", c:"めっちゃ待つ"},
-    {no:6,  cat:"SNS", q:"投稿する前に何回も文章や写真を見直す", a:"ほぼ見直さない", b:"1回は見る", c:"何回も見直す"},
-    {no:7,  cat:"SNS", q:"反応が少ないと投稿を消したくなる", a:"消したくならない", b:"たまに思う", c:"消したくなる"},
-    {no:8,  cat:"SNS", q:"自撮りを上げる事がある", a:"ほぼ無い", b:"たまに", c:"割とある"},
-    {no:9,  cat:"SNS", q:"フォロワー数で人を判断してしまうことがある", a:"しない", b:"たまに", c:"しがち"},
-    {no:10, cat:"SNS", q:"友達の幸せな報告には嫉妬することが多い", a:"しない", b:"たまに", c:"多い"},
-    {no:11, cat:"SNS", q:"バズっている理由を分析するのが好きだ", a:"興味ない", b:"少し好き", c:"めっちゃ好き"},
-    {no:12, cat:"SNS", q:"SNSでの自分の立ち位置を意識している", a:"意識しない", b:"たまに意識", c:"常に意識"},
-    {no:13, cat:"SNS", q:"承認されていないと不安になる", a:"ならない", b:"たまに", c:"なりがち"},
-    {no:14, cat:"SNS", q:"裏垢やコメント欄でニュースやその話題に対して自分の意見を良くいう", a:"言わない", b:"たまに言う", c:"よく言う"},
-    {no:15, cat:"SNS", q:"炎上している人を見て「自分ならこうする」と考える", a:"考えない", b:"たまに", c:"考えがち"},
-    {no:16, cat:"SNS", q:"SNSでいいね数やコメント欄や友達の反応を気にして投稿する", a:"気にしない", b:"半々", c:"気にして投稿する"},
-    {no:17, cat:"SNS", q:"伸びる時間帯を気にする", a:"気にしない", b:"たまに", c:"気にする"},
-    {no:18, cat:"SNS", q:"有名人に「好きです」などのdmを送った事がある", a:"ない", b:"迷う/たまに", c:"ある"},
-    {no:19, cat:"SNS", q:"他人の投稿に批判的なコメントをした事がある", a:"ない", b:"迷う/少し", c:"ある"},
-    {no:20, cat:"SNS", q:"SNSはいかにいいねをたくさん貰うかが重要だ", a:"重要じゃない", b:"まあ重要", c:"超重要"},
-
-    // ---- ② 夜職・盛り・自己価値界隈 21-40 ----
-    {no:21, cat:"GLAM", q:"見た目はお金でどうにかなる", a:"そう思わない", b:"半分思う", c:"思う"},
-    {no:22, cat:"GLAM", q:"ここ1年は容姿を磨くことに1番お金をかけている", a:"かけてない", b:"まあまあ", c:"一番かけてる"},
-    {no:23, cat:"GLAM", q:"可愛い・かっこいいと言われると自信が出る", a:"あまり変わらない", b:"少し出る", c:"めっちゃ出る"},
-    {no:24, cat:"GLAM", q:"第一印象で損したくない", a:"気にしない", b:"一応気にする", c:"絶対損したくない"},
-    {no:25, cat:"GLAM", q:"ナメられたくない気持ちが強い", a:"弱い", b:"普通", c:"強い"},
-    {no:26, cat:"GLAM", q:"整形は努力だと思う", a:"思わない", b:"場合による", c:"思う"},
-    {no:27, cat:"GLAM", q:"恋愛において自分の価値は高いと思う", a:"思わない", b:"まあ", c:"思う"},
-    {no:28, cat:"GLAM", q:"10万円以上のアクセサリーやバッグなどの有名ブランドを複数所持している", a:"ない", b:"少し", c:"複数ある"},
-    {no:29, cat:"GLAM", q:"メイクが上手く行かなくて遅刻した事がある", a:"ない", b:"迷う/少し", c:"ある"},
-    {no:30, cat:"GLAM", q:"自分を安売りしても欲しいものがある", a:"ない", b:"場合による", c:"ある"},
-    {no:31, cat:"GLAM", q:"自分よりブサイクをみると安心する", a:"しない", b:"たまに", c:"する"},
-    {no:32, cat:"GLAM", q:"整形をしている", a:"してない", b:"考えたことある", c:"してる"},
-    {no:33, cat:"GLAM", q:"異性とのご飯は奢られたい", a:"どっちでも", b:"どちらかと言うと", c:"奢られたい"},
-    {no:34, cat:"GLAM", q:"鏡を見てコンプレックスを感じる", a:"あまり無い", b:"たまに", c:"よくある"},
-    {no:35, cat:"GLAM", q:"異性とのご飯は奢りたい", a:"奢りたくない", b:"場合による", c:"奢りたい"},
-    {no:36, cat:"GLAM", q:"自分を高く見せるのは悪いことじゃない", a:"よくない", b:"場合による", c:"悪くない"},
-    {no:37, cat:"GLAM", q:"恋愛は女性は顔と男性はお金だと思う", a:"思わない", b:"半分思う", c:"思う"},
-    {no:38, cat:"GLAM", q:"他人にどう見られているか常に気になる", a:"気にならない", b:"たまに", c:"常に"},
-    {no:39, cat:"GLAM", q:"自分を下げる発言は冗談でも、言われたら傷つく", a:"傷つかない", b:"少し", c:"傷つく"},
-    {no:40, cat:"GLAM", q:"プライドは高い方だ", a:"低い", b:"普通", c:"高い"},
-
-    // ---- ③ メガネ真面目くん界隈 41-60 ----
-    {no:41, cat:"GACHI", q:"約束の時間は絶対守るべきだ", a:"絶対ではない", b:"基本守る", c:"絶対守る"},
-    {no:42, cat:"GACHI", q:"計画通りに進まないとイライラする", a:"しない", b:"少し", c:"する"},
-    {no:43, cat:"GACHI", q:"ミスをすると原因を考える", a:"あまり考えない", b:"考える", c:"めっちゃ考える"},
-    {no:44, cat:"GACHI", q:"学校や会社での人の小さな言い間違いを訂正したくなる", a:"ならない", b:"たまに", c:"なる"},
-    {no:45, cat:"GACHI", q:"自分は信号無視をするタイプだ", a:"しない", b:"たまに", c:"する"},
-    {no:46, cat:"GACHI", q:"好きな人との夜ご飯は予約してて欲しい／したい", a:"いらない", b:"場合による", c:"予約したい"},
-    {no:47, cat:"GACHI", q:"段取りができていないと不安になる", a:"ならない", b:"少し", c:"なる"},
-    {no:48, cat:"GACHI", q:"無責任な行動を見ると腹が立つ", a:"立たない", b:"少し", c:"立つ"},
-    {no:49, cat:"GACHI", q:"先のことを考えて動くタイプだ", a:"直感派", b:"半々", c:"先を考える"},
-    {no:50, cat:"GACHI", q:"LINEでの誤字、脱字などの小さいミスが気になる", a:"気にならない", b:"少し", c:"気になる"},
-    {no:51, cat:"GACHI", q:"バランスのよい食事を心掛けている", a:"してない", b:"まあ", c:"してる"},
-    {no:52, cat:"GACHI", q:"無駄な出費はできる限りしない", a:"気にしない", b:"まあ", c:"しない"},
-    {no:53, cat:"GACHI", q:"学生の頃や社会で責任のある役割をした事がある", a:"ない", b:"少し", c:"ある"},
-    {no:54, cat:"GACHI", q:"バイトで無責任な人にイライラする", a:"しない", b:"少し", c:"する"},
-    {no:55, cat:"GACHI", q:"友達の秘密を言ってしまった事がある", a:"ない", b:"迷う/少し", c:"ある"},
-    {no:56, cat:"GACHI", q:"失敗を繰り返さないように努力する", a:"あまりしない", b:"する", c:"めっちゃする"},
-    {no:57, cat:"GACHI", q:"恋愛では年上が好きだ", a:"そうでもない", b:"どちらでも", c:"年上が好き"},
-    {no:58, cat:"GACHI", q:"電車の遅延などで予定が崩れると一気に疲れる", a:"疲れない", b:"少し", c:"疲れる"},
-    {no:59, cat:"GACHI", q:"利益が少しずつでもコツコツ積み立てれる", a:"無理", b:"まあ", c:"できる"},
-    {no:60, cat:"GACHI", q:"眠い時は授業中でも友達の車でも寝る", a:"寝ない", b:"たまに", c:"寝る"},
-
-    // ---- ④ 恋愛至上主義界隈 61-80 ----
-    {no:61, cat:"LOVE", q:"好きな人の誕生日に3万円以上は使いたい", a:"使わない", b:"場合による", c:"使いたい"},
-    {no:62, cat:"LOVE", q:"恋愛が生活の中心になりやすい", a:"ならない", b:"たまに", c:"なりやすい"},
-    {no:63, cat:"LOVE", q:"相手の言動に一喜一憂しがち", a:"しない", b:"たまに", c:"しがち"},
-    {no:64, cat:"LOVE", q:"返信速度で愛情を測ってしまう", a:"測らない", b:"たまに", c:"測る"},
-    {no:65, cat:"LOVE", q:"曖昧な関係は苦手だ", a:"平気", b:"微妙", c:"苦手"},
-    {no:66, cat:"LOVE", q:"好きな人のわがままなら自分を曲げてでもできる限り聞きたい", a:"聞かない", b:"場合による", c:"聞きたい"},
-    {no:67, cat:"LOVE", q:"相手に依存してしまうことがある", a:"ない", b:"たまに", c:"ある"},
-    {no:68, cat:"LOVE", q:"恋人とはニコイチの存在になりたい", a:"なりたくない", b:"どちらでも", c:"なりたい"},
-    {no:69, cat:"LOVE", q:"失恋した時は学校や会社や遊びの予定を潰したことがある", a:"ない", b:"迷う/少し", c:"ある"},
-    {no:70, cat:"LOVE", q:"恋人の交友関係にも嫉妬をする", a:"しない", b:"たまに", c:"する"},
-    {no:71, cat:"LOVE", q:"束縛されると愛されていると感じる", a:"感じない", b:"少し", c:"感じる"},
-    {no:72, cat:"LOVE", q:"恋愛で安心感がないと不安になる", a:"ならない", b:"少し", c:"なる"},
-    {no:73, cat:"LOVE", q:"曖昧な都合のいい関係は不安になる", a:"ならない", b:"少し", c:"なる"},
-    {no:74, cat:"LOVE", q:"返信がない時は恋人の予定が分からないと落ち着かない", a:"落ち着く", b:"たまに", c:"落ち着かない"},
-    {no:75, cat:"LOVE", q:"相手に依存されたい", a:"思わない", b:"場合による", c:"思う"},
-    {no:76, cat:"LOVE", q:"相手の行動を把握していたい", a:"いらない", b:"ほどほど", c:"把握したい"},
-    {no:77, cat:"LOVE", q:"家に帰る時間などの束縛をされたい", a:"されたくない", b:"場合による", c:"されたい"},
-    {no:78, cat:"LOVE", q:"恋人が最優先になる", a:"ならない", b:"たまに", c:"なる"},
-    {no:79, cat:"LOVE", q:"ニコイチの存在になりたい", a:"なりたくない", b:"どちらでも", c:"なりたい"},
-    {no:80, cat:"LOVE", q:"恋愛が人生を左右する", a:"左右しない", b:"半々", c:"左右する"},
-
-    // ---- ⑤ 自分を持ってるインキャラ界隈 81-99 ----
-    {no:81, cat:"KAGE", q:"一人の時間がないとしんどい", a:"平気", b:"たまに", c:"しんどい"},
-    {no:82, cat:"KAGE", q:"群れるより少人数が楽", a:"大人数派", b:"半々", c:"少人数が楽"},
-    {no:83, cat:"KAGE", q:"学生の頃は群れている人たちは苦手だった", a:"苦手じゃない", b:"少し", c:"苦手だった"},
-    {no:84, cat:"KAGE", q:"周りに合わせすぎるのが苦手", a:"合わせられる", b:"半々", c:"苦手"},
-    {no:85, cat:"KAGE", q:"無理にテンションを上げたくない", a:"上げる", b:"場合による", c:"上げたくない"},
-    {no:86, cat:"KAGE", q:"1人カフェなど静かな場所が好き", a:"好きじゃない", b:"たまに", c:"好き"},
-    {no:87, cat:"KAGE", q:"自分の世界を大事にしたい", a:"気にしない", b:"まあ", c:"大事にしたい"},
-    {no:88, cat:"KAGE", q:"人に踏み込まれすぎると疲れる", a:"疲れない", b:"少し", c:"疲れる"},
-    {no:89, cat:"KAGE", q:"一人で考える時間が必要", a:"いらない", b:"たまに", c:"必要"},
-    {no:90, cat:"KAGE", q:"自分のペースを乱されたくない", a:"平気", b:"少し", c:"乱されたくない"},
-    {no:91, cat:"KAGE", q:"遊ぶ時に周りに合わせたファッションをする", a:"しない", b:"たまに", c:"する"},
-    {no:92, cat:"KAGE", q:"空気を読むより距離を取る", a:"空気読む", b:"半々", c:"距離取る"},
-    {no:93, cat:"KAGE", q:"無駄な人間関係を減らしたい", a:"減らしたくない", b:"まあ", c:"減らしたい"},
-    {no:94, cat:"KAGE", q:"レジ接客や電話対応が苦手", a:"得意/平気", b:"普通", c:"苦手"},
-    {no:95, cat:"KAGE", q:"感情は隠したい/知られたくない", a:"隠さない", b:"場合による", c:"隠したい"},
-    {no:96, cat:"KAGE", q:"深く狭い人間関係が好き", a:"広く浅く", b:"半々", c:"深く狭く"},
-    {no:97, cat:"KAGE", q:"自分の価値観を曲げたくない", a:"曲げられる", b:"場合による", c:"曲げたくない"},
-    {no:98, cat:"KAGE", q:"友達が怒っていたら理不尽なことでも謝る", a:"謝らない", b:"場合による", c:"謝る"},
-    {no:99, cat:"KAGE", q:"勉強は家でやるよりもカフェや自習室の方が捗る。", a:"家が捗る", b:"半々", c:"外が捗る"},
-  ];
-
-  const Q100 = {
-    no:100,
-    cat:"FINAL",
-    kind:"final2",
-    q:
-`最後の質問です（2択）
-
-究極の選択：不幸のボタン
-想像してください。
-あなたの目の前に、ひとつの輝いたボタンがあります。
-それを押せば、あなたが大切に思っている「友達」の口座に、1億円が振り込まれます。
-その友達の人生から、お金の悩みは消え、自由と選択肢が手に入るでしょう。
-
-ただし、その代わり。
-あなたはこの世から消えてなくなります。
-感謝の言葉を聞くことも、幸せそうに笑う彼らの隣に座ることも、二度とできません。
-
-あなたは、このボタンを「あの人」に渡せますか？
-
-ここで問いかけているのは、あなたの自己犠牲の精神ではありません。
-「**あの人にとって、1億円とあなたの命、どちらに価値があると思っているか**」
-という、あなたの傲慢さへの問いです。`,
-    // 2択（※沈黙はPART3の特別演出で隠し）
-    a:"渡す（ボタンを押す/押させる可能性を含めて手渡す）",
-    b:"渡さない（その選択肢自体を拒否する）"
-  };
-
-  // ---- ここまで質問定義 ----
-
-  // ======= シャッフル用ユーティリティ =======
-  function mulberry32(seed){
-    return function(){
-      let t = seed += 0x6D2B79F5;
-      t = Math.imul(t ^ (t >>> 15), t | 1);
-      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-  function shuffleWithSeed(arr, seed){
-    const a = arr.slice();
-    const rnd = mulberry32(seed);
-    for(let i=a.length-1;i>0;i--){
-      const j = Math.floor(rnd()*(i+1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  // ======= 状態（順序を保持する） =======
-  // order: 1..99の並び（インデックス配列）
-  // answers: 表示順の idx に対する回答
-  // scores: 界隈の得点（PART3用の材料）
-  let state2 = {
-    seed: 0,
-    order: [],
-    idx: 0,
-    answers: [], // 1..99: -1/0/+1  / 100: 0 or 1（2択）
-    scores: {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0},
-    finished: false
-  };
-
-  function resetRun(){
-    const seed = Date.now() ^ Math.floor(Math.random()*1e9);
-    const order = shuffleWithSeed(Q_RAW.map((_,i)=>i), seed); // index shuffle 0..98
-
-    state2 = {
-      seed,
-      order,
-      idx: 0,
-      answers: [],
-      scores: {SNS:0, GLAM:0, GACHI:0, LOVE:0, KAGE:0},
-      finished: false
-    };
-    saveV2(state2);
-  }
-
-  function loadOrInit(){
-    const saved = loadV2();
-    if(saved && saved.order && saved.order.length===Q_RAW.length){
-      state2 = saved;
-    }else{
-      resetRun();
-    }
-  }
-
-  // ======= スコア（質問ごとに界隈が確定してるから、キーワード不要） =======
-  function applyScore(qObj, val){
-    const c = qObj.cat;
-    if(!state2.scores[c] && state2.scores[c]!==0) state2.scores[c]=0;
-
-    // val: -1/0/+1 をそのまま加点（好みで倍率は後で調整OK）
-    // “強い回答”ほど界隈が濃いようにしたいなら *2 でもいい
-    if(c==="SNS"||c==="GLAM"||c==="GACHI"||c==="LOVE"||c==="KAGE"){
-      state2.scores[c] += val;
-    }
-  }
-
-  // ======= UI（ちょいハッとさせる） =======
-  function setProgress(i,total){
-    const pct = total ? Math.round((i/total)*100) : 0;
-    $("barFill").style.width = pct + "%";
-    $("stepText").textContent = total ? `Q${Math.min(i+1,total)} / ${total}` : "準備中…";
-  }
-  function showScreen(which){
-    $("screenIntro").classList.add("hide");
-    $("screenQuiz").classList.add("hide");
-    $("screenResult").classList.add("hide");
-    $(which).classList.remove("hide");
-  }
-  function toast(msg){
-    const t = $("toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    setTimeout(()=>t.classList.remove("show"), 1200);
-  }
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[m]));
-  }
-
-  function currentQ(){
-    if(state2.idx < 99){
-      const rawIdx = state2.order[state2.idx];
-      return Q_RAW[rawIdx];
-    }
-    return Q100;
-  }
-
-  function render(){
-    const total = 100;
-    setProgress(state2.idx, total);
-
-    const qObj = currentQ();
-    $("qText").textContent = qObj.q;
-
-    const wrap = $("choices");
-    wrap.innerHTML = "";
-
-    // 100問目だけ2択
-    if(qObj.no === 100){
-      const opts = [
-        { tag:"A", text:qObj.a, val:0 },
-        { tag:"B", text:qObj.b, val:1 },
-      ];
-      opts.forEach(o=>{
-        const btn = document.createElement("button");
-        btn.className = "btn";
-        btn.innerHTML = `<span class="tag">${o.tag}</span><div class="btnText">${escapeHtml(o.text)}</div>`;
-        btn.addEventListener("click", ()=> chooseFinal(o.val));
-        wrap.appendChild(btn);
-      });
-
-      $("skipBtn").classList.add("hide"); // 100は保留なし（特別演出はPART3で）
-      $("toResultBtn").textContent = "結果を見る（確定）";
-      return;
-    }
-
-    // 1〜99：3択
-    const opts = [
-      { tag:"否定", text:qObj.a, val:-1 },
-      { tag:"中立", text:qObj.b, val: 0 },
-      { tag:"肯定", text:qObj.c, val:+1 },
-    ];
-    opts.forEach(o=>{
-      const btn = document.createElement("button");
-      btn.className = "btn";
-      btn.innerHTML = `<span class="tag">${o.tag}</span><div class="btnText">${escapeHtml(o.text)}</div>`;
-      btn.addEventListener("click", ()=> choose3(o.val));
-      wrap.appendChild(btn);
-    });
-
-    $("skipBtn").classList.remove("hide");
-    $("toResultBtn").textContent = state2.idx >= 99 ? "結果を見る（確定）" : "結果を見る（途中でも可）";
-  }
-
-  // ======= 回答（戻って選び直し可能） =======
-  function choose3(val){
-    const qObj = currentQ();
-    const prev = state2.answers[state2.idx];
-
-    if(typeof prev === "number"){
-      // 前の分を差し引き
-      applyScore(qObj, -prev);
-    }
-    state2.answers[state2.idx] = val;
-    applyScore(qObj, val);
-
-    // 次へ
-    if(state2.idx < 99){
-      state2.idx++;
-      saveV2(state2);
-      render();
-    }else{
-      // 99終わった→100へ
-      saveV2(state2);
-      render();
-    }
-  }
-
-  function chooseFinal(val){
-    // 100問目は界隈スコアに入れない（別枠でPART3演出）
-    state2.answers[99] = val; // 100問目の回答を最後に格納
-    state2.finished = true;
-    saveV2(state2);
-    goResult();
-  }
-
-  function back(){
-    if(state2.idx <= 0){
-      toast("これ以上戻れん");
-      return;
-    }
-    state2.idx--;
-    saveV2(state2);
-    render();
-  }
-
-  function skipNeutral(){
-    choose3(0);
-  }
-
-  // ======= 結果（PART3で上書きされる前提の“橋渡し”） =======
-  function goResult(){
-    showScreen("screenResult");
-
-    const answered = state2.answers.filter(v=>typeof v==="number").length;
-    $("badges").innerHTML =
-      `<div class="badge">回答数 ${answered} / 100</div>` +
-      `<div class="badge">シャッフル seed ${state2.seed}</div>` +
-      `<div class="badge">保存ON</div>`;
-
-    $("resultTitle").textContent = "暫定：PART3で長文結果に突入";
-    $("desc").textContent =
-      "PART2は『質問シャッフル（1〜99）＋100固定＋戻る＋保存』まで完成。PART3で界隈/タイプ判定と、最後の質問の“えぐい演出（40秒タイマー＋沈黙）”を実装する。";
-    $("love").textContent  = "（PART3で出す）";
-    $("job").textContent   = "（PART3で出す）";
-    $("media").textContent = "（PART3で出す）";
-
-    // PART3に渡す
-    window.__MBTI2__ = {
-      order: state2.order.slice(),
-      seed: state2.seed,
-      scores: Object.assign({}, state2.scores),
-      answers: state2.answers.slice()
-    };
-  }
-
-  // ======= 既存ボタンを上書き接続 =======
-  // resetAll（PART1のやつ）を押したらv2も消す
-  $("resetAll").addEventListener("click", ()=>{
-    clearV2();
-  });
-
-  $("startBtn").addEventListener("click", ()=>{
-    // 途中復帰
-    showScreen("screenQuiz");
-    toast("スタート/再開");
-    render();
-  });
-
-  $("restartBtn").addEventListener("click", ()=>{
-    clearV2();
-    resetRun();
-    showScreen("screenQuiz");
-    toast("シャッフルし直して最初から！");
-    render();
-  });
-
-  $("backBtn").addEventListener("click", back);
-  $("skipBtn").addEventListener("click", skipNeutral);
-
-  $("toResultBtn").addEventListener("click", ()=>{
-    // 途中でも結果へ（finishedにはしない）
-    goResult();
-  });
-
-  // ======= 起動 =======
-  loadOrInit();
-
-  // PART1のbootがどの画面出してても、クイズ画面なら描画
-  setTimeout(()=>{
-    // 保存復帰で結果画面にいた場合でも整合させる
-    if(state2.finished){
-      goResult();
-      return;
-    }
-    if(!$("screenQuiz").classList.contains("hide")){
-      render();
-    }
-  },0);
-
-  // QUESTIONSをPART3が参照できるように公開（表示順で取り出せる）
-  window.QUESTIONS = (function(){
-    // 表示順で 100個の配列を返す（1〜99シャッフル + 100固定）
-    const arr = state2.order.map(i=>Q_RAW[i]).concat([Q100]);
-    // PART3互換：{q,a,b,c,cat,no} 形式に寄せる
-    return arr.map((x)=>{
-      const base = { q:x.q, no:x.no, cat:x.cat };
-      if(x.no===100){
-        base.kind="final2";
-        base.a=x.a; base.b=x.b;
-      }else{
-        base.a=x.a; base.b=x.b; base.c=x.c;
-      }
-      return base;
-    });
-  })();
-
-})();
-</script>
-
-  
-  
-  <!-- ここにパート3を貼る -->
-<script>
-/* =========================
-   (偽)えむびーてぃーあいPlus - PART3（長文結果 + 最終問題演出の土台）
-   ✅ PART2の「質問タグ(cat)」で界隈判定（キーワード不要）
-   ✅ 長文：傾向 / 向いてる職業 / 気をつける事 / レベルアップ
-   ✅ 最終Q100：答えによって“刺す文章”を分岐
-   ✅ タイマー＆沈黙（伏せる）用の仕込み：
-      - Q100だけ40秒のカウント演出ができるようにフックを用意
-      - 「沈黙」はUIに表示しない（押さない/無操作で到達した人だけに出す設計の下地）
-      ※沈黙そのものの最終実装は、次の一手で“Q100表示時にだけ”発火させる
-========================= */
-
-(function(){
-  const $ = (id)=>document.getElementById(id);
-  const data = window.__MBTI2__ || null;
-  const list = window.QUESTIONS || [];
-
-  if(!data || !list || !list.length){
-    console.warn("PART3: PART2のデータが見つからん。PART2が先に動いてるか確認してな。");
-    return;
-  }
-
-  // ---------------------------
-  // 5界隈（表示名：ユーザー指示版）
-  // ---------------------------
-  const CAT_LABEL = {
-    SNS:  { title:"SNS・承認欲求界隈", vibe:"反応・数字・視線。見えない評価に心が動く世界" },
-    GLAM: { title:"夜職・盛り・自己価値界隈", vibe:"魅せ方・格・プライド。自分の価値を上げにいく世界" },
-    GACHI:{ title:"メガネ真面目くん界隈", vibe:"段取り・再現性・責任。ミスを潰して積む世界" },
-    LOVE:{ title:"恋愛至上主義界隈", vibe:"安心・嫉妬・一体感。愛の重力が強い世界" },
-    KAGE:{ title:"自分を持ってるインキャラ界隈", vibe:"距離・静けさ・自分軸。群れずに深く生きる世界" },
-  };
-
-  // ---------------------------
-  // 界隈スコア：PART2がすでに作ってるやつを使用
-  // ---------------------------
-  const scores = Object.assign({SNS:0,GLAM:0,GACHI:0,LOVE:0,KAGE:0}, data.scores||{});
-
-  function pickTopCat(){
-    let best = "SNS";
-    let bestV = -1e9;
-    for(const k of ["SNS","GLAM","GACHI","LOVE","KAGE"]){
-      const v = scores[k] ?? 0;
-      if(v > bestV){
-        bestV = v; best = k;
-      }
-    }
-    return best;
-  }
-
-  function sortCats(){
-    return ["SNS","GLAM","GACHI","LOVE","KAGE"]
-      .map(k=>({k, v: scores[k] ?? 0}))
-      .sort((a,b)=>b.v-a.v);
-  }
-
-  const top = pickTopCat();
-  const rank = sortCats();
-
-  // ---------------------------
-  // 100問目の回答（2択）
-  // data.answers[99] に入ってる想定（0:渡す / 1:渡さない）
-  // ただしユーザー要望：「渡したからといって押すとは限らない」→ここは“手渡す”の意味で扱う
-  // ---------------------------
-  const finalAns = (typeof data.answers?.[99] === "number") ? data.answers[99] : null;
-  // 0 = 渡す, 1 = 渡さない, null = 未回答（途中結果）
-  const FINAL = {
-    give: 0,
-    refuse: 1
-  };
-
-  // ---------------------------
-  // “デカ界隈表示”を結果画面に差し込む
-  // ---------------------------
-  function ensureBigHeader(){
-    const result = $("screenResult");
-    if(!result) return;
-
-    if(!$("bigCat")){
-      const big = document.createElement("div");
-      big.id = "bigCat";
-      big.style.fontSize = "clamp(18px, 4.2vw, 44px)";
-      big.style.fontWeight = "1000";
-      big.style.margin = "2px 0 6px";
-      big.style.lineHeight = "1.05";
-      big.style.background = "linear-gradient(90deg, rgba(110,242,255,.95), rgba(185,156,255,.95))";
-      big.style.webkitBackgroundClip = "text";
-      big.style.backgroundClip = "text";
-      big.style.color = "transparent";
-      big.style.letterSpacing = ".02em";
-
-      const badges = $("badges");
-      badges.parentNode.insertBefore(big, badges);
-    }
-
-    if(!$("bigSub")){
-      const sub = document.createElement("div");
-      sub.id = "bigSub";
-      sub.style.color = "rgba(255,255,255,.70)";
-      sub.style.fontSize = "13px";
-      sub.style.margin = "0 0 10px";
-      sub.style.lineHeight = "1.5";
-      const badges = $("badges");
-      badges.parentNode.insertBefore(sub, badges);
-    }
-  }
-
-  function renderBadges(){
-    const wrap = $("badges");
-    if(!wrap) return;
-    wrap.innerHTML = "";
-
-    const answered = (data.answers||[]).filter(v=>typeof v==="number").length;
-    const mk = (txt)=>{
-      const b=document.createElement("span");
-      b.className="badge";
-      b.textContent=txt;
-      return b;
-    };
-
-    wrap.appendChild(mk(`回答数 ${answered} / 100`));
-    wrap.appendChild(mk(`TOP界隈 ${top}`));
-    wrap.appendChild(mk(`SNS ${scores.SNS>=0?"+":""}${scores.SNS}`));
-    wrap.appendChild(mk(`GLAM ${scores.GLAM>=0?"+":""}${scores.GLAM}`));
-    wrap.appendChild(mk(`GACHI ${scores.GACHI>=0?"+":""}${scores.GACHI}`));
-    wrap.appendChild(mk(`LOVE ${scores.LOVE>=0?"+":""}${scores.LOVE}`));
-    wrap.appendChild(mk(`KAGE ${scores.KAGE>=0?"+":""}${scores.KAGE}`));
-  }
-
-  // ---------------------------
-  // 長文生成（ガチで“読ませる”やつ）
-  // ---------------------------
-  function longTextByCat(cat){
-    // “あなたはどういう傾向か” の核
-    const base = {
-      SNS:
-`あなたは、空気ではなく「反応」で世界を測りやすい。
-人の表情より、数字やコメントの温度のほうが正直で残酷で、そして中毒性がある。
-だからこそ、あなたは“見えない評価”に鍛えられてきた。
-良く言えば、観察眼と改善力。悪く言えば、自分の価値を他人の手に握らせやすい。`,
-
-      GLAM:
-`あなたは、世界を「格」と「扱われ方」で読む。
-優しさだけで生きるのは無理だと知ってるし、舐められた瞬間に人生は崩れるとも思ってる。
-だから武装する。見た目、言葉、雰囲気、選ぶ物。
-それは虚勢じゃなく、生存戦略としての美学。`,
-
-      GACHI:
-`あなたは、感情より先に「段取り」で自分を守る。
-守ると言っても、逃げるんじゃない。崩れない形を作る。
-ミスを見つけたら原因を切り分けて、再発しない仕組みにして、次の自分を救う。
-強さは派手じゃない。でも長期で勝つ。`,
-
-      LOVE:
-`あなたは、恋愛を“イベント”じゃなく“生活”として扱う。
-距離感が近いほど安心するし、曖昧な関係は心を摩耗させる。
-相手の言葉ひとつで天国と地獄が切り替わるのは、
-あなたが真剣に向き合っている証拠でもある。`,
-
-      KAGE:
-`あなたは、群れないことで自分を守ってきた。
-静けさ、距離、少数の信頼。それがあなたの酸素。
-テンションの高さより、会話の深さを選ぶ。
-目立たないのに、芯だけは折れない。そういう種類の強さ。`,
-    };
-
-    // 注意点
-    const caution = {
-      SNS:
-`【気をつけること】
-あなたの弱点は「自分の心を、アルゴリズムに連動させること」。
-伸びた日は元気、伸びない日は自分が終わった気になる。
-でもそれは、あなたの価値が上下したんじゃない。
-“たまたま刺さった/刺さらなかった”だけで、人格の点数じゃない。`,
-
-      GLAM:
-`【気をつけること】
-あなたの弱点は「価値の証明を、外側でやりすぎること」。
-外見やブランドは武器になる。でもそれが“命綱”になった瞬間、
-失ったときに自分まで消える。
-守るべきはプライドじゃなく、“自尊心の土台”や。`,
-
-      GACHI:
-`【気をつけること】
-あなたの弱点は「正しさで人を刺すこと」。
-正論は強い。でも、強いものは時に乱暴や。
-あなたが守ってる“正しさ”は、相手からすると“裁判”になることがある。`,
-
-      LOVE:
-`【気をつけること】
-あなたの弱点は「愛を、拘束と混ぜること」。
-安心が欲しくて相手の行動を把握したくなる。
-でも“把握”が増えるほど、不安は消えるどころか増える。
-確認すればするほど、心は“疑う癖”を学習するから。`,
-
-      KAGE:
-`【気をつけること】
-あなたの弱点は「静かに我慢して、ある日突然切ること」。
-距離を取るのは才能やけど、黙って耐えるのは消耗や。
-言わないと伝わらない。
-あなたの境界線は、あなたが言葉にして初めて守られる。`,
-    };
-
-    // 向いてる職業
-    const jobs = {
-      SNS:
-`【向いてる職業】
-・SNS運用/企画、編集、広告、マーケ、分析、広報
-・“数字で改善”がある仕事（EC/グロース/企画職）
-・発信＋検証の両方ができるポジション
-あなたは「感覚」だけじゃなく「観察→仮説→修正」が回る。`,
-
-      GLAM:
-`【向いてる職業】
-・営業、接客、PR、ブランディング、美容系
-・魅せ方が価値になる領域（デザイン/発信/プロデュース）
-・評価軸を理解して勝ち筋を作る仕事
-あなたは“扱われ方”を設計できる。これは強い。`,
-
-      GACHI:
-`【向いてる職業】
-・事務/管理、品質管理、プロジェクト管理、経理、法務補助
-・仕組み化が勝ちになる仕事（運用、改善、バックオフィス）
-・長期で積み上げて信頼を取る仕事
-あなたの「再発防止脳」は、組織だと宝。`,
-
-      LOVE:
-`【向いてる職業】
-・対人支援（接客/カウンセリング寄り/教育/看護補助など）
-・人の感情の揺れを扱う仕事
-・“関係性を育てる”仕事
-あなたは、心を動かす側に立てる。`,
-
-      KAGE:
-`【向いてる職業】
-・研究/制作/ライティング/デザイン/エンジニア/分析
-・少人数で深く掘る仕事（専門職、職人気質）
-・静かな集中を要求される領域
-あなたは“人混み耐性”が低い代わりに“深さ耐性”が高い。`,
-    };
-
-    // レベルアップ（具体行動）
-    const levelup = {
-      SNS:
-`【レベルアップするために】
-①「反応」じゃなく「自分の基準」を一個作る（投稿なら：週○回、改善点○個）
-②見た瞬間に心がざわつくアカウントは“ミュート”で守る（戦略的に）
-③伸びない日ほど、自己否定じゃなく“検証”に変える
-あなたは、メンタルを削れば削るほど強くなるタイプじゃない。
-守りながら伸びるタイプや。`,
-
-      GLAM:
-`【レベルアップするために】
-①外側にかけたお金と同じだけ、内側（スキル/実績/資格/作品）にも投資する
-②「自分を高く見せる」より「自分が高くなる」比率を上げる
-③“舐められない”の最強は、態度じゃなく実力
-あなたの美学は武器やけど、武器は“芯”があるほど映える。`,
-
-      GACHI:
-`【レベルアップするために】
-①正しさを言う前に「相手の目的」を聞く（正論の刺さりを減らす）
-②完璧より“70点の継続”を選ぶ（疲れで折れない仕組み）
-③“人に任せる”をスキル化する（自分が全部抱えない）
-あなたは勝てる。問題は、勝つ前に疲れて辞めること。`,
-
-      LOVE:
-`【レベルアップするために】
-①安心を「確認」ではなく「約束」と「習慣」で作る（連絡頻度/ルール化）
-②嫉妬が出たら責める前に“自分の不安の正体”を言語化する
-③恋愛を最優先にするなら、なおさら“自分の生活”を整える（睡眠/金/予定）
-愛が強い人ほど、生活が崩れた瞬間に恋愛も崩れる。`,
-
-      KAGE:
-`【レベルアップするために】
-①距離を取る前に、短い一言で境界線を示す（「今日は静かにしたい」）
-②少数精鋭を強みにする（“薄い付き合い”を無理に増やさない）
-③自分の世界＝作品/記録/発信に変換すると人生が太くなる
-あなたは、無理に陽キャになる必要はない。
-あなたのまま強くなれる。`,
-    };
-
-    return {
-      base: base[cat],
-      caution: caution[cat],
-      jobs: jobs[cat],
-      levelup: levelup[cat],
-    };
-  }
-
-  // ---------------------------
-  // 最終問題（Q100）の“信頼を天秤にかける”長文分岐
-  // ユーザー指定：「自分と友達との関係を1億円未満だと思っている」に寄せる
-  // ※「渡す＝押す」ではない前提を明示
-  // ---------------------------
-  function finalEssay(ans){
-    const head =
-`【最後の質問：不幸のボタン（信頼の天秤）】
-ここで問われてるのは、自己犠牲の美談じゃない。
-“渡すか渡さないか”の選択に見せかけて、
-本当は「あなたと友達の関係を、いくらで見積もっているか」が暴かれる。`;
-
-    if(ans === FINAL.give){
-      return head + `
-
-あなたが「渡す」を選ぶのは、優しさにも見える。
-でも、ここで一回だけ、残酷に考えてほしい。
-
-あなたはその瞬間、
-“自分が消える”という未来を想像して、
-それでもなお「あの人は1億円を受け取って前に進める」と信じている。
-
-つまりあなたは、
-あの人との関係を、あなたの命と引き換えにしても成立するものだと見積もっている。
-もっと言えば、
-「あなたがいなくなっても、あの人は金で救われる」と、どこかで決めている。
-
-でもさ。
-本当にそうか？
-
-親友の命と引き換えに手に入った金は、
-ただの金じゃない。
-それは“あなた不在の証明”として、毎日そこに残る。
-
-豪華な飯を食べるたび、
-旅行に行くたび、
-ふと笑った瞬間、
-「あ、これ、本当は一緒に笑うはずだった人がいた」
-って穴が開く。
-
-そして、その穴は埋まらない。
-なぜなら、その穴の形は“あなた”だから。
-
-「渡す」は愛に見える。
-けど同時に、あなた自身が、
-“自分と友達の関係を1億円未満だと思っている”
-という告白にもなる。
-
-もし、胸が痛いなら、それが答えや。
-あなたは優しいだけじゃない。
-自分の価値を安く見積もる癖がある。
-
-だから覚えておいて。
-あなたが自分を大切にすることは、
-友達を大切にすることと直結する。
-あなたの命は、あなたのものだけじゃない。`;
-
-    }
-
-    if(ans === FINAL.refuse){
-      return head + `
-
-あなたが「渡さない」を選ぶのは、冷たいからじゃない。
-むしろ逆や。
-
-あなたは分かってる。
-1億円が“救える悩み”はある。
-でも1億円が“救えない喪失”がある。
-
-あなたが消える世界で、
-あの人が受け取る1億円は、
-自由じゃなく、呪いに変わる可能性が高い。
-
-その金は、
-「あなたがいなくなった理由」になる。
-「あなたがいない現実」を固定する楔になる。
-
-渡さないという選択は、
-「あなたと友達の関係は、1億円では買えない」
-と決める行為や。
-
-ここで大事なのは、綺麗事じゃない。
-あなたが“自分の価値”を、あなた自身の手で守ったってこと。
-
-それは傲慢じゃない。
-信頼や。
-
-『お前はお金より大事にされるべき存在やろ』
-って、自分に言える人間は強い。
-
-あなたがこのボタンを拒否できるのは、
-ケチだからでも、死ぬのが怖いからでもない。
-“あなたが消えることが、あの人にとって最大の不幸になる”
-と確信しているから。
-
-それは、友達を信じてる証拠であり、
-自分を信じ直す第一歩でもある。`;
-    }
-
-    // 途中結果など
-    return head + `
-
-まだ答えてないなら、焦らなくていい。
-この問いは、即答できない人ほど誠実や。
-あなたの沈黙には、ちゃんと意味がある。`;
-  }
-
-  // ---------------------------
-  // 結果レンダリング
-  // ---------------------------
-  function renderResult(){
-    ensureBigHeader();
-    renderBadges();
-
-    const meta = CAT_LABEL[top];
-    $("bigCat").textContent = meta.title;
-    $("bigSub").textContent = meta.vibe;
-
-    // タイトルは“界隈トップ + 2位”っぽくして、読み物感を出す
-    const second = rank[1]?.k;
-    const secondTitle = second ? `（サブ：${CAT_LABEL[second].title}）` : "";
-    $("resultTitle").textContent = `${meta.title} ${secondTitle}`;
-
-    const t = longTextByCat(top);
-
-    // desc欄に“傾向 + 最終問題エッセイ + 注意 + レベルアップ”を入れる（長文）
-    const finalBlock = finalEssay(finalAns);
-
-    const body =
-`${t.base}
-
-${finalBlock}
-
-${t.caution}
-
-${t.levelup}`;
-
-    $("desc").textContent = body;
-
-    // love/job/media枠は「項目ごと」に長文化
-    // love枠：界隈に応じて、恋愛・対人のクセをここで追加
-    const loveExtra = {
-      SNS:
-`【対人/恋愛の傾向】
-相手の気持ちを“言葉”より“反応”で測りがち。
-既読・返信速度・温度差に敏感で、安心と不安のスイッチが外部にある。
-安心の作り方は「確認」より「習慣化（ルール）」が向いてる。`,
-
-      GLAM:
-`【対人/恋愛の傾向】
-“雑に扱われない”が最優先。
-相手があなたをどう扱うかで、愛情の本気度を測る。
-一途さは強いけど、試し行動が増えると壊れるから、
-言葉で条件を明確にしておく方が安定する。`,
-
-      GACHI:
-`【対人/恋愛の傾向】
-安心＝約束が守られること。
-曖昧な関係はストレスになる。
-ただし、相手が感情型だと“正しさ”が圧に見えることがあるから、
-結論の前に「気持ち」を一回受け取ると爆伸びする。`,
-
-      LOVE:
-`【対人/恋愛の傾向】
-一体感が欲しい。近いほど安心する。
-でも「把握＝愛」になった瞬間に、恋愛は監視ゲームになる。
-不安の正体を言語化できたとき、あなたの恋愛は“武器”になる。`,
-
-      KAGE:
-`【対人/恋愛の傾向】
-深く狭く。信頼したら強い。
-でも無理にテンションを合わせると一気に疲れる。
-“合わない人に無理しない”のは才能。
-合う人にだけ、ちゃんと温度を渡すと最強。`,
-    };
-
-    $("love").textContent = loveExtra[top];
-
-    // job枠
-    $("job").textContent = t.jobs;
-
-    // media枠：界隈ごとに“刺さるコンテンツ”の方向
-    const media = {
-      SNS:
-`【好きそうなYouTube/娯楽】
-・検証/ランキング/炎上考察/マーケ解説/バズ分析
-・編集が早くてテンポが良いもの
-・「なぜ伸びるか」が分かるコンテンツ
-“面白い”と“伸びる”の違いを考えられるタイプ。`,
-
-      GLAM:
-`【好きそうなYouTube/娯楽】
-・美容/ファッション/ブランド/垢抜け/自己プロデュース
-・ホスト/夜職ドキュメンタリー（心理戦が好きなら特に）
-・営業術/話術/雰囲気の作り方
-“魅せ方は技術”だと理解してる人向けが刺さる。`,
-
-      GACHI:
-`【好きそうなYouTube/娯楽】
-・勉強法/整理術/投資の基礎/仕組み化/ルーティン
-・作業用/解説/比較（機材レビューとか）
-・「再現性」がある話
-ノリより“手順”があるものが気持ちいい。`,
-
-      LOVE:
-`【好きそうなYouTube/娯楽】
-・恋愛相談/心理/復縁/距離感の取り方
-・ドキュメンタリー系（関係性で泣けるやつ）
-・音楽/映画（感情が動く作品）
-感情の揺れを“作品”として摂取すると回復する。`,
-
-      KAGE:
-`【好きそうなYouTube/娯楽】
-・静かなVlog/一人旅/作業/ASMR/深掘り解説
-・考察/哲学/心理/雑学の長尺
-・少人数で回ってるチャンネル
-テンションより、空気と深さ。`,
-    };
-    $("media").textContent = media[top];
-  }
-
-  // ---------------------------
-  // PART2の結果ボタンを上書き：PART3の長文に切り替える
-  // ---------------------------
-  const toResult = $("toResultBtn");
-  if(toResult){
-    // 既存イベントが積まれてても、最後にこれが走れば勝ち
-    toResult.addEventListener("click", ()=>{
-      renderResult();
-      // 画面遷移
-      $("screenIntro").classList.add("hide");
-      $("screenQuiz").classList.add("hide");
-      $("screenResult").classList.remove("hide");
-    });
-  }
-
-  // 復元時：すでに結果画面なら描画
-  setTimeout(()=>{
-    if(!$("screenResult").classList.contains("hide")){
-      renderResult();
-    }
-  }, 0);
-
-  // ---------------------------
-  // 40秒タイマー＆沈黙（伏せる）用の“フック”だけ用意
-  // ここは“次の改造”でQ100表示時に発火させる想定
-  // ---------------------------
-  window.__FINAL_TIMER__ = {
-    seconds: 40,
-    // 今は何もしない（次でUIと連動させる）
-    start: function(){ /* next step */ },
-    stop: function(){ /* next step */ }
-  };
-
-})();
-</script>
+<!-- ここにPART2を貼る -->
