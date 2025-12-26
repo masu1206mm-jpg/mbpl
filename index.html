@@ -29,10 +29,6 @@
     .final-box { background: #111; border: 2px solid #ff4477; padding: 20px; border-radius: 20px; margin-top: 20px; line-height: 1.7; font-size: 0.9rem; }
     .hide { display: none !important; }
     .sub-btn { background: transparent; border: 1px solid #444; color: #888; padding: 10px; font-size: 0.7rem; margin-top: 20px; border-radius: 12px; text-align: center; width: auto; flex: 1; }
-    /* 1位と2位を分けるための追加スタイル */
-    .rank-label { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 900; margin-bottom: 10px; }
-    .rank-1 { background: var(--accent-p); color: #000; }
-    .rank-2 { background: var(--accent-v); color: #000; }
   </style>
 </head>
 <body>
@@ -63,7 +59,6 @@
   </div>
 
   <div id="screen-result" class="card hide">
-    <div class="rank-label rank-1">メイン成分（第1位）</div>
     <div id="res-area" class="res-area-name"></div>
     <div id="res-type" class="res-type-name"></div>
     
@@ -73,20 +68,12 @@
     <div class="section"><div class="sec-title">避けるべき環境</div><div id="res-job-no" class="essay-text"></div></div>
     <div class="section"><div class="sec-title">自己超越への道</div><div id="res-levelup" class="essay-text"></div></div>
 
-    <hr style="border:0; border-top:1px dashed rgba(255,255,255,0.2); margin:40px 0;">
-
-    <div class="rank-label rank-2">サブ成分（第2位）</div>
-    <div id="res-area-2" class="res-area-name"></div>
-    <div id="res-type-2" class="res-type-name"></div>
-    <div class="section"><div class="sec-title">補足：第2位の傾向</div><div id="res-thinking-2" class="essay-text"></div></div>
-
     <div id="final-box" class="final-box"></div>
     <button style="margin-top:20px; text-align:center;" onclick="resetAll()">トップへ戻る</button>
   </div>
 </div>
 
 <script>
-// DBとMASTERは変更なしのため省略せず保持
 const DB = [
   // SNS (1-20)
   {cat:"SNS", q:"TikTokやX等でバズってる人を見ると、いいね数やコメント数を気にしてしまう", c:["つい数字を分析してしまう", "たまに見てしまう", "全く気にならない"]},
@@ -116,7 +103,7 @@ const DB = [
   {cat:"GLAM", q:"可愛い・かっこいいと言われると自信が出る", c:["それが生きる糧", "素直に嬉しい", "どうでも良い"]},
   {cat:"GLAM", q:"第一印象で損したくない", c:["外見でナメられたら終わり", "身だしなみは、、", "愛嬌があればいい"]},
   {cat:"GLAM", q:"ナメられたくない気持ちが強い", c:["強い", "普通", "どう思われてもいい"]},
-  {cat:"GLAM", q:"整形は努力だと思う", c:["痛みと金をかける立派な努力", "一つの手段だと思う", "努力とは違う"]},
+  {cat:"GLAM", q:"整形は努力だと思う", c:["痛みと金をかける立立派な努力", "一つの手段だと思う", "努力とは違う"]},
   {cat:"GLAM", q:"恋愛において自分の価値は高いと思う", c:["自分を安売りしたくない", "普通だと思う", "自信がない"]},
   {cat:"GLAM", q:"10万円以上のブランド品を複数所持している", c:["武装するために必要", "いくつか持っている", "興味がない"]},
   {cat:"GLAM", q:"メイクが上手く行かなくて遅刻した事がある", c:["完璧じゃない顔で外に出れない", "たまにある", "メイクより時間優先"]},
@@ -213,7 +200,7 @@ const MASTER = {
       {
         min: 15, type: "【承認依存・迷走型】",
         thinking: "あなたはSNSを使いこなしながらも、常に「正解の投稿」を探して疲弊しています。自分を良く見せたいという欲求はあるものの、突き抜けるほどの自信はなく、他人の反応に一喜一憂する日々を送っています。オリジナリティよりも「外さないこと」を優先し、バズっているものに自分を寄せていく器用さがありますが、その分、自分の本当の感性が死に体になっています。ネットの熱狂と現実の空虚さのギャップに、人知れず虚しさを感じているタイプです。",
-        love: "恋人に対しても「SNSに出せるか」を無意識に判定材料にしています。しかし、深い部分での繋がりよりも表面的な盛り上がりを求めてしまい、関係がマンネリ化するとすぐに新しい刺激を求めて画面の中へ逃避します。自分の機謙を自分で取ることが苦手なため、相手のレスポンスの早さに依存しやすく、少しの既読スルーで世界が終わったかのような絶望感を味わいます。",
+        love: "恋人に対しても「SNSに出せるか」を無意識に判定材料にしています。しかし、深い部分での繋がりよりも表面的な盛り上がりを求めてしまい、関係がマンネリ化するとすぐに新しい刺激を求めて画面の中へ逃避します。自分の機嫌を自分で取ることが苦手なため、相手のレスポンスの早さに依存しやすく、少しの既読スルーで世界が終わったかのような絶望感を味わいます。",
         jobYes: "WEBライター、メディア運営、アパレル販売、インフルエンサーマネージャー。",
         jobNo: "緻密な計算を要する専門職、電話対応のみの事務、変化のない単純作業。",
         levelup: "「いいね」がつかない趣味をあえて一つ作ってください。誰にも評価されない喜びを知ることが、あなたの心を救います。"
@@ -281,7 +268,7 @@ const MASTER = {
         thinking: "真面目だと思われたい、というポーズだけが先行し、中身が伴っていないタイプです。言われたことは守りますが、それ以上の工夫や自発的な行動は苦手です。「ちゃんとしなきゃ」という言葉が口癖ですが、実際には締切をギリギリまで引き伸ばしたり、小さな嘘で取り繕ったりする矛盾を抱えています。責任を負うことを極端に避け、常に逃げ道を確保しながら「自分は頑張っている」と自分に言い聞かせている、精神的な甘えがあります。",
         love: "相手にリードされることを望みますが、相手がミスをすると「普通はこうするでしょ」と真面目ぶって批判します。自分を棚に上げて、理想のパートナー像を押し付ける傾向があります。責任感が欠如しているため、困難に直面すると話し合いを避けて音信不通になったり、逃げ出したりする臆病な側面を持っています。",
         jobYes: "マニュアル完備の作業、公的な窓口業務、校正、清掃員。",
-        jobNo: "裁量の大きい経営職、アドリブが求められる司会業、リーダーシップが必要な現場。",
+        jobNo: "裁量の大きい経営職、アドリブが求められる司会業、リーダーシップが必要な役職。",
         levelup: "「自分の言葉に責任を持つ」ことから始めてください。嘘をやめ、小さな約束を確実に守ることが、あなたの信頼を再構築します。"
       }
     ]
@@ -411,6 +398,8 @@ function renderFinal() {
   document.getElementById('screen-quiz').classList.add('extreme-mode');
   document.getElementById('timer-ui').classList.remove('hide');
   document.getElementById('force-finish-btn').classList.add('hide');
+  
+  // 100問目：下部の「戻る」ボタン群を非表示にする
   document.getElementById('quiz-nav').classList.add('hide');
 
   document.getElementById('q-num').textContent = "100";
@@ -458,31 +447,33 @@ function showResult() {
   document.getElementById('screen-quiz').classList.add('hide');
   document.getElementById('screen-result').classList.remove('hide');
   
-  // スコア順にソートして1位と2位を取得
-  const sortedCats = Object.keys(state.scores).sort((a,b) => state.scores[b] - state.scores[a]);
-  
-  const topCatKey = sortedCats[0];
-  const subCatKey = sortedCats[1];
+  // スコアの降順ソート
+  const sortedKeys = Object.keys(state.scores).sort((a,b) => state.scores[b] - state.scores[a]);
+  const top = sortedKeys[0];
+  const sub = sortedKeys[1]; // 第二位
 
-  // 1位のデータ表示
-  const catData1 = MASTER[topCatKey];
-  const pattern1 = catData1.patterns.find(p => state.scores[topCatKey] >= p.min);
+  const topScore = state.scores[top];
+  const subScore = state.scores[sub];
 
-  document.getElementById('res-area').textContent = catData1.area;
-  document.getElementById('res-type').textContent = pattern1.type;
-  document.getElementById('res-thinking').textContent = pattern1.thinking;
-  document.getElementById('res-love').textContent = pattern1.love;
-  document.getElementById('res-job-yes').textContent = pattern1.jobYes;
-  document.getElementById('res-job-no').textContent = pattern1.jobNo;
-  document.getElementById('res-levelup').textContent = pattern1.levelup;
+  const catData = MASTER[top];
+  const subData = MASTER[sub];
 
-  // 2位のデータ表示
-  const catData2 = MASTER[subCatKey];
-  const pattern2 = catData2.patterns.find(p => state.scores[subCatKey] >= p.min);
-  
-  document.getElementById('res-area-2').textContent = catData2.area;
-  document.getElementById('res-type-2').textContent = pattern2.type;
-  document.getElementById('res-thinking-2').textContent = pattern2.thinking;
+  const pattern = catData.patterns.find(p => topScore >= p.min);
+  const subPattern = subData.patterns.find(p => subScore >= p.min);
+
+  document.getElementById('res-area').textContent = catData.area;
+  document.getElementById('res-type').textContent = pattern.type;
+
+  // 深層思考パターンに【補足】として2位の情報を結合
+  const thinkingText = pattern.thinking + "\n\n" + 
+    "【補足】\n" + 
+    "あなたの深層には「" + subData.area + "」の要素も混在しています。具体的には、" + subPattern.thinking;
+
+  document.getElementById('res-thinking').textContent = thinkingText;
+  document.getElementById('res-love').textContent = pattern.love;
+  document.getElementById('res-job-yes').textContent = pattern.jobYes;
+  document.getElementById('res-job-no').textContent = pattern.jobNo;
+  document.getElementById('res-levelup').textContent = pattern.levelup;
 
   let finalMsg = "";
   if(state.ans === 'yes') {
