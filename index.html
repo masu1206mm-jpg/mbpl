@@ -51,7 +51,7 @@
     <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
     <div id="question-text" class="question-text"></div>
     <div id="choices" class="choices"></div>
-    <div style="display:flex; gap:10px; width:100%;">
+    <div id="quiz-nav" style="display:flex; gap:10px; width:100%;">
         <button class="sub-btn" onclick="goBack()">戻る</button>
         <button id="force-finish-btn" class="sub-btn" onclick="forceFinish()">途中で結果を見る</button>
         <button class="sub-btn" onclick="resetAll()">リセット</button>
@@ -74,7 +74,6 @@
 </div>
 
 <script>
-// DBは変更なし
 const DB = [
   // SNS (1-20)
   {cat:"SNS", q:"TikTokやX等でバズってる人を見ると、いいね数やコメント数を気にしてしまう", c:["つい数字を分析してしまう", "たまに見てしまう", "全く気にならない"]},
@@ -186,7 +185,6 @@ const DB = [
   {cat:"KAGE", q:"勉強は家でやるよりもカフェや自習室の方が捗る", c:["適度な他人の目がある方がいい", "気分転換になれば", "家が一番いい"]}
 ];
 
-// 5界隈×3パターンの計15データを追加
 const MASTER = {
   SNS: { 
     area: "SNS・自撮り界隈", 
@@ -400,6 +398,10 @@ function renderFinal() {
   document.getElementById('screen-quiz').classList.add('extreme-mode');
   document.getElementById('timer-ui').classList.remove('hide');
   document.getElementById('force-finish-btn').classList.add('hide');
+  
+  // 100問目：下部の「戻る」ボタン群を非表示にする
+  document.getElementById('quiz-nav').classList.add('hide');
+
   document.getElementById('q-num').textContent = "100";
   document.getElementById('progress-fill').style.width = "100%";
   
@@ -441,7 +443,6 @@ function forceFinish() {
   }
 }
 
-// 判定ロジックを「点数に応じた3パターン」に対応
 function showResult() {
   document.getElementById('screen-quiz').classList.add('hide');
   document.getElementById('screen-result').classList.remove('hide');
@@ -450,7 +451,6 @@ function showResult() {
   const topScore = state.scores[top];
   const catData = MASTER[top];
 
-  // スコアによって3パターンのうちどれかを選ぶ
   const pattern = catData.patterns.find(p => topScore >= p.min);
 
   document.getElementById('res-area').textContent = catData.area;
