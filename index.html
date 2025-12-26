@@ -62,9 +62,9 @@
     
     <div class="section"><div class="sec-title">深層思考パターン</div><div id="res-thinking" class="essay-text"></div></div>
     <div class="section"><div class="sec-title">特有の恋愛傾向</div><div id="res-love" class="essay-text"></div></div>
-    <div class="section"><div class="sec-title">適職：あなたの才能が「金」に変わる場所</div><div id="res-job-yes" class="essay-text"></div></div>
-    <div class="section"><div class="sec-title">禁忌：魂が摩耗する避けるべき環境</div><div id="res-job-no" class="essay-text"></div></div>
-    <div class="section"><div class="sec-title">自己超越への道</div><div id="res-levelup" class="essay-text"></div></div>
+    <div class="section"><div class="sec-title">適職</div><div id="res-job-yes" class="essay-text"></div></div>
+    <div class="section"><div class="sec-title">相性の悪い職業</div><div id="res-job-no" class="essay-text"></div></div>
+    <div class="section"><div class="sec-title">レベルアップの為に</div><div id="res-levelup" class="essay-text"></div></div>
 
     <div id="final-box" class="final-box"></div>
     <button style="margin-top:20px; text-align:center;" onclick="resetAll()">トップへ戻る</button>
@@ -126,7 +126,7 @@ const DB = [
   {cat:"GACHI", q:"自分は信号無視をするタイプだ", c:["青になるまで絶対待つ", "たまに無視", "危なくなければ渡る"]},
   {cat:"GACHI", q:"好きな人との夜ご飯は予約してて欲しい／したい", c:["段取りこそが誠意", "あれば嬉しい", "行き当たりばったりがいい"]},
   {cat:"GACHI", q:"段取りができていないと不安になる", c:["全行程を把握したい", "少し不安", "どうにかなる"]},
-  {cat:"GACHI", q:"無責任な行動を見ると腹が立つ", c:["社会人・人間として許せない", "イラっとする", "人は人だと思う"]},
+  {cat:"GACHI", q:"電車の普通座席におばあちゃんがいた", c:["優先座席ではないが譲る", "悩むが譲らない", "知らないんフリ"]},
   {cat:"GACHI", q:"先のことを考えて動くタイプだ", c:["常にリスクヘッジを欠かさない", "普通に考える", "今が楽しければいい"]},
   {cat:"GACHI", q:"LINEでの誤字、脱字などの小さいミスが気になる", c:["送信前に何度も読み直す", "少し気になる", "気にせず送る"]},
   {cat:"GACHI", q:"バランスのよい食事を心掛けている", c:["栄養素を管理している", "意識はしている", "気にしない"]},
@@ -170,16 +170,16 @@ const DB = [
   {cat:"KAGE", q:"無理にテンションを上げたくない", c:["省エネでいたい", "時と場合による", "常に盛り上がりたい"]},
   {cat:"KAGE", q:"1人カフェなど静かな場所が好き", c:["行く", "あまり行かない", "行ったことがない"]},
   {cat:"KAGE", q:"1日何時間も趣味に時間を使っている", c:["３時間以上", "２時間", "１時間以内"]},
-  {cat:"KAGE", q:"人に踏み込まれすぎると疲れる", c:["心の壁がかなり厚い", "少し距離を置く", "歓迎する"]},
+  {cat:"KAGE", q:"初対面でドライブデートは？", c:["しんどい", "悩む", "あり"]},
   {cat:"KAGE", q:"一人で考える時間が必要", c:["内省こそが生きがい", "たまに必要", "直感で動く"]},
-  {cat:"KAGE", q:"自分のペースを乱されたくない", c:["急な誘いは基本NG", "少しイラっとする", "いつでも歓迎"]},
+  {cat:"KAGE", q:"暇な時間に「今からご飯いける?」ときた", c:["急な誘いは基本NG", "悩む(保留)", "行く"]},
   {cat:"KAGE", q:"遊ぶ時に周りに合わせたファッションをする", c:["浮かないように同化する", "少し意識する", "自分の着たい服を着る"]},
-  {cat:"KAGE", q:"空気を読むより距離を取る", c:["面倒な場には最初から行かない", "空気を読んで合わせる", "積極的に関わる"]},
+  {cat:"KAGE", q:"好きでもないのにボディタッチをしてくる異性", c:["うれしい", "どっちでもいい", "うざい"]},
   {cat:"KAGE", q:"無駄な人間関係を減らしたい", c:["連絡先を定期的に整理する", "少しは整理したい", "広い方がいい"]},
   {cat:"KAGE", q:"レジ接客や電話対応が苦手", c:["苦手", "普通", "平気"]},
   {cat:"KAGE", q:"努力していたのに結果が出なかった時(テストや恋愛)の感情は隠す/知られないようにする", c:["隠す", "隠したいが表情や行動でバレる", "隠していない"]},
   {cat:"KAGE", q:"深く狭い人間関係が好き", c:["数少ない理解者がいればいい", "どちらかと言えばそう", "浅く広くがいい"]},
-  {cat:"KAGE", q:"自分の価値観を曲げたくない", c:["頑固だと言われてもいい", "基本は譲らない", "柔軟に変えられる"]},
+  {cat:"KAGE", q:"合コンに誘われたら行く?", c:["行く", "悩む", "行かない"]},
   {cat:"KAGE", q:"友達が怒っていたら理不尽なことでも謝る", c:["争うエネルギーが勿体ないので謝る", "納得いかなければ謝らない", "徹底的に話し合う"]},
   {cat:"KAGE", q:"勉強は家でやるよりもカフェや自習室の方が捗る", c:["適度な他人の目がある方がいい", "気分転換になれば", "家が一番いい"]}
 ];
